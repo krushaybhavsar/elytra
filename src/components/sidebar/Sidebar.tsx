@@ -1,6 +1,6 @@
 import { NavigationBarTabs } from '@/types/navigation';
 import React from 'react';
-import WorkspaceSidebar from './WorkspaceSidebar';
+import WorkspaceSidebar from './workspace/WorkspaceSidebar';
 import DashboardSidebar from './DashboardSidebar';
 import ChatSidebar from './ChatSidebar';
 import ResizablePanel from '../ui/resizablePanel';

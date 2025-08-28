@@ -12,7 +12,7 @@ type NavigationBarProps = {
 const NavigationBar = (props: NavigationBarProps) => {
   return (
     <div className='h-full w-18 bg-darker-background'>
-      <div className='flex flex-col w-full h-full items-center px-2 py-4'>
+      <div className='flex flex-col w-full h-full items-center px-2 py-4 gap-4'>
         {Object.keys(NavigationBarMap).map((tabName) => {
           const navTab = NavigationBarMap[tabName as NavigationBarTabs];
           const isActive = props.activeTab === tabName;
@@ -20,9 +20,10 @@ const NavigationBar = (props: NavigationBarProps) => {
             <Tooltip key={tabName}>
               <TooltipTrigger>
                 <Button
-                  variant='ghostBackground'
+                  asChild
+                  variant='icon'
                   size='icon'
-                  className={`!p-5 mb-2 disabled:opacity-100 ${isActive ? 'bg-darkest-background' : ''}`}
+                  className={`disabled:opacity-100 transition-all ${isActive ? 'bg-darkest-background shadow-sm' : ''}`}
                   onClick={() => props.setActiveTab(tabName as NavigationBarTabs)}
                   disabled={isActive}
                 >

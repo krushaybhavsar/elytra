@@ -46,7 +46,7 @@ export function TypographyH5(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyP(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'font-lausanne text-lighter-text font-[200] text-[18px] leading-[1.5] ';
+  const styles = 'font-lausanne text-lighter-text font-[200] text-[14px] leading-[1.5] ';
   return (
     <p {...props} className={styles + props.className}>
       {props.children}
@@ -55,7 +55,7 @@ export function TypographyP(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyHint(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'font-lausanne text-lighter-text font-[200] text-[15px] leading-[1.25] ';
+  const styles = 'font-lausanne text-lighter-text font-[200] text-[14px] leading-[1.25] ';
   return (
     <p {...props} className={styles + props.className}>
       {props.children}

@@ -141,6 +141,10 @@ if (!gotTheLock) {
         contextIsolation: true,
       },
     });
+
+    newWindow.webContents.setZoomLevel(0);
+    newWindow.webContents.setVisualZoomLevelLimits(1, 1);
+
     newWindow.maximize();
     registerListeners(newWindow);
 
