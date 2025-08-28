@@ -3,6 +3,7 @@ import React from 'react';
 import WorkspaceSidebar from './WorkspaceSidebar';
 import DashboardSidebar from './DashboardSidebar';
 import ChatSidebar from './ChatSidebar';
+import ResizablePanel from '../ui/resizablePanel';
 
 type SidebarProps = {
   activeTab: NavigationBarTabs;
@@ -22,7 +23,16 @@ const Sidebar = (props: SidebarProps) => {
     }
   };
 
-  return <div className='flex flex-col min-w-100 bg-pink h-full'>{getActiveSidebar()}</div>;
+  return (
+    <ResizablePanel
+      initialWidth={250}
+      minWidth={200}
+      maxWidth={400}
+      className='h-full border-r-[1px] border-border'
+    >
+      {getActiveSidebar()}
+    </ResizablePanel>
+  );
 };
 
 export default Sidebar;

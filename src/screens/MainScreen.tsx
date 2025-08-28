@@ -14,7 +14,7 @@ const MainScreen = () => {
   return (
     <div className='w-full h-full flex bg-darker-background'>
       <NavigationBar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className='w-full h-full rounded-tl-xl border-border border-[1px] bg-background'>
+      <div className='flex flex-row w-full h-full rounded-tl-xl border-border border-[1px] bg-background overflow-clip'>
         <Sidebar activeTab={activeTab} />
       </div>
     </div>
