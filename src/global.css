@@ -1,0 +1,391 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  :root {
+    /* #fdfdfb */
+    --background: 60 33.3% 98.8%;
+    /* #f9f8f5 */
+    --darker-background: 45 25% 97%;
+    --darkest-background: 45 15% 87%;
+    --foreground: 48 8% 12%;
+    /* #f9f9f8 */
+    --gray-background: 60 8% 97%;
+    /* #f6f8f9 */
+    --gray-foreground: 30 7% 94%;
+    --card: 0 0% 100%;
+    --card-foreground: 48 8% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 48 8% 12%;
+    /* #19202e */
+    --primary: 48 8% 12%;
+    --primary-foreground: 60 33.3% 98.8%;
+    --lighter-text: 60 3% 38%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 48 8% 12%;
+    --muted: 30 7% 94%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* #1d7353 */
+    --accent: 158 60% 28%;
+    /* #dbf4e7 */
+    --accent-background: 149 53% 91%;
+    --accent-foreground: 60 33.3% 98.8%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --warning: 44 90% 53%;
+    --warning-foreground: 44 80% 40%;
+    --success: 116 46% 49%;
+    --success-foreground: 204 22% 97%;
+    /* #dad9d6 */
+    --border: 45 5% 85%;
+    --input: 198 18% 87%;
+    --ring: 48 8% 12%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-background: hsl(var(--background));
+  --color-darker-background: hsl(var(--darker-background));
+  --color-darkest-background: hsl(var(--darkest-background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-gray-background: hsl(var(--gray-background));
+  --color-gray-foreground: hsl(var(--gray-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-lighter-text: hsl(var(--lighter-text));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-background: hsl(var(--accent-background));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --font-family: Family, sans-serif;
+  --font-lausanne: TWKLausanne, sans-serif;
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --shadow-sm: rgba(149, 157, 165, 0.1) 0px 4px 16px;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  #app {
+    @apply w-screen h-[calc(100vh-36px)] overflow-auto;
+  }
+  body {
+    @apply overflow-hidden bg-background text-foreground p-0 m-0 font-lausanne relative;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 33, 47, 0.075);
+  border-radius: 100px;
+  transition: all 0.1s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 33, 47, 0.15);
+}
+
+.titlebar {
+  app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+}
+
+.titlebar > #titlebar-title {
+  app-region: drag;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.titlebar-buttons {
+  display: flex;
+  align-items: center;
+  app-region: no-drag;
+}
+
+.titlebar-buttons > button {
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  padding: 18px 22px;
+  transition: all ease 0.2s;
+  opacity: 0.5;
+}
+
+.titlebar-buttons > button:hover {
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  opacity: 1;
+}
+
+.titlebar-buttons > #minimize {
+  background-image: url('assets/window-minimize-icon.png');
+  background-position: center 8px;
+}
+.titlebar-buttons > #maximize {
+  background-image: url('assets/window-maximize-icon.png');
+}
+.titlebar-buttons > #close {
+  background-image: url('assets/window-close-icon.png');
+}
+
+:not(nav) {
+  -webkit-app-region: no-drag;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Family';
+    src:
+      url('assets/fonts/Family/Family-Italic.woff2') format('woff2'),
+      url('assets/fonts/Family/Family-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Family';
+    src:
+      url('assets/fonts/Family/Family-Regular.woff2') format('woff2'),
+      url('assets/fonts/Family/Family-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 250';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-250.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-250.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 250';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-250Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-250Italic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 300';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-300.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-300.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 200';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-200.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-200.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 300';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-300Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-300Italic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 200';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-200Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-200Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 400';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-400.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-400.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 500';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-500Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-500Italic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 400';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-400Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-400Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 450';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-450.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-450.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 350';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-350Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-350Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 350';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-350.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-350.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 450';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-450Italic.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-450Italic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'TWKLausanne 500';
+    src:
+      url('assets/fonts/TWKLausanne/TWKLausanne-500.woff2') format('woff2'),
+      url('assets/fonts/TWKLausanne/TWKLausanne-500.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+}

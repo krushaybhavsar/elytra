@@ -1,0 +1,45 @@
+import React, { createElement } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { TypographyHint } from './ui/typography';
+import { Button } from './ui/button';
+import { NavigationBarMap, NavigationBarTabs } from '@/types/navigation';
+
+type NavigationBarProps = {
+  activeTab: NavigationBarTabs;
+  setActiveTab: React.Dispatch<React.SetStateAction<NavigationBarTabs>>;
+};
+
+const NavigationBar = (props: NavigationBarProps) => {
+  return (
+    <div className='h-full w-18 bg-darker-background'>
+      <div className='flex flex-col w-full h-full items-center px-2 py-4'>
+        {Object.keys(NavigationBarMap).map((tabName) => {
+          const navTab = NavigationBarMap[tabName as NavigationBarTabs];
+          const isActive = props.activeTab === tabName;
+          return (
+            <Tooltip key={tabName}>
+              <TooltipTrigger>
+                <Button
+                  variant='ghostBackground'
+                  size='icon'
+                  className={`!p-5 mb-2 disabled:opacity-100 ${isActive ? 'bg-darkest-background' : ''}`}
+                  onClick={() => props.setActiveTab(tabName as NavigationBarTabs)}
+                  disabled={isActive}
+                >
+                  {createElement(navTab.icon, {
+                    className: `size-5 ${isActive ? 'text-primary' : 'text-lighter-text'}`,
+                  })}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side='right' align='center' sideOffset={12}>
+                <TypographyHint>{navTab.title}</TypographyHint>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default NavigationBar;
