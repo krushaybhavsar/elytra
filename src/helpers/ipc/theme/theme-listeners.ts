@@ -1,16 +1,10 @@
 import { nativeTheme } from 'electron';
 import { ipcMain } from 'electron';
-import {
-  THEME_MODE_CURRENT_CHANNEL,
-  THEME_MODE_DARK_CHANNEL,
-  THEME_MODE_LIGHT_CHANNEL,
-  THEME_MODE_SYSTEM_CHANNEL,
-  THEME_MODE_TOGGLE_CHANNEL,
-} from './theme-channels';
+import { THEME_MODE_CHANNELS } from './theme-channels';
 
 export function addThemeEventListeners() {
-  ipcMain.handle(THEME_MODE_CURRENT_CHANNEL, () => nativeTheme.themeSource);
-  ipcMain.handle(THEME_MODE_TOGGLE_CHANNEL, () => {
+  ipcMain.handle(THEME_MODE_CHANNELS.CURRENT, () => nativeTheme.themeSource);
+  ipcMain.handle(THEME_MODE_CHANNELS.TOGGLE, () => {
     if (nativeTheme.shouldUseDarkColors) {
       nativeTheme.themeSource = 'light';
     } else {
@@ -18,9 +12,9 @@ export function addThemeEventListeners() {
     }
     return nativeTheme.shouldUseDarkColors;
   });
-  ipcMain.handle(THEME_MODE_DARK_CHANNEL, () => (nativeTheme.themeSource = 'dark'));
-  ipcMain.handle(THEME_MODE_LIGHT_CHANNEL, () => (nativeTheme.themeSource = 'light'));
-  ipcMain.handle(THEME_MODE_SYSTEM_CHANNEL, () => {
+  ipcMain.handle(THEME_MODE_CHANNELS.DARK, () => (nativeTheme.themeSource = 'dark'));
+  ipcMain.handle(THEME_MODE_CHANNELS.LIGHT, () => (nativeTheme.themeSource = 'light'));
+  ipcMain.handle(THEME_MODE_CHANNELS.SYSTEM, () => {
     nativeTheme.themeSource = 'system';
     return nativeTheme.shouldUseDarkColors;
   });

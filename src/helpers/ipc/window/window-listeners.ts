@@ -1,31 +1,25 @@
 import { BrowserWindow, ipcMain } from 'electron';
-import {
-  WIN_CLOSE_CHANNEL,
-  WIN_MAXIMIZE_CHANNEL,
-  WIN_MINIMIZE_CHANNEL,
-  WIN_RENAME_CHANNEL,
-  WIN_DEEP_LINK_CHANNEL,
-} from './window-channels';
+import { WINDOW_CHANNELS } from './window-channels';
 
 export function addWindowEventListeners(mainWindow: BrowserWindow) {
-  ipcMain.handle(WIN_MINIMIZE_CHANNEL, () => {
+  ipcMain.handle(WINDOW_CHANNELS.MINIMIZE, () => {
     mainWindow.minimize();
   });
-  ipcMain.handle(WIN_MAXIMIZE_CHANNEL, () => {
+  ipcMain.handle(WINDOW_CHANNELS.MAXIMIZE, () => {
     if (mainWindow.isMaximized()) {
       mainWindow.unmaximize();
     } else {
       mainWindow.maximize();
     }
   });
-  ipcMain.handle(WIN_CLOSE_CHANNEL, () => {
+  ipcMain.handle(WINDOW_CHANNELS.CLOSE, () => {
     mainWindow.hide();
   });
-  ipcMain.handle(WIN_RENAME_CHANNEL, (event, newName: string) => {
+  ipcMain.handle(WINDOW_CHANNELS.RENAME, (event, newName: string) => {
     mainWindow.setTitle(newName);
   });
 }
 
 export function sendDeepLinkUrl(mainWindow: BrowserWindow, url: string) {
-  mainWindow.webContents.send(WIN_DEEP_LINK_CHANNEL, url);
+  mainWindow.webContents.send(WINDOW_CHANNELS.DEEP_LINK, url);
 }
