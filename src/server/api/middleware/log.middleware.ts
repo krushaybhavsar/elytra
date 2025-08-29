@@ -1,4 +1,4 @@
-import WinstonLogger from '@/utils/logUtils';
+import WinstonLogger from '@/utils/log-utils';
 import { NextFunction, Request, Response } from 'express';
 
 const loggingService = WinstonLogger.getInstance();

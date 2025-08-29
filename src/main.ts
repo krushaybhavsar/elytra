@@ -3,7 +3,7 @@ import registerListeners from './helpers/ipc/listeners-register';
 import path, { resolve } from 'path';
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { sendDeepLinkUrl } from './helpers/ipc/window/window-listeners';
-import WinstonLogger from './utils/logUtils';
+import WinstonLogger from './utils/log-utils';
 import { initializeLocalServer } from './server/server';
 import { Server, IncomingMessage, ServerResponse } from 'http';
 

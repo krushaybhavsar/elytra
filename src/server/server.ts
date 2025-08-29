@@ -5,7 +5,7 @@ import { docs } from './api/middleware/docs.middleware';
 import { handleError } from './api/middleware/error.middleware';
 import { logRequestMiddleware, logResponseMiddleware } from './api/middleware/log.middleware';
 import { RegisterRoutes } from './api/routes/routes';
-import WinstonLogger from '../utils/logUtils';
+import WinstonLogger from '../utils/log-utils';
 import { Server, IncomingMessage, ServerResponse } from 'http';
 
 dotenv.config();

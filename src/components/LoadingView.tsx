@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoaderCircle } from 'lucide-react';
-import { TypographyP } from '../ui/typography';
+import { TypographyP } from './ui/typography';
 import ElytraLogo from '@/assets/logos/black-tbg.png';
 
 type LoadingViewProps = {
@@ -12,7 +12,7 @@ type LoadingViewProps = {
   showlogo?: boolean;
 };
 
-function LoadingView(props: LoadingViewProps) {
+export const LoadingView = (props: LoadingViewProps) => {
   return (
     <div
       className={
@@ -38,7 +38,7 @@ function LoadingView(props: LoadingViewProps) {
       )}
     </div>
   );
-}
+};
 
 export const LoadingScreen = () => {
   return (
@@ -56,5 +56,3 @@ export const LoadingScreen = () => {
     </div>
   );
 };
-
-export default LoadingView;

@@ -5,7 +5,7 @@ import { AppScreens } from './types/navigation';
 import DashboardScreen from './screens/MainScreen';
 import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
-import { LoadingScreen } from './components/screens/LoadingScreen';
+import { LoadingScreen } from './components/LoadingView';
 import { DialogProvider } from './components/contexts/DialogContext';
 
 export default function App() {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
-import WinstonLogger from '@/utils/logUtils';
+import WinstonLogger from '@/utils/log-utils';
 
 const loggingService = WinstonLogger.getInstance();
 const loggerError = loggingService.getLogger('Error');

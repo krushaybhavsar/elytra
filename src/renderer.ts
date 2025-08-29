@@ -1,5 +1,5 @@
 import '@/App';
-import { closeWindow, maximizeWindow, minimizeWindow } from './helpers/window_helpers';
+import { closeWindow, maximizeWindow, minimizeWindow } from './helpers/window-helpers';
 
 console.log('Renderer script loaded');
 
