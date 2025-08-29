@@ -6,6 +6,7 @@ import DashboardScreen from './screens/MainScreen';
 import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import { LoadingScreen } from './components/screens/LoadingScreen';
+import { DialogProvider } from './components/contexts/DialogContext';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -15,19 +16,21 @@ export default function App() {
   }, []);
 
   return (
-    <TooltipProvider>
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        <>
-          <Routes>
-            <Route path={AppScreens.MAIN} element={<DashboardScreen />} />
-            <Route path='*' element={<Navigate to={AppScreens.MAIN} />} />
-          </Routes>
-          <Toaster />
-        </>
-      )}
-    </TooltipProvider>
+    <DialogProvider>
+      <TooltipProvider>
+        {loading ? (
+          <LoadingScreen />
+        ) : (
+          <>
+            <Routes>
+              <Route path={AppScreens.MAIN} element={<DashboardScreen />} />
+              <Route path='*' element={<Navigate to={AppScreens.MAIN} />} />
+            </Routes>
+            <Toaster />
+          </>
+        )}
+      </TooltipProvider>
+    </DialogProvider>
   );
 }
 

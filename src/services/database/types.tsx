@@ -6,48 +6,51 @@ import OracleIcon from '@/assets/oracle.png';
 import SQLServerIcon from '@/assets/sqlserver.png';
 
 export class DbType {
-  id: string;
   displayName: string;
-  icon: React.ReactNode;
+  icon: (
+    props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  ) => React.ReactNode;
   constructor({
-    id,
     displayName,
     icon,
   }: {
-    id: string;
     displayName: string;
-    icon: React.ReactNode;
+    icon: (
+      props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+    ) => React.ReactNode;
   }) {
-    this.id = id;
     this.displayName = displayName;
     this.icon = icon;
   }
 }
 
-export const SUPPORTED_DB_TYPES: DbType[] = [
-  new DbType({
-    id: 'postgres',
+export enum SupportedDbTypes {
+  POSTGRESQL = 'postgres',
+  MYSQL = 'mysql',
+  MARIADB = 'mariadb',
+  ORACLE = 'oracle',
+  SQLSERVER = 'sqlserver',
+}
+
+export const SupportedDbTypeMap: Record<SupportedDbTypes, DbType> = {
+  [SupportedDbTypes.POSTGRESQL]: new DbType({
     displayName: 'PostgreSQL',
-    icon: <img className='!size-4' src={PostgreSQLIcon} />,
+    icon: (props?) => <img src={PostgreSQLIcon} {...props} />,
   }),
-  new DbType({
-    id: 'mariadb',
+  [SupportedDbTypes.MARIADB]: new DbType({
     displayName: 'MariaDB',
-    icon: <img className='!size-4' src={MariaDBIcon} />,
+    icon: (props?) => <img src={MariaDBIcon} {...props} />,
   }),
-  new DbType({
-    id: 'mysql',
+  [SupportedDbTypes.MYSQL]: new DbType({
     displayName: 'MySQL',
-    icon: <img className='!size-4' src={MySQLIcon} />,
+    icon: (props?) => <img src={MySQLIcon} {...props} />,
   }),
-  new DbType({
-    id: 'oracle',
+  [SupportedDbTypes.ORACLE]: new DbType({
     displayName: 'Oracle',
-    icon: <img className='!size-4' src={OracleIcon} />,
+    icon: (props?) => <img src={OracleIcon} {...props} />,
   }),
-  new DbType({
-    id: 'sqlserver',
+  [SupportedDbTypes.SQLSERVER]: new DbType({
     displayName: 'SQL Server',
-    icon: <img className='!size-4' src={SQLServerIcon} />,
+    icon: (props?) => <img src={SQLServerIcon} {...props} />,
   }),
-];
+};

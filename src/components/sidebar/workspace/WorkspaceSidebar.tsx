@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TypographyP } from '../../ui/typography';
 import { Button } from '../../ui/button';
 import { EllipsisVertical, Locate, Plus, RefreshCw } from 'lucide-react';
@@ -10,6 +10,8 @@ import CreateDbDropdownContent from './CreateDbDropdownContent';
 type WorkspaceSidebarProps = {};
 
 const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   return (
     <div className='flex flex-col w-full h-full'>
       <div className='flex flex-row justify-between p-2 pl-4 items-center'>
@@ -24,15 +26,15 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
         </div>
       </div>
       <Separator orientation='horizontal' />
-      <div className='flex flex-row justify-between p-2 items-center gap-2'>
+      <div className='flex flex-row justify-between p-2 pr-4 items-center gap-2'>
         <div className='flex flex-row gap-2'>
-          <DropdownMenu>
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant='icon' size='icon' className='!p-0 !size-6'>
                 <Plus className='size-4' />
               </Button>
             </DropdownMenuTrigger>
-            <CreateDbDropdownContent />
+            <CreateDbDropdownContent onDialogOpen={() => setIsDropdownOpen(false)} />
           </DropdownMenu>
           <Button variant='icon' size='icon' className='!p-0 !size-6'>
             <RefreshCw className='size-4' />

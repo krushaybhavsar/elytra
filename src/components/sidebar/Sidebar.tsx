@@ -3,7 +3,7 @@ import React from 'react';
 import WorkspaceSidebar from './workspace/WorkspaceSidebar';
 import DashboardSidebar from './DashboardSidebar';
 import ChatSidebar from './ChatSidebar';
-import ResizablePanel from '../ui/resizablePanel';
+import ResizablePanel from '../ui/resizable-panel';
 
 type SidebarProps = {
   activeTab: NavigationBarTabs;

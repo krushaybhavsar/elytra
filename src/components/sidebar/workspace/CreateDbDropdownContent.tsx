@@ -9,9 +9,23 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Database, FolderPlus } from 'lucide-react';
-import { SUPPORTED_DB_TYPES } from '@/services/database/types';
+import { SupportedDbTypeMap, SupportedDbTypes } from '@/services/database/types';
+import { useDialog } from '@/components/contexts/DialogContext';
+import DbConnectionModalContent from './DbConnectionModalContent';
 
-const CreateDbDropdownContent = () => {
+type CreateDbDropdownContentProps = {
+  onDialogOpen: () => void;
+};
+
+const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
+  const { setDialogOpen, setDialogContent } = useDialog();
+
+  const selectDbType = (dbType: SupportedDbTypes) => () => {
+    props.onDialogOpen();
+    setDialogContent(<DbConnectionModalContent dbProtocol={dbType} />);
+    setDialogOpen(true);
+  };
+
   return (
     <DropdownMenuContent className='w-fit' align='start'>
       <DropdownMenuGroup>
@@ -22,9 +36,9 @@ const CreateDbDropdownContent = () => {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              {SUPPORTED_DB_TYPES.map((db) => (
-                <DropdownMenuItem key={db.id}>
-                  {db.icon}
+              {Object.entries(SupportedDbTypeMap).map(({ 0: dbId, 1: db }) => (
+                <DropdownMenuItem key={dbId} onClick={selectDbType(dbId as SupportedDbTypes)}>
+                  <db.icon className='size-4' />
                   {db.displayName}
                 </DropdownMenuItem>
               ))}
