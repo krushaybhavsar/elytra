@@ -1,5 +1,5 @@
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { SupportedDbTypeMap, SupportedDbTypes } from '@/services/database/types';
+import { DbConnectionModalContentProps, SupportedDbTypeMap } from '@/services/database/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -30,18 +30,14 @@ const formSchema = z.object({
     .min(2, 'Name must be at least 2 characters')
     .max(50, 'Name must be at most 50 characters'),
   host: z.string().min(1, 'Host is required'),
-  port: z.number().min(1, 'Port must be at least 1').max(65535, 'Port must be at most 65535'),
+  port: z.number(),
   authenticationType: z.enum(['User & Password', 'No Authentication']),
   user: z.string().optional(),
   password: z.string().optional(),
   database: z.string(),
 });
 
-type DbConnectionModalContentProps = {
-  dbProtocol: SupportedDbTypes;
-};
-
-const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
+const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [connectionUrl, setConnectionUrl] = useState('');
   const dbType = SupportedDbTypeMap[props.dbProtocol];
@@ -68,19 +64,15 @@ const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
 
   useEffect(() => {
     let url = `${props.dbProtocol}://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
-
     if (watchedAuthenticationType === 'User & Password' && watchedUser) {
       url = `${props.dbProtocol}://${watchedUser}${
         watchedPassword ? `:${'*'.repeat(watchedPassword.length)}` : ''
       }@${watchedHost}:${watchedPort}`;
     }
-
     if (watchedDatabase) {
       url += `/${watchedDatabase}`;
     }
-
     setConnectionUrl(url);
-
     // form.setValue('connectionUrl', url);
   }, [
     watchedHost,
@@ -151,7 +143,12 @@ const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
                 <FormItem>
                   <FormLabel>Port</FormLabel>
                   <FormControl>
-                    <Input {...field} type='number' placeholder='5432' />
+                    <Input
+                      {...field}
+                      type='number'
+                      placeholder='5432'
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -164,7 +161,7 @@ const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Authentication</FormLabel>
+                  <FormLabel>Authentication Type</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -246,8 +243,9 @@ const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
 
           <TypographyP>{connectionUrl}</TypographyP>
 
-          <div className='flex justify-end pt-4'>
-            <Button type='submit'>Connect</Button>
+          <div className='flex justify-end gap-4 pt-4'>
+            <Button variant='outline'>Test Connection</Button>
+            <Button type='submit'>Save</Button>
           </div>
         </form>
       </Form>
@@ -255,4 +253,4 @@ const DbConnectionModalContent = (props: DbConnectionModalContentProps) => {
   );
 };
 
-export default DbConnectionModalContent;
+export default PostgreSqlConnectionModal;

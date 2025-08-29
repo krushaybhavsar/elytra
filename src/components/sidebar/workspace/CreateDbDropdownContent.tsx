@@ -11,7 +11,6 @@ import {
 import { Database, FolderPlus } from 'lucide-react';
 import { SupportedDbTypeMap, SupportedDbTypes } from '@/services/database/types';
 import { useDialog } from '@/components/contexts/DialogContext';
-import DbConnectionModalContent from './DbConnectionModalContent';
 
 type CreateDbDropdownContentProps = {
   onDialogOpen: () => void;
@@ -22,7 +21,7 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
 
   const selectDbType = (dbType: SupportedDbTypes) => () => {
     props.onDialogOpen();
-    setDialogContent(<DbConnectionModalContent dbProtocol={dbType} />);
+    setDialogContent(SupportedDbTypeMap[dbType].connectionModalContent({ dbProtocol: dbType }));
     setDialogOpen(true);
   };
 
