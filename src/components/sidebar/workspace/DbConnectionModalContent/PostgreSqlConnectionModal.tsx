@@ -1,5 +1,4 @@
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DbConnectionModalContentProps, SupportedDbTypeMap } from '@/services/database/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -24,6 +23,10 @@ import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { TypographyP } from '@/components/ui/typography';
 
+export type DbConnectionModalContentProps = {
+  dbProtocol: string;
+};
+
 const formSchema = z.object({
   name: z
     .string()
@@ -40,7 +43,6 @@ const formSchema = z.object({
 const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [connectionUrl, setConnectionUrl] = useState('');
-  const dbType = SupportedDbTypeMap[props.dbProtocol];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -103,8 +105,8 @@ const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
     <DialogContent className='max-w-2xl gap-8'>
       <DialogHeader>
         <DialogTitle className='flex items-center gap-3'>
-          <dbType.icon className='size-7' />
-          {dbType.displayName} Connection Configuration
+          {/* <dbType.icon className='size-7' />
+          {dbType.displayName} Connection Configuration */}
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>

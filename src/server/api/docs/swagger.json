@@ -1,43 +1,125 @@
 {
-  "openapi": "3.0.0",
-  "components": {
-    "examples": {},
-    "headers": {},
-    "parameters": {},
-    "requestBodies": {},
-    "responses": {},
-    "schemas": {},
-    "securitySchemes": {}
-  },
-  "info": {
-    "title": "elytra",
-    "version": "1.0.0",
-    "contact": {}
-  },
-  "paths": {
-    "/trigger/health": {
-      "get": {
-        "operationId": "Health",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [],
-        "parameters": []
-      }
-    }
-  },
-  "servers": [
-    {
-      "url": "/"
-    }
-  ]
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"SupportedDatabaseType": {
+				"enum": [
+					"postgres",
+					"mysql",
+					"mariadb",
+					"oracle",
+					"sqlserver"
+				],
+				"type": "string"
+			},
+			"DatabaseConfig": {
+				"properties": {
+					"dbType": {
+						"$ref": "#/components/schemas/SupportedDatabaseType"
+					},
+					"name": {
+						"type": "string"
+					},
+					"icon": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"dbType",
+					"name",
+					"icon"
+				],
+				"type": "object",
+				"additionalProperties": true
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "elytra",
+		"version": "1.0.0",
+		"description": "The most powerful enterprise AI-driven database client.",
+		"contact": {}
+	},
+	"paths": {
+		"/trigger/health": {
+			"get": {
+				"operationId": "Health",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/database/supported-databases": {
+			"get": {
+				"operationId": "GetSupportedDatabaseTypes",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/SupportedDatabaseType"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/database/plugin/{dbType}/config": {
+			"get": {
+				"operationId": "GetPluginConfig",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DatabaseConfig"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "dbType",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/SupportedDatabaseType"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
 }

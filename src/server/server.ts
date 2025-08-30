@@ -7,12 +7,14 @@ import { logRequestMiddleware, logResponseMiddleware } from './api/middleware/lo
 import { RegisterRoutes } from './api/routes/routes';
 import WinstonLogger from '../utils/log-utils';
 import { Server, IncomingMessage, ServerResponse } from 'http';
+import { initializeServices } from './services/service.config';
 
 dotenv.config();
 
 export async function initializeLocalServer(): Promise<
   Server<typeof IncomingMessage, typeof ServerResponse>
 > {
+  await initializeServices();
   const app = express();
 
   app.use(logRequestMiddleware);

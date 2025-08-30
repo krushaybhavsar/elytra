@@ -74,6 +74,7 @@
     "@types/react-resizable": "^3.0.8",
     "@types/swagger-ui-express": "^4.1.8",
     "@vitejs/plugin-react": "^4.4.1",
+    "axios": "^1.11.0",
     "babel-plugin-react-compiler": "^19.0.0-beta-e993439-20250328",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
