@@ -1,10 +1,14 @@
+export enum SupportedDbIdentifier {
+  POSTGRESQL = 'postgresql',
+}
+
 export interface DatabaseConfig {
-  id: string;
+  id: SupportedDbIdentifier;
   name: string;
 }
 
 export interface Connection {
-  dbIdentifier: string;
+  dbId: SupportedDbIdentifier;
   connectionConfig: ConnectionConfig;
   createdAt: Date;
   isActive: boolean;

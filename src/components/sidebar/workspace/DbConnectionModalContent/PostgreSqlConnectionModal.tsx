@@ -24,7 +24,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { TypographyP } from '@/components/ui/typography';
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import { databaseManager } from '@/managers/manager.config';
-import { DatabaseIcons } from '@/types/database';
+import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
 
 const formSchema = z.object({
   name: z
@@ -65,15 +65,15 @@ const PostgreSQLConnectionModal = () => {
   const watchedAuthenticationType = useWatch({ control: form.control, name: 'authenticationType' });
 
   useEffect(() => {
-    databaseManager.getSupportedDbConfig('postgresql').then((config) => {
+    databaseManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL).then((config) => {
       setDbConfig(config);
     });
   }, []);
 
   useEffect(() => {
-    let url = `postgresql://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
+    let url = `${SupportedDbIdentifier.POSTGRESQL}://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
     if (watchedAuthenticationType === 'User & Password' && watchedUser) {
-      url = `postgresql://${watchedUser}${
+      url = `${SupportedDbIdentifier.POSTGRESQL}://${watchedUser}${
         watchedPassword ? `:${'*'.repeat(watchedPassword.length)}` : ''
       }@${watchedHost}:${watchedPort}`;
     }
@@ -110,7 +110,7 @@ const PostgreSQLConnectionModal = () => {
     <DialogContent className='max-w-2xl gap-8'>
       <DialogHeader>
         <DialogTitle className='flex items-center gap-3'>
-          {DatabaseIcons.postgresql({ className: 'size-7' })}
+          {DatabaseIcons[SupportedDbIdentifier.POSTGRESQL]({ className: 'size-7' })}
           {dbConfig?.name} Connection Configuration
         </DialogTitle>
       </DialogHeader>

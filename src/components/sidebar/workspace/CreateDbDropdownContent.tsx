@@ -48,9 +48,7 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
               {supportedDbConfigs.map((config) => {
                 return (
                   <DropdownMenuItem key={config.id} onClick={selectDbType(config.id)}>
-                    {DatabaseIcons[config.id as keyof typeof DatabaseIcons]({
-                      className: '!size-4',
-                    })}
+                    {DatabaseIcons[config.id]({ className: '!size-4' })}
                     {config.name}
                   </DropdownMenuItem>
                 );

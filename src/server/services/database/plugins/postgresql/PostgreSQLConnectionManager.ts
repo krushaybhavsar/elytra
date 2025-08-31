@@ -1,9 +1,14 @@
-import { Connection, ConnectionConfig, ConnectionManager } from '../../types';
+import {
+  Connection,
+  ConnectionConfig,
+  ConnectionManager,
+  SupportedDbIdentifier,
+} from '../../types';
 
 export class PostgreSQLConnectionManager implements ConnectionManager {
   async createConnection(config: ConnectionConfig): Promise<Connection> {
     return {
-      dbIdentifier: 'postgresql',
+      dbId: SupportedDbIdentifier.POSTGRESQL,
       connectionConfig: config,
       createdAt: new Date(),
       isActive: true,

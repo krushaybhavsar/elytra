@@ -1,5 +1,6 @@
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import DataSource from '@/services/DataSource';
+import { SupportedDbIdentifier } from '@/types/database';
 
 export default class DatabaseManager {
   readonly dataSource: DataSource;
@@ -8,7 +9,7 @@ export default class DatabaseManager {
     this.dataSource = dataSource;
   }
 
-  async getSupportedDbIds(): Promise<string[]> {
+  async getSupportedDbIds(): Promise<SupportedDbIdentifier[]> {
     return this.dataSource.getSupportedDbIds();
   }
 
@@ -16,7 +17,7 @@ export default class DatabaseManager {
     return this.dataSource.getSupportedDbConfigs();
   }
 
-  async getSupportedDbConfig(id: string): Promise<DatabaseConfig | undefined> {
+  async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabaseConfig | undefined> {
     return this.dataSource.getSupportedDbConfig(id);
   }
 }

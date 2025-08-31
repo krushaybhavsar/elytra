@@ -1,6 +1,7 @@
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import DataSource from './DataSource';
 import axios, { AxiosInstance } from 'axios';
+import { SupportedDbIdentifier } from '@/types/database';
 
 export default class APIDataSource implements DataSource {
   readonly api: AxiosInstance;
@@ -16,8 +17,8 @@ export default class APIDataSource implements DataSource {
     });
   }
 
-  async getSupportedDbIds(): Promise<string[]> {
-    const res = await this.api.get<string[]>('/database/plugins/ids');
+  async getSupportedDbIds(): Promise<SupportedDbIdentifier[]> {
+    const res = await this.api.get<SupportedDbIdentifier[]>('/database/plugins/ids');
     return res.data;
   }
 
@@ -26,7 +27,7 @@ export default class APIDataSource implements DataSource {
     return res.data;
   }
 
-  async getSupportedDbConfig(id: string): Promise<DatabaseConfig | undefined> {
+  async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabaseConfig | undefined> {
     const res = await this.api.get<DatabaseConfig | undefined>(`/database/plugin/${id}/config`);
     return res.data;
   }

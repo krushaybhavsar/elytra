@@ -1,7 +1,7 @@
-import { DatabaseConfig, DatabasePlugin } from './types';
+import { DatabaseConfig, DatabasePlugin, SupportedDbIdentifier } from './types';
 
 export class PluginRegistry {
-  private static plugins = new Map<string, DatabasePlugin>();
+  private static plugins = new Map<SupportedDbIdentifier, DatabasePlugin>();
 
   public static register(plugin: DatabasePlugin) {
     const config = plugin.getConfig();
@@ -12,11 +12,11 @@ export class PluginRegistry {
     return Array.from(this.plugins.values());
   }
 
-  public static getPlugin(id: string): DatabasePlugin | undefined {
+  public static getPlugin(id: SupportedDbIdentifier): DatabasePlugin | undefined {
     return this.plugins.get(id);
   }
 
-  public static getPluginConfig(id: string): DatabaseConfig | undefined {
+  public static getPluginConfig(id: SupportedDbIdentifier): DatabaseConfig | undefined {
     return this.getPlugin(id)?.getConfig();
   }
 }
