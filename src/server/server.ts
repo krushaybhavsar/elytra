@@ -31,7 +31,7 @@ export async function initializeLocalServer(): Promise<
   // @ts-ignore
   app.use(handleError);
 
-  const port = process.env.PORT || 8080;
+  const port = process.env.VITE_LOCAL_SERVER_PORT || 8080;
   const server = app.listen(port, () => {
     const logger = WinstonLogger.getInstance().getLogger('Local Server');
     logger.info(`Local server is running on port ${port}`);

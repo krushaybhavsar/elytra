@@ -14,10 +14,15 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "SupportedDbIdentifier": {
+        "dataType": "refEnum",
+        "enums": ["postgresql"],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DatabaseConfig": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"string","required":true},
+            "id": {"ref":"SupportedDbIdentifier","required":true},
             "name": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
@@ -128,7 +133,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsDatabaseController_getSupportedDbConfig: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                id: {"in":"path","name":"id","required":true,"ref":"SupportedDbIdentifier"},
         };
         app.get('/database/plugin/:id/config',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),

@@ -7,7 +7,7 @@ export default class APIDataSource implements DataSource {
   readonly api: AxiosInstance;
 
   constructor() {
-    const baseUrl = 'http://localhost:8080';
+    const baseUrl = `${import.meta.env.VITE_LOCAL_SERVER_BASE_URL || 'http://localhost'}:${Number(import.meta.env.VITE_LOCAL_SERVER_PORT) || 8080}`;
 
     this.api = axios.create({
       baseURL: baseUrl,

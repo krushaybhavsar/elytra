@@ -7,10 +7,16 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"SupportedDbIdentifier": {
+				"enum": [
+					"postgresql"
+				],
+				"type": "string"
+			},
 			"DatabaseConfig": {
 				"properties": {
 					"id": {
-						"type": "string"
+						"$ref": "#/components/schemas/SupportedDbIdentifier"
 					},
 					"name": {
 						"type": "string"
@@ -62,7 +68,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"type": "string"
+										"$ref": "#/components/schemas/SupportedDbIdentifier"
 									},
 									"type": "array"
 								}
@@ -118,7 +124,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/SupportedDbIdentifier"
 						}
 					}
 				]
