@@ -6,7 +6,7 @@
   "main": ".vite/build/main.js",
   "private": true,
   "scripts": {
-    "start": "electron-forge start",
+    "start": "tsoa spec-and-routes --configuration src/server/tsoa.json && electron-forge start",
     "start:server": "tsoa spec-and-routes --configuration src/server/tsoa.json && nodemon staging --config src/server/nodemon.json",
     "package": "electron-forge package",
     "make": "electron-forge make",

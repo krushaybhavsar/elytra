@@ -1,19 +1,10 @@
-export enum SupportedDatabaseType {
-  POSTGRESQL = 'postgres',
-  MYSQL = 'mysql',
-  MARIADB = 'mariadb',
-  ORACLE = 'oracle',
-  SQLSERVER = 'sqlserver',
-}
-
 export interface DatabaseConfig {
-  dbType: SupportedDatabaseType;
+  id: string;
   name: string;
-  icon: string;
 }
 
 export interface Connection {
-  dbType: SupportedDatabaseType;
+  dbIdentifier: string;
   connectionConfig: ConnectionConfig;
   createdAt: Date;
   isActive: boolean;

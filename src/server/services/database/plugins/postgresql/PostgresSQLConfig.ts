@@ -1,7 +1,6 @@
-import { DatabaseConfig, SupportedDatabaseType } from '../../types';
+import { DatabaseConfig } from '../../types';
 
 export const PostgresSQLConfig: DatabaseConfig = {
-  dbType: SupportedDatabaseType.POSTGRESQL,
+  id: 'postgresql',
   name: 'PostgreSQL',
-  icon: 'postgresql.png',
 };

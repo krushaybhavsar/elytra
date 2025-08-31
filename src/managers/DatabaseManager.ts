@@ -1,3 +1,4 @@
+import { DatabaseConfig } from '@/model/DatabaseModel';
 import DataSource from '@/services/DataSource';
 
 export default class DatabaseManager {
@@ -7,7 +8,15 @@ export default class DatabaseManager {
     this.dataSource = dataSource;
   }
 
-  async getSupportedDatabases(): Promise<string[]> {
-    return this.dataSource.getSupportedDatabases();
+  async getSupportedDbIds(): Promise<string[]> {
+    return this.dataSource.getSupportedDbIds();
+  }
+
+  async getSupportedDbConfigs(): Promise<DatabaseConfig[]> {
+    return this.dataSource.getSupportedDbConfigs();
+  }
+
+  async getSupportedDbConfig(id: string): Promise<DatabaseConfig | undefined> {
+    return this.dataSource.getSupportedDbConfig(id);
   }
 }

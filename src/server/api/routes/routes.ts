@@ -14,17 +14,11 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "SupportedDatabaseType": {
-        "dataType": "refEnum",
-        "enums": ["postgres","mysql","mariadb","oracle","sqlserver"],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DatabaseConfig": {
         "dataType": "refObject",
         "properties": {
-            "dbType": {"ref":"SupportedDatabaseType","required":true},
+            "id": {"dataType":"string","required":true},
             "name": {"dataType":"string","required":true},
-            "icon": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
     },
@@ -75,24 +69,24 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsDatabaseController_getSupportedDatabaseTypes: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsDatabaseController_getSupportedDbIds: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/database/supported-databases',
+        app.get('/database/plugins/ids',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDatabaseTypes)),
+            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbIds)),
 
-            async function DatabaseController_getSupportedDatabaseTypes(request: ExRequest, response: ExResponse, next: any) {
+            async function DatabaseController_getSupportedDbIds(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDatabaseTypes, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbIds, request, response });
 
                 const controller = new DatabaseController();
 
               await templateService.apiHandler({
-                methodName: 'getSupportedDatabaseTypes',
+                methodName: 'getSupportedDbIds',
                 controller,
                 response,
                 next,
@@ -104,25 +98,54 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsDatabaseController_getPluginConfig: Record<string, TsoaRoute.ParameterSchema> = {
-                dbType: {"in":"path","name":"dbType","required":true,"ref":"SupportedDatabaseType"},
+        const argsDatabaseController_getSupportedDbConfigs: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/database/plugin/:dbType/config',
+        app.get('/database/plugins/configs',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getPluginConfig)),
+            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfigs)),
 
-            async function DatabaseController_getPluginConfig(request: ExRequest, response: ExResponse, next: any) {
+            async function DatabaseController_getSupportedDbConfigs(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getPluginConfig, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbConfigs, request, response });
 
                 const controller = new DatabaseController();
 
               await templateService.apiHandler({
-                methodName: 'getPluginConfig',
+                methodName: 'getSupportedDbConfigs',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsDatabaseController_getSupportedDbConfig: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.get('/database/plugin/:id/config',
+            ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
+            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfig)),
+
+            async function DatabaseController_getSupportedDbConfig(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbConfig, request, response });
+
+                const controller = new DatabaseController();
+
+              await templateService.apiHandler({
+                methodName: 'getSupportedDbConfig',
                 controller,
                 response,
                 next,

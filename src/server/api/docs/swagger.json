@@ -7,32 +7,18 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"SupportedDatabaseType": {
-				"enum": [
-					"postgres",
-					"mysql",
-					"mariadb",
-					"oracle",
-					"sqlserver"
-				],
-				"type": "string"
-			},
 			"DatabaseConfig": {
 				"properties": {
-					"dbType": {
-						"$ref": "#/components/schemas/SupportedDatabaseType"
-					},
-					"name": {
+					"id": {
 						"type": "string"
 					},
-					"icon": {
+					"name": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"dbType",
-					"name",
-					"icon"
+					"id",
+					"name"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -66,9 +52,9 @@
 				"parameters": []
 			}
 		},
-		"/database/supported-databases": {
+		"/database/plugins/ids": {
 			"get": {
-				"operationId": "GetSupportedDatabaseTypes",
+				"operationId": "GetSupportedDbIds",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -76,7 +62,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/SupportedDatabaseType"
+										"type": "string"
 									},
 									"type": "array"
 								}
@@ -88,9 +74,31 @@
 				"parameters": []
 			}
 		},
-		"/database/plugin/{dbType}/config": {
+		"/database/plugins/configs": {
 			"get": {
-				"operationId": "GetPluginConfig",
+				"operationId": "GetSupportedDbConfigs",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/DatabaseConfig"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/database/plugin/{id}/config": {
+			"get": {
+				"operationId": "GetSupportedDbConfig",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -107,10 +115,10 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "dbType",
+						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/SupportedDatabaseType"
+							"type": "string"
 						}
 					}
 				]

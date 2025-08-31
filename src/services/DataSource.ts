@@ -1,3 +1,7 @@
+import { DatabaseConfig } from '@/model/DatabaseModel';
+
 export default interface DataSource {
-  getSupportedDatabases(): Promise<string[]>;
+  getSupportedDbIds(): Promise<string[]>;
+  getSupportedDbConfigs(): Promise<DatabaseConfig[]>;
+  getSupportedDbConfig(id: string): Promise<DatabaseConfig | undefined>;
 }

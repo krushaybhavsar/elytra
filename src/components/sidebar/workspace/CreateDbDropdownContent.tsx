@@ -11,6 +11,8 @@ import {
 import { Database, FolderPlus } from 'lucide-react';
 import { useDialog } from '@/components/contexts/DialogContext';
 import { databaseManager } from '@/managers/manager.config';
+import { DatabaseConfig } from '@/model/DatabaseModel';
+import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database';
 
 type CreateDbDropdownContentProps = {
   onDialogOpen: () => void;
@@ -18,18 +20,18 @@ type CreateDbDropdownContentProps = {
 
 const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
   const { setDialogOpen, setDialogContent } = useDialog();
-  const [supportedDatabases, setSupportedDatabases] = useState<string[]>([]);
+  const [supportedDbConfigs, setSupportedDbConfigs] = useState<DatabaseConfig[]>([]);
 
   useEffect(() => {
-    databaseManager.getSupportedDatabases().then((dbTypes) => {
-      console.log('Supported databases:', dbTypes);
-      setSupportedDatabases(dbTypes);
+    if (supportedDbConfigs.length > 0) return;
+    databaseManager.getSupportedDbConfigs().then((configs) => {
+      setSupportedDbConfigs(configs);
     });
-  }, []);
+  }, [supportedDbConfigs]);
 
-  const selectDbType = (dbType: string) => () => {
+  const selectDbType = (id: string) => () => {
     props.onDialogOpen();
-    // setDialogContent(dbConfig.connectionModalContent({ dbProtocol: dbType }));
+    setDialogContent(DatabaseConnectionModals[id as keyof typeof DatabaseConnectionModals]);
     setDialogOpen(true);
   };
 
@@ -43,12 +45,13 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              {supportedDatabases.map((dbType) => {
+              {supportedDbConfigs.map((config) => {
                 return (
-                  <DropdownMenuItem key={dbType} onClick={selectDbType(dbType)}>
-                    {/* <db.icon className='size-4' />
-                    <img src={dbConfig?.icon} alt={dbConfig?.name} className='!size-4' />
-                    {dbConfig?.name} */}
+                  <DropdownMenuItem key={config.id} onClick={selectDbType(config.id)}>
+                    {DatabaseIcons[config.id as keyof typeof DatabaseIcons]({
+                      className: '!size-4',
+                    })}
+                    {config.name}
                   </DropdownMenuItem>
                 );
               })}

@@ -22,10 +22,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { TypographyP } from '@/components/ui/typography';
-
-export type DbConnectionModalContentProps = {
-  dbProtocol: string;
-};
+import { DatabaseConfig } from '@/model/DatabaseModel';
+import { databaseManager } from '@/managers/manager.config';
+import { DatabaseIcons } from '@/types/database';
 
 const formSchema = z.object({
   name: z
@@ -40,9 +39,10 @@ const formSchema = z.object({
   database: z.string(),
 });
 
-const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
+const PostgreSQLConnectionModal = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [connectionUrl, setConnectionUrl] = useState('');
+  const [dbConfig, setDbConfig] = useState<DatabaseConfig>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,9 +65,15 @@ const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
   const watchedAuthenticationType = useWatch({ control: form.control, name: 'authenticationType' });
 
   useEffect(() => {
-    let url = `${props.dbProtocol}://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
+    databaseManager.getSupportedDbConfig('postgresql').then((config) => {
+      setDbConfig(config);
+    });
+  }, []);
+
+  useEffect(() => {
+    let url = `postgresql://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
     if (watchedAuthenticationType === 'User & Password' && watchedUser) {
-      url = `${props.dbProtocol}://${watchedUser}${
+      url = `postgresql://${watchedUser}${
         watchedPassword ? `:${'*'.repeat(watchedPassword.length)}` : ''
       }@${watchedHost}:${watchedPort}`;
     }
@@ -83,7 +89,6 @@ const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
     watchedUser,
     watchedPassword,
     watchedAuthenticationType,
-    props.dbProtocol,
     form,
   ]);
 
@@ -105,8 +110,8 @@ const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
     <DialogContent className='max-w-2xl gap-8'>
       <DialogHeader>
         <DialogTitle className='flex items-center gap-3'>
-          {/* <dbType.icon className='size-7' />
-          {dbType.displayName} Connection Configuration */}
+          {DatabaseIcons.postgresql({ className: 'size-7' })}
+          {dbConfig?.name} Connection Configuration
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -255,4 +260,4 @@ const PostgreSqlConnectionModal = (props: DbConnectionModalContentProps) => {
   );
 };
 
-export default PostgreSqlConnectionModal;
+export default PostgreSQLConnectionModal;

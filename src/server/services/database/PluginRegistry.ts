@@ -1,22 +1,22 @@
-import { DatabaseConfig, DatabasePlugin, SupportedDatabaseType } from './types';
+import { DatabaseConfig, DatabasePlugin } from './types';
 
 export class PluginRegistry {
-  private static plugins = new Map<SupportedDatabaseType, DatabasePlugin>();
+  private static plugins = new Map<string, DatabasePlugin>();
 
   public static register(plugin: DatabasePlugin) {
     const config = plugin.getConfig();
-    this.plugins.set(config.dbType, plugin);
+    this.plugins.set(config.id, plugin);
   }
 
-  public static getPlugin(dbType: SupportedDatabaseType): DatabasePlugin | undefined {
-    return this.plugins.get(dbType);
+  public static getAllPlugins(): DatabasePlugin[] {
+    return Array.from(this.plugins.values());
   }
 
-  public static getPluginConfig(dbType: SupportedDatabaseType): DatabaseConfig | undefined {
-    return this.getPlugin(dbType)?.getConfig();
+  public static getPlugin(id: string): DatabasePlugin | undefined {
+    return this.plugins.get(id);
   }
 
-  public static getPluginCount(): number {
-    return this.plugins.size;
+  public static getPluginConfig(id: string): DatabaseConfig | undefined {
+    return this.getPlugin(id)?.getConfig();
   }
 }
