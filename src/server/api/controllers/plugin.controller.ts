@@ -1,9 +1,9 @@
 import { PluginRegistry } from '../../services/database/PluginRegistry';
 import { DatabasePluginConfig, SupportedDbIdentifier } from '../../services/database/types';
-import { Controller, Get, Route } from 'tsoa';
+import { Controller, Get, Path, Route } from 'tsoa';
 
 @Route('plugins')
-export class DatabaseController extends Controller {
+export class PluginController extends Controller {
   private readonly _pluginRegistry = PluginRegistry.getInstance();
 
   @Get('ids')
@@ -17,7 +17,9 @@ export class DatabaseController extends Controller {
   }
 
   @Get('{id}/config')
-  async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabasePluginConfig | undefined> {
+  async getSupportedDbConfig(
+    @Path() id: SupportedDbIdentifier,
+  ): Promise<DatabasePluginConfig | undefined> {
     return this._pluginRegistry.getPluginConfig(id);
   }
 }

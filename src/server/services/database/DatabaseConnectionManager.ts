@@ -22,7 +22,7 @@ export class DatabaseConnectionManager {
       const connectionManager = plugin.getConnectionManager();
       const testConnection = await connectionManager.createConnection(config);
       const serverVersion = await connectionManager.getServerVersion(testConnection);
-      await connectionManager.closeConnection(testConnection);
+      await this.closeConnection(testConnection.connectionId);
       const connectionTime = Date.now() - startTime;
       return {
         success: true,

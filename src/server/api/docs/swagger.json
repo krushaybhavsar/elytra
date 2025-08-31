@@ -13,7 +13,7 @@
 				],
 				"type": "string"
 			},
-			"DatabaseConfig": {
+			"DatabasePluginConfig": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/SupportedDbIdentifier"
@@ -25,6 +25,86 @@
 				"required": [
 					"id",
 					"name"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ConnectionConfig": {
+				"properties": {
+					"pluginId": {
+						"$ref": "#/components/schemas/SupportedDbIdentifier"
+					},
+					"host": {
+						"type": "string"
+					},
+					"port": {
+						"type": "number",
+						"format": "double"
+					},
+					"user": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"database": {
+						"type": "string"
+					},
+					"schema": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"pluginId",
+					"host",
+					"port",
+					"user",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Connection": {
+				"properties": {
+					"connectionId": {
+						"type": "string"
+					},
+					"connectionConfig": {
+						"$ref": "#/components/schemas/ConnectionConfig"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"isActive": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"connectionId",
+					"connectionConfig",
+					"createdAt",
+					"isActive"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ConnectionTestResult": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"connectionTime": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"success",
+					"message"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -90,7 +170,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/DatabaseConfig"
+										"$ref": "#/components/schemas/DatabasePluginConfig"
 									},
 									"type": "array"
 								}
@@ -111,7 +191,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/DatabaseConfig"
+									"$ref": "#/components/schemas/DatabasePluginConfig"
 								}
 							}
 						}
@@ -125,6 +205,85 @@
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/SupportedDbIdentifier"
+						}
+					}
+				]
+			}
+		},
+		"/connections/create": {
+			"post": {
+				"operationId": "CreateConnection",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Connection"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ConnectionConfig"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/connections/test": {
+			"post": {
+				"operationId": "TestConnection",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConnectionTestResult"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ConnectionConfig"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/connections/close/{connectionId}": {
+			"post": {
+				"operationId": "CloseConnection",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "connectionId",
+						"required": true,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]

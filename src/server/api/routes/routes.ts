@@ -6,7 +6,9 @@ import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TriggerController } from './../controllers/trigger.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { DatabaseController } from './../controllers/plugin.controller';
+import { PluginController } from './../controllers/plugin.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ConnectionController } from './../controllers/connection.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -19,11 +21,46 @@ const models: TsoaRoute.Models = {
         "enums": ["postgresql"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "DatabaseConfig": {
+    "DatabasePluginConfig": {
         "dataType": "refObject",
         "properties": {
             "id": {"ref":"SupportedDbIdentifier","required":true},
             "name": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ConnectionConfig": {
+        "dataType": "refObject",
+        "properties": {
+            "pluginId": {"ref":"SupportedDbIdentifier","required":true},
+            "host": {"dataType":"string","required":true},
+            "port": {"dataType":"double","required":true},
+            "user": {"dataType":"string","required":true},
+            "password": {"dataType":"string","required":true},
+            "database": {"dataType":"string"},
+            "schema": {"dataType":"string"},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Connection": {
+        "dataType": "refObject",
+        "properties": {
+            "connectionId": {"dataType":"string","required":true},
+            "connectionConfig": {"ref":"ConnectionConfig","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "isActive": {"dataType":"boolean","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ConnectionTestResult": {
+        "dataType": "refObject",
+        "properties": {
+            "success": {"dataType":"boolean","required":true},
+            "message": {"dataType":"string","required":true},
+            "connectionTime": {"dataType":"double"},
         },
         "additionalProperties": true,
     },
@@ -74,21 +111,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsDatabaseController_getSupportedDbIds: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsPluginController_getSupportedDbIds: Record<string, TsoaRoute.ParameterSchema> = {
         };
         app.get('/plugins/ids',
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbIds)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController.prototype.getSupportedDbIds)),
 
-            async function DatabaseController_getSupportedDbIds(request: ExRequest, response: ExResponse, next: any) {
+            async function PluginController_getSupportedDbIds(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbIds, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsPluginController_getSupportedDbIds, request, response });
 
-                const controller = new DatabaseController();
+                const controller = new PluginController();
 
               await templateService.apiHandler({
                 methodName: 'getSupportedDbIds',
@@ -103,21 +140,21 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsDatabaseController_getSupportedDbConfigs: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsPluginController_getSupportedDbConfigs: Record<string, TsoaRoute.ParameterSchema> = {
         };
         app.get('/plugins/configs',
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfigs)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController.prototype.getSupportedDbConfigs)),
 
-            async function DatabaseController_getSupportedDbConfigs(request: ExRequest, response: ExResponse, next: any) {
+            async function PluginController_getSupportedDbConfigs(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbConfigs, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsPluginController_getSupportedDbConfigs, request, response });
 
-                const controller = new DatabaseController();
+                const controller = new PluginController();
 
               await templateService.apiHandler({
                 methodName: 'getSupportedDbConfigs',
@@ -132,25 +169,115 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsDatabaseController_getSupportedDbConfig: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsPluginController_getSupportedDbConfig: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"ref":"SupportedDbIdentifier"},
         };
         app.get('/plugins/:id/config',
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
-            ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfig)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController)),
+            ...(fetchMiddlewares<RequestHandler>(PluginController.prototype.getSupportedDbConfig)),
 
-            async function DatabaseController_getSupportedDbConfig(request: ExRequest, response: ExResponse, next: any) {
+            async function PluginController_getSupportedDbConfig(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsDatabaseController_getSupportedDbConfig, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsPluginController_getSupportedDbConfig, request, response });
 
-                const controller = new DatabaseController();
+                const controller = new PluginController();
 
               await templateService.apiHandler({
                 methodName: 'getSupportedDbConfig',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_createConnection: Record<string, TsoaRoute.ParameterSchema> = {
+                config: {"in":"body","name":"config","required":true,"ref":"ConnectionConfig"},
+        };
+        app.post('/connections/create',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.createConnection)),
+
+            async function ConnectionController_createConnection(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_createConnection, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'createConnection',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_testConnection: Record<string, TsoaRoute.ParameterSchema> = {
+                config: {"in":"body","name":"config","required":true,"ref":"ConnectionConfig"},
+        };
+        app.post('/connections/test',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.testConnection)),
+
+            async function ConnectionController_testConnection(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_testConnection, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'testConnection',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_closeConnection: Record<string, TsoaRoute.ParameterSchema> = {
+                connectionId: {"in":"path","name":"connectionId","required":true,"dataType":"string"},
+        };
+        app.post('/connections/close/:connectionId',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.closeConnection)),
+
+            async function ConnectionController_closeConnection(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_closeConnection, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'closeConnection',
                 controller,
                 response,
                 next,
