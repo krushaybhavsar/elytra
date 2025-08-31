@@ -28,7 +28,6 @@ export async function initializeLocalServer(): Promise<
 
   // Middleware (the rest of the middleware)
   app.use(docs);
-  // @ts-ignore
   app.use(handleError);
 
   const port = process.env.VITE_LOCAL_SERVER_PORT || 8080;

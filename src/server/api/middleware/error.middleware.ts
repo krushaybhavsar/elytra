@@ -1,6 +1,6 @@
+import WinstonLogger from '@/utils/log-utils';
 import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
-import WinstonLogger from '@/utils/log-utils';
 
 const loggingService = WinstonLogger.getInstance();
 const loggerError = loggingService.getLogger('Error');
@@ -13,9 +13,7 @@ export function handleError(
 ): Response | void {
   if (err instanceof ValidateError) {
     loggerError.error({
-      message: `Validation Error: ${req.method} ${
-        req.url
-      }. Error: ${JSON.stringify(err?.fields, null, 2)}`,
+      message: `Validation Error: ${req.method} ${req.url}. Error: ${JSON.stringify(err?.fields, null, 2)}`,
       method: req.method,
       url: req.url,
       params: req.params,

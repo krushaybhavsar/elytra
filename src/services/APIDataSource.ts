@@ -18,17 +18,17 @@ export default class APIDataSource implements DataSource {
   }
 
   async getSupportedDbIds(): Promise<SupportedDbIdentifier[]> {
-    const res = await this.api.get<SupportedDbIdentifier[]>('/database/plugins/ids');
+    const res = await this.api.get<SupportedDbIdentifier[]>('/plugins/ids');
     return res.data;
   }
 
   async getSupportedDbConfigs(): Promise<DatabaseConfig[]> {
-    const res = await this.api.get<DatabaseConfig[]>('/database/plugins/configs');
+    const res = await this.api.get<DatabaseConfig[]>('/plugins/configs');
     return res.data;
   }
 
   async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabaseConfig | undefined> {
-    const res = await this.api.get<DatabaseConfig | undefined>(`/database/plugin/${id}/config`);
+    const res = await this.api.get<DatabaseConfig | undefined>(`/plugins/${id}/config`);
     return res.data;
   }
 }

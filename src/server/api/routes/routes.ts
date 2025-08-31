@@ -6,7 +6,7 @@ import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TriggerController } from './../controllers/trigger.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { DatabaseController } from './../controllers/database.controller';
+import { DatabaseController } from './../controllers/plugin.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -76,7 +76,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsDatabaseController_getSupportedDbIds: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/database/plugins/ids',
+        app.get('/plugins/ids',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
             ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbIds)),
 
@@ -105,7 +105,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsDatabaseController_getSupportedDbConfigs: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/database/plugins/configs',
+        app.get('/plugins/configs',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
             ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfigs)),
 
@@ -135,7 +135,7 @@ export function RegisterRoutes(app: Router) {
         const argsDatabaseController_getSupportedDbConfig: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"ref":"SupportedDbIdentifier"},
         };
-        app.get('/database/plugin/:id/config',
+        app.get('/plugins/:id/config',
             ...(fetchMiddlewares<RequestHandler>(DatabaseController)),
             ...(fetchMiddlewares<RequestHandler>(DatabaseController.prototype.getSupportedDbConfig)),
 
