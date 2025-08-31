@@ -4,6 +4,7 @@ import { PostgreSQLPlugin } from './plugins/postgresql/PostgreSQLPlugin';
 
 export default class DatabaseService {
   private readonly _logger = WinstonLogger.getInstance().getLogger('DatabaseService');
+  private readonly _pluginRegistry = PluginRegistry.getInstance();
 
   initialize() {
     this._logger.info('Initializing DatabaseService');
@@ -11,6 +12,6 @@ export default class DatabaseService {
   }
 
   registerPlugins() {
-    PluginRegistry.register(new PostgreSQLPlugin());
+    this._pluginRegistry.register(new PostgreSQLPlugin());
   }
 }

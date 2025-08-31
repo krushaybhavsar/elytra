@@ -2,19 +2,20 @@ export enum SupportedDbIdentifier {
   POSTGRESQL = 'postgresql',
 }
 
-export interface DatabaseConfig {
+export interface DatabasePluginConfig {
   id: SupportedDbIdentifier;
   name: string;
 }
 
 export interface Connection {
-  dbId: SupportedDbIdentifier;
+  connectionId: string;
   connectionConfig: ConnectionConfig;
   createdAt: Date;
   isActive: boolean;
 }
 
 export interface ConnectionConfig {
+  pluginId: SupportedDbIdentifier;
   host: string;
   port: number;
   user: string;
@@ -23,20 +24,26 @@ export interface ConnectionConfig {
   schema?: string;
 }
 
+export interface ConnectionTestResult {
+  success: boolean;
+  message: string;
+  connectionTime?: number;
+}
+
 export interface DatabasePlugin {
-  getConfig(): DatabaseConfig;
+  getConfig(): DatabasePluginConfig;
+  getConnectionManager(): DatabasePluginConnectionManager;
   getMetadata(): MetadataProvider;
-  getConnectionManager(): ConnectionManager;
+}
+
+export interface DatabasePluginConnectionManager {
+  createConnection(config: ConnectionConfig): Promise<Connection>;
+  getServerVersion(connection: Connection): Promise<string>;
+  closeConnection(connection: Connection): Promise<boolean>;
 }
 
 export interface MetadataProvider {
   getSchemas(connection: Connection): Promise<string[]>;
   getTables(connection: Connection, schema: string): Promise<string[]>;
   getColumns(connection: Connection, schema: string, table: string): Promise<string[]>;
-}
-
-export interface ConnectionManager {
-  createConnection(config: ConnectionConfig): Promise<Connection>;
-  testConnection(config: ConnectionConfig): Promise<boolean>;
-  closeConnection(connection: Connection): Promise<void>;
 }

@@ -1,22 +1,36 @@
-import { DatabaseConfig, DatabasePlugin, SupportedDbIdentifier } from './types';
+import { DatabasePluginConfig, DatabasePlugin, SupportedDbIdentifier } from './types';
 
 export class PluginRegistry {
-  private static plugins = new Map<SupportedDbIdentifier, DatabasePlugin>();
+  private static instance: PluginRegistry;
+  private plugins = new Map<SupportedDbIdentifier, DatabasePlugin>();
 
-  public static register(plugin: DatabasePlugin) {
+  private constructor() {}
+
+  public register(plugin: DatabasePlugin) {
     const config = plugin.getConfig();
     this.plugins.set(config.id, plugin);
   }
 
-  public static getAllPlugins(): DatabasePlugin[] {
+  public getAllPlugins(): DatabasePlugin[] {
     return Array.from(this.plugins.values());
   }
 
-  public static getPlugin(id: SupportedDbIdentifier): DatabasePlugin | undefined {
-    return this.plugins.get(id);
+  public getPlugin(id: SupportedDbIdentifier): DatabasePlugin {
+    const plugin = this.plugins.get(id);
+    if (!plugin) {
+      throw new Error(`Plugin "${id}" not found`);
+    }
+    return plugin;
   }
 
-  public static getPluginConfig(id: SupportedDbIdentifier): DatabaseConfig | undefined {
-    return this.getPlugin(id)?.getConfig();
+  public getPluginConfig(id: SupportedDbIdentifier): DatabasePluginConfig {
+    return this.getPlugin(id).getConfig();
+  }
+
+  public static getInstance(): PluginRegistry {
+    if (!PluginRegistry.instance) {
+      PluginRegistry.instance = new PluginRegistry();
+    }
+    return PluginRegistry.instance;
   }
 }

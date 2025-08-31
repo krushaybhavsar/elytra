@@ -1,25 +1,9 @@
-import {
-  Connection,
-  ConnectionConfig,
-  ConnectionManager,
-  SupportedDbIdentifier,
-} from '../../types';
+import { Connection, ConnectionConfig, DatabasePluginConnectionManager } from '../../types';
 
-export class PostgreSQLConnectionManager implements ConnectionManager {
-  async createConnection(config: ConnectionConfig): Promise<Connection> {
-    return {
-      dbId: SupportedDbIdentifier.POSTGRESQL,
-      connectionConfig: config,
-      createdAt: new Date(),
-      isActive: true,
-    };
-  }
+export class PostgreSQLConnectionManager implements DatabasePluginConnectionManager {
+  createConnection(config: ConnectionConfig): Promise<Connection> {}
 
-  async testConnection(config: ConnectionConfig): Promise<boolean> {
-    return true;
-  }
+  getServerVersion(connection: Connection): Promise<string> {}
 
-  closeConnection(connection: Connection): Promise<void> {
-    return Promise.resolve();
-  }
+  closeConnection(connection: Connection): Promise<boolean> {}
 }

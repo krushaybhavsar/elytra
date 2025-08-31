@@ -1,10 +1,15 @@
-import { ConnectionManager, DatabaseConfig, DatabasePlugin, MetadataProvider } from '../../types';
+import {
+  DatabasePluginConfig,
+  DatabasePlugin,
+  MetadataProvider,
+  DatabasePluginConnectionManager,
+} from '../../types';
 import { PostgreSQLConnectionManager } from './PostgreSQLConnectionManager';
 import { PostgreSQLMetadataProvider } from './PostgreSQLMetadataProvider';
 import { PostgresSQLConfig } from './PostgresSQLConfig';
 
 export class PostgreSQLPlugin implements DatabasePlugin {
-  getConfig(): DatabaseConfig {
+  getConfig(): DatabasePluginConfig {
     return PostgresSQLConfig;
   }
 
@@ -12,7 +17,7 @@ export class PostgreSQLPlugin implements DatabasePlugin {
     return new PostgreSQLMetadataProvider();
   }
 
-  getConnectionManager(): ConnectionManager {
+  getConnectionManager(): DatabasePluginConnectionManager {
     return new PostgreSQLConnectionManager();
   }
 }
