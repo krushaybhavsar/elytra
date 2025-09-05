@@ -85,7 +85,7 @@
 				"type": "object",
 				"additionalProperties": true
 			},
-			"ConnectionTestResult": {
+			"ConnectionResult": {
 				"properties": {
 					"success": {
 						"type": "boolean"
@@ -215,7 +215,18 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Connection"
+									"properties": {
+										"result": {
+											"$ref": "#/components/schemas/ConnectionResult"
+										},
+										"connection": {
+											"$ref": "#/components/schemas/Connection"
+										}
+									},
+									"required": [
+										"result"
+									],
+									"type": "object"
 								}
 							}
 						}
@@ -244,7 +255,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ConnectionTestResult"
+									"$ref": "#/components/schemas/ConnectionResult"
 								}
 							}
 						}

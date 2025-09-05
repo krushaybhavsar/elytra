@@ -1,4 +1,4 @@
-import { Connection, ConnectionConfig, ConnectionTestResult } from '@/model/DatabaseModel';
+import { Connection, ConnectionConfig, ConnectionResult } from '@/model/DatabaseModel';
 import DataSource from '@/services/DataSource';
 
 export default class DbConnectionManager {
@@ -8,11 +8,13 @@ export default class DbConnectionManager {
     this.dataSource = dataSource;
   }
 
-  async createConnection(config: ConnectionConfig): Promise<Connection> {
+  async createConnection(
+    config: ConnectionConfig,
+  ): Promise<{ connection?: Connection; result: ConnectionResult }> {
     return await this.dataSource.createConnection(config);
   }
 
-  async testConnection(config: ConnectionConfig): Promise<ConnectionTestResult> {
+  async testConnection(config: ConnectionConfig): Promise<ConnectionResult> {
     return await this.dataSource.testConnection(config);
   }
 

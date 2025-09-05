@@ -1,5 +1,5 @@
 import { dataSource } from '@/services/service.config';
-import DbPluginManager from './DBPluginManager';
+import DbPluginManager from './DbPluginManager';
 import DbConnectionManager from './DbConnectionManager';
 
 export const dbPluginManager = new DbPluginManager(dataSource);

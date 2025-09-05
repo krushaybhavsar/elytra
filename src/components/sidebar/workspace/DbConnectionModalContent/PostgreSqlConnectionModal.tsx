@@ -20,12 +20,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
-import { TypographyP } from '@/components/ui/typography';
+import { Eye, EyeOff, Info } from 'lucide-react';
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import { dbConnectionManager, dbPluginManager } from '@/managers/manager.config';
 import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
 import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useDialog } from '@/components/contexts/DialogContext';
+import { LoadingButton } from '@/components/ui/loading-button';
 
 const formSchema = z.object({
   name: z
@@ -44,6 +46,9 @@ const PostgreSQLConnectionModal = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [connectionUrl, setConnectionUrl] = useState('');
   const [dbConfig, setDbConfig] = useState<DatabaseConfig>();
+  const [loadingTest, setLoadingTest] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const { setDialogOpen } = useDialog();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,7 +87,6 @@ const PostgreSQLConnectionModal = () => {
       url += `/${watchedDatabase}`;
     }
     setConnectionUrl(url);
-    // form.setValue('connectionUrl', url);
   }, [
     watchedHost,
     watchedPort,
@@ -93,36 +97,6 @@ const PostgreSQLConnectionModal = () => {
     form,
   ]);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // console.log(values);
-    // dbConnectionManager.createConnection({
-    //   pluginId: SupportedDbIdentifier.POSTGRESQL,
-    //   host: values.host,
-    //   port: values.port,
-    //   user: values.user,
-    //   password: values.password,
-    //   database: values.database,
-    // });
-    console.log('On submit triggered');
-  };
-
-  const onTestConnection = async () => {
-    const result = await dbConnectionManager.testConnection({
-      pluginId: SupportedDbIdentifier.POSTGRESQL,
-      host: watchedHost,
-      port: watchedPort,
-      database: watchedDatabase,
-      user: watchedUser,
-      password: watchedPassword,
-    });
-    console.log(result);
-    if (result.success) {
-      toast.success(result.message);
-    } else {
-      toast.error(result.message);
-    }
-  };
-
   useEffect(() => {
     if (watchedAuthenticationType === 'User & Password') {
       form.register('user');
@@ -132,6 +106,51 @@ const PostgreSQLConnectionModal = () => {
       form.unregister('password');
     }
   }, [watchedAuthenticationType]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoadingSave(true);
+    const connectionResult = await dbConnectionManager.createConnection({
+      pluginId: SupportedDbIdentifier.POSTGRESQL,
+      host: values.host,
+      port: values.port,
+      user: values.user,
+      password: values.password,
+      database: values.database,
+    });
+
+    if (connectionResult.result.success) {
+      toast.success('Connection created successfully!');
+      form.reset();
+      setDialogOpen(false);
+    } else {
+      toast.error('Failed to create connection.', {
+        description: connectionResult.result.message,
+      });
+    }
+    setLoadingSave(false);
+  };
+
+  const onTestConnection = async () => {
+    setLoadingTest(true);
+    const result = await dbConnectionManager.testConnection({
+      pluginId: SupportedDbIdentifier.POSTGRESQL,
+      host: watchedHost,
+      port: watchedPort,
+      database: watchedDatabase,
+      user: watchedUser,
+      password: watchedPassword,
+    });
+    if (result.success) {
+      toast.success('Connection test successful!', {
+        description: result.message,
+      });
+    } else {
+      toast.error('Connection test failed.', {
+        description: result.message,
+      });
+    }
+    setLoadingTest(false);
+  };
 
   return (
     <DialogContent className='max-w-2xl gap-8'>
@@ -275,13 +294,29 @@ const PostgreSQLConnectionModal = () => {
             )}
           />
 
-          <TypographyP>{connectionUrl}</TypographyP>
+          <Alert>
+            <Info className='h-4 w-4' />
+            <AlertTitle>Connection URL</AlertTitle>
+            <AlertDescription>{connectionUrl}</AlertDescription>
+          </Alert>
 
           <div className='flex justify-end gap-4 pt-4'>
-            <Button type='button' variant='outline' onClick={onTestConnection}>
+            <LoadingButton
+              type='button'
+              variant='outline'
+              onClick={onTestConnection}
+              loading={loadingTest}
+              disabled={loadingSave || loadingTest}
+            >
               Test Connection
-            </Button>
-            <Button type='submit'>Save</Button>
+            </LoadingButton>
+            <LoadingButton
+              type='submit'
+              loading={loadingSave}
+              disabled={loadingSave || loadingTest}
+            >
+              Save
+            </LoadingButton>
           </div>
         </form>
       </Form>

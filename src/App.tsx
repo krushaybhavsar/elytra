@@ -26,10 +26,9 @@ export default function App() {
               <Route path={AppScreens.MAIN} element={<DashboardScreen />} />
               <Route path='*' element={<Navigate to={AppScreens.MAIN} />} />
             </Routes>
-            <Toaster />
           </>
         )}
-        <Toaster />
+        <Toaster richColors />
       </TooltipProvider>
     </DialogProvider>
   );

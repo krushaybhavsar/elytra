@@ -23,7 +23,7 @@ export interface ConnectionConfig {
   password?: string;
 }
 
-export interface ConnectionTestResult {
+export interface ConnectionResult {
   success: boolean;
   message: string;
   connectionTime?: number;

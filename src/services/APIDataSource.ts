@@ -1,7 +1,7 @@
 import {
   Connection,
   ConnectionConfig,
-  ConnectionTestResult,
+  ConnectionResult,
   DatabaseConfig,
 } from '@/model/DatabaseModel';
 import DataSource from './DataSource';
@@ -37,13 +37,18 @@ export default class APIDataSource implements DataSource {
     return res.data;
   }
 
-  async createConnection(config: ConnectionConfig): Promise<Connection> {
-    const res = await this.api.post<Connection>('/connections/create', config);
+  async createConnection(
+    config: ConnectionConfig,
+  ): Promise<{ connection?: Connection; result: ConnectionResult }> {
+    const res = await this.api.post<{ connection?: Connection; result: ConnectionResult }>(
+      '/connections/create',
+      config,
+    );
     return res.data;
   }
 
-  async testConnection(config: ConnectionConfig): Promise<ConnectionTestResult> {
-    const res = await this.api.post<ConnectionTestResult>('/connections/test', config);
+  async testConnection(config: ConnectionConfig): Promise<ConnectionResult> {
+    const res = await this.api.post<ConnectionResult>('/connections/test', config);
     return res.data;
   }
 

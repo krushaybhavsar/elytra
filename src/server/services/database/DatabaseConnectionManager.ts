@@ -1,6 +1,6 @@
 import WinstonLogger from '@/utils/log-utils';
 import { PluginRegistry } from './PluginRegistry';
-import { Connection, ConnectionConfig, ConnectionTestResult } from './types';
+import { Connection, ConnectionConfig, ConnectionResult } from './types';
 
 export class DatabaseConnectionManager {
   private static instance: DatabaseConnectionManager;
@@ -10,14 +10,31 @@ export class DatabaseConnectionManager {
 
   private constructor() {}
 
-  async createConnection(config: ConnectionConfig): Promise<Connection> {
-    const plugin = this._pluginRegistry.getPlugin(config.pluginId);
-    const connection = await plugin.getConnectionManager().createConnection(config);
-    this.connections.set(connection.connectionId, connection);
-    return connection;
+  async createConnection(
+    config: ConnectionConfig,
+  ): Promise<{ connection?: Connection; result: ConnectionResult }> {
+    try {
+      const plugin = this._pluginRegistry.getPlugin(config.pluginId);
+      const connection = await plugin.getConnectionManager().createConnection(config);
+      this.connections.set(connection.connectionId, connection);
+      return {
+        connection,
+        result: {
+          success: true,
+          message: 'Connection created successfully',
+        },
+      };
+    } catch (error: any) {
+      return {
+        result: {
+          success: false,
+          message: error.message,
+        },
+      };
+    }
   }
 
-  async testConnection(config: ConnectionConfig): Promise<ConnectionTestResult> {
+  async testConnection(config: ConnectionConfig): Promise<ConnectionResult> {
     try {
       const startTime = Date.now();
       const plugin = this._pluginRegistry.getPlugin(config.pluginId);
