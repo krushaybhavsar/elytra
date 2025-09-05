@@ -10,9 +10,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Database, FolderPlus } from 'lucide-react';
 import { useDialog } from '@/components/contexts/DialogContext';
-import { databaseManager } from '@/managers/manager.config';
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database';
+import { dbPluginManager } from '@/managers/manager.config';
 
 type CreateDbDropdownContentProps = {
   onDialogOpen: () => void;
@@ -24,7 +24,7 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
 
   useEffect(() => {
     if (supportedDbConfigs.length > 0) return;
-    databaseManager.getSupportedDbConfigs().then((configs) => {
+    dbPluginManager.getSupportedDbConfigs().then((configs) => {
       setSupportedDbConfigs(configs);
     });
   }, [supportedDbConfigs]);

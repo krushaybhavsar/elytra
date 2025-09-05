@@ -3,10 +3,10 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppScreens } from './types/navigation';
 import DashboardScreen from './screens/MainScreen';
-import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import { LoadingScreen } from './components/LoadingView';
 import { DialogProvider } from './components/contexts/DialogContext';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,7 @@ export default function App() {
             <Toaster />
           </>
         )}
+        <Toaster />
       </TooltipProvider>
     </DialogProvider>
   );

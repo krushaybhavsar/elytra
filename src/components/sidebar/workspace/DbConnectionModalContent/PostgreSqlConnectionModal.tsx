@@ -23,8 +23,9 @@ import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { TypographyP } from '@/components/ui/typography';
 import { DatabaseConfig } from '@/model/DatabaseModel';
-import { databaseManager } from '@/managers/manager.config';
+import { dbConnectionManager, dbPluginManager } from '@/managers/manager.config';
 import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   name: z
@@ -34,9 +35,9 @@ const formSchema = z.object({
   host: z.string().min(1, 'Host is required'),
   port: z.number(),
   authenticationType: z.enum(['User & Password', 'No Authentication']),
+  database: z.string(),
   user: z.string().optional(),
   password: z.string().optional(),
-  database: z.string(),
 });
 
 const PostgreSQLConnectionModal = () => {
@@ -65,7 +66,7 @@ const PostgreSQLConnectionModal = () => {
   const watchedAuthenticationType = useWatch({ control: form.control, name: 'authenticationType' });
 
   useEffect(() => {
-    databaseManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL).then((config) => {
+    dbPluginManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL).then((config) => {
       setDbConfig(config);
     });
   }, []);
@@ -93,7 +94,33 @@ const PostgreSQLConnectionModal = () => {
   ]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    // console.log(values);
+    // dbConnectionManager.createConnection({
+    //   pluginId: SupportedDbIdentifier.POSTGRESQL,
+    //   host: values.host,
+    //   port: values.port,
+    //   user: values.user,
+    //   password: values.password,
+    //   database: values.database,
+    // });
+    console.log('On submit triggered');
+  };
+
+  const onTestConnection = async () => {
+    const result = await dbConnectionManager.testConnection({
+      pluginId: SupportedDbIdentifier.POSTGRESQL,
+      host: watchedHost,
+      port: watchedPort,
+      database: watchedDatabase,
+      user: watchedUser,
+      password: watchedPassword,
+    });
+    console.log(result);
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
   };
 
   useEffect(() => {
@@ -251,7 +278,9 @@ const PostgreSQLConnectionModal = () => {
           <TypographyP>{connectionUrl}</TypographyP>
 
           <div className='flex justify-end gap-4 pt-4'>
-            <Button variant='outline'>Test Connection</Button>
+            <Button type='button' variant='outline' onClick={onTestConnection}>
+              Test Connection
+            </Button>
             <Button type='submit'>Save</Button>
           </div>
         </form>

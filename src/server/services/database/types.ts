@@ -18,10 +18,9 @@ export interface ConnectionConfig {
   pluginId: SupportedDbIdentifier;
   host: string;
   port: number;
-  user: string;
-  password: string;
-  database?: string;
-  schema?: string;
+  database: string;
+  user?: string;
+  password?: string;
 }
 
 export interface ConnectionTestResult {

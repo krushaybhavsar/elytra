@@ -1,4 +1,9 @@
-import { DatabaseConfig } from '@/model/DatabaseModel';
+import {
+  Connection,
+  ConnectionConfig,
+  ConnectionTestResult,
+  DatabaseConfig,
+} from '@/model/DatabaseModel';
 import DataSource from './DataSource';
 import axios, { AxiosInstance } from 'axios';
 import { SupportedDbIdentifier } from '@/types/database';
@@ -30,5 +35,19 @@ export default class APIDataSource implements DataSource {
   async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabaseConfig | undefined> {
     const res = await this.api.get<DatabaseConfig | undefined>(`/plugins/${id}/config`);
     return res.data;
+  }
+
+  async createConnection(config: ConnectionConfig): Promise<Connection> {
+    const res = await this.api.post<Connection>('/connections/create', config);
+    return res.data;
+  }
+
+  async testConnection(config: ConnectionConfig): Promise<ConnectionTestResult> {
+    const res = await this.api.post<ConnectionTestResult>('/connections/test', config);
+    return res.data;
+  }
+
+  async closeConnection(connectionId: string): Promise<void> {
+    await this.api.post<void>(`/connections/close/${connectionId}`);
   }
 }

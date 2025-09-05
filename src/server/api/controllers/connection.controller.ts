@@ -1,11 +1,9 @@
 import { DatabaseConnectionManager } from '../../services/database/DatabaseConnectionManager';
-import { PluginRegistry } from '../../services/database/PluginRegistry';
-import { Body, Controller, Path, Post, Route } from 'tsoa';
+import { Body, Controller, Get, Path, Post, Route } from 'tsoa';
 import { Connection, ConnectionConfig, ConnectionTestResult } from '../../services/database/types';
 
 @Route('connections')
 export class ConnectionController extends Controller {
-  private readonly _pluginRegistry = PluginRegistry.getInstance();
   private readonly _connectionManager = DatabaseConnectionManager.getInstance();
 
   @Post('create')
@@ -21,5 +19,10 @@ export class ConnectionController extends Controller {
   @Post('close/{connectionId}')
   async closeConnection(@Path() connectionId: string): Promise<void> {
     return await this._connectionManager.closeConnection(connectionId);
+  }
+
+  @Get('all')
+  async getAllConnectionIds(): Promise<string[]> {
+    return this._connectionManager.getAllConnectionIds();
   }
 }

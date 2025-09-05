@@ -2,7 +2,7 @@ import { DatabaseConfig } from '@/model/DatabaseModel';
 import DataSource from '@/services/DataSource';
 import { SupportedDbIdentifier } from '@/types/database';
 
-export default class DatabaseManager {
+export default class DbPluginManager {
   readonly dataSource: DataSource;
 
   constructor(dataSource: DataSource) {

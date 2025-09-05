@@ -41,16 +41,13 @@
 						"type": "number",
 						"format": "double"
 					},
+					"database": {
+						"type": "string"
+					},
 					"user": {
 						"type": "string"
 					},
 					"password": {
-						"type": "string"
-					},
-					"database": {
-						"type": "string"
-					},
-					"schema": {
 						"type": "string"
 					}
 				},
@@ -58,8 +55,7 @@
 					"pluginId",
 					"host",
 					"port",
-					"user",
-					"password"
+					"database"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -287,6 +283,28 @@
 						}
 					}
 				]
+			}
+		},
+		"/connections/all": {
+			"get": {
+				"operationId": "GetAllConnectionIds",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"type": "string"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

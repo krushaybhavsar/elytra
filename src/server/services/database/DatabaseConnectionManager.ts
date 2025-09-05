@@ -1,9 +1,11 @@
+import WinstonLogger from '@/utils/log-utils';
 import { PluginRegistry } from './PluginRegistry';
 import { Connection, ConnectionConfig, ConnectionTestResult } from './types';
 
 export class DatabaseConnectionManager {
   private static instance: DatabaseConnectionManager;
   private readonly _pluginRegistry = PluginRegistry.getInstance();
+  private readonly _logger = WinstonLogger.getInstance().getLogger('DatabaseConnectionManager');
   private connections = new Map<string, Connection>();
 
   private constructor() {}
@@ -43,7 +45,13 @@ export class DatabaseConnectionManager {
       const plugin = this._pluginRegistry.getPlugin(connection.connectionConfig.pluginId);
       await plugin.getConnectionManager().closeConnection(connection);
       this.connections.delete(connectionId);
+    } else {
+      this._logger.warn(`Connection ${connectionId} not found`);
     }
+  }
+
+  getAllConnectionIds(): string[] {
+    return Array.from(this.connections.keys());
   }
 
   public static getInstance(): DatabaseConnectionManager {
