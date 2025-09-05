@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Info } from 'lucide-react';
+import { Eye, EyeOff, Link } from 'lucide-react';
 import { DatabaseConfig } from '@/model/DatabaseModel';
 import { dbConnectionManager, dbPluginManager } from '@/managers/manager.config';
 import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
@@ -244,7 +244,7 @@ const PostgreSQLConnectionModal = () => {
                   <FormItem>
                     <FormLabel>User</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder='root' />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -295,7 +295,7 @@ const PostgreSQLConnectionModal = () => {
           />
 
           <Alert>
-            <Info className='h-4 w-4' />
+            <Link className='h-4 w-4' />
             <AlertTitle>Connection URL</AlertTitle>
             <AlertDescription>{connectionUrl}</AlertDescription>
           </Alert>
