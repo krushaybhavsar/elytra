@@ -23,7 +23,7 @@ const NavigationBar = (props: NavigationBarProps) => {
                   asChild
                   variant='icon'
                   size='icon'
-                  className={`disabled:opacity-100 transition-all ${isActive ? 'bg-darkest-background shadow-sm' : ''}`}
+                  className={`disabled:opacity-100 transition-all hover:bg-darkest-background ${isActive ? 'bg-darkest-background shadow-sm' : ''}`}
                   onClick={() => props.setActiveTab(tabName as NavigationBarTabs)}
                   disabled={isActive}
                 >

@@ -109,6 +109,7 @@ const PostgreSQLConnectionModal = () => {
     setLoadingSave(true);
     const res = await createConnectionMutation.mutateAsync({
       pluginId: SupportedDbIdentifier.POSTGRESQL,
+      name: values.name,
       host: values.host,
       port: values.port,
       user: values.user,
@@ -131,6 +132,7 @@ const PostgreSQLConnectionModal = () => {
     setLoadingTest(true);
     const res = await testConnectionMutation.mutateAsync({
       pluginId: SupportedDbIdentifier.POSTGRESQL,
+      name: 'Test Connection',
       host: watchedHost,
       port: watchedPort,
       database: watchedDatabase,

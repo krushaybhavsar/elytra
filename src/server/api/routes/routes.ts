@@ -34,6 +34,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "pluginId": {"ref":"SupportedDbIdentifier","required":true},
+            "name": {"dataType":"string","required":true},
             "host": {"dataType":"string","required":true},
             "port": {"dataType":"double","required":true},
             "database": {"dataType":"string","required":true},
@@ -288,24 +289,24 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsConnectionController_getAllConnectionIds: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsConnectionController_getAllConnections: Record<string, TsoaRoute.ParameterSchema> = {
         };
         app.get('/connections/all',
             ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
-            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.getAllConnectionIds)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.getAllConnections)),
 
-            async function ConnectionController_getAllConnectionIds(request: ExRequest, response: ExResponse, next: any) {
+            async function ConnectionController_getAllConnections(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_getAllConnectionIds, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_getAllConnections, request, response });
 
                 const controller = new ConnectionController();
 
               await templateService.apiHandler({
-                methodName: 'getAllConnectionIds',
+                methodName: 'getAllConnections',
                 controller,
                 response,
                 next,

@@ -1,10 +1,11 @@
 import { ConnectionConfig } from '@/model/DatabaseModel';
 import { dataSource } from '@/services/service.config';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const useDbConnectionManager = () => {
   const keys = {
     connection: (connectionId: string) => ['connection', connectionId],
+    connections: ['connections'],
   };
 
   const createConnection = () => {
@@ -35,9 +36,17 @@ export const useDbConnectionManager = () => {
     });
   };
 
+  const getAllConnections = () => {
+    return useQuery({
+      queryKey: keys.connections,
+      queryFn: async () => dataSource.getAllConnections(),
+    });
+  };
+
   return {
     createConnection,
     testConnection,
     closeConnection,
+    getAllConnections,
   };
 };

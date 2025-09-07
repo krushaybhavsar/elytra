@@ -6,11 +6,13 @@ import { Separator } from '../../ui/separator';
 import { Input } from '../../ui/input';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import CreateDbDropdownContent from './CreateDbDropdownContent';
+import DbTreeView from './DbTreeView';
 
 type WorkspaceSidebarProps = {};
 
 const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className='flex flex-col w-full h-full'>
@@ -44,8 +46,11 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
           type='text'
           placeholder='Search'
           className='!p-1 !h-7 !px-2 !py-0 !text-[12px] rounded-full'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+      <DbTreeView />
     </div>
   );
 };

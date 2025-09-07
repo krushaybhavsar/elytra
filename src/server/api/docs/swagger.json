@@ -34,6 +34,9 @@
 					"pluginId": {
 						"$ref": "#/components/schemas/SupportedDbIdentifier"
 					},
+					"name": {
+						"type": "string"
+					},
 					"host": {
 						"type": "string"
 					},
@@ -53,6 +56,7 @@
 				},
 				"required": [
 					"pluginId",
+					"name",
 					"host",
 					"port",
 					"database"
@@ -298,7 +302,7 @@
 		},
 		"/connections/all": {
 			"get": {
-				"operationId": "GetAllConnectionIds",
+				"operationId": "GetAllConnections",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -306,7 +310,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"type": "string"
+										"$ref": "#/components/schemas/Connection"
 									},
 									"type": "array"
 								}

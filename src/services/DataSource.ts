@@ -15,4 +15,5 @@ export default interface DataSource {
   ): Promise<{ connection?: Connection; result: ConnectionResult }>;
   testConnection(config: ConnectionConfig): Promise<ConnectionResult>;
   closeConnection(connectionId: string): Promise<void>;
+  getAllConnections(): Promise<Connection[]>;
 }

@@ -24,7 +24,7 @@ export class ConnectionController extends Controller {
   }
 
   @Get('all')
-  async getAllConnectionIds(): Promise<string[]> {
-    return this._connectionManager.getAllConnectionIds();
+  async getAllConnections(): Promise<Connection[]> {
+    return this._connectionManager.getAllConnections();
   }
 }

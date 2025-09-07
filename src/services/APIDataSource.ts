@@ -13,7 +13,6 @@ export default class APIDataSource implements DataSource {
 
   constructor() {
     const baseUrl = `${import.meta.env.VITE_LOCAL_SERVER_BASE_URL || 'http://localhost'}:${Number(import.meta.env.VITE_LOCAL_SERVER_PORT) || 8080}`;
-
     this.api = axios.create({
       baseURL: baseUrl,
       headers: {
@@ -54,5 +53,10 @@ export default class APIDataSource implements DataSource {
 
   async closeConnection(connectionId: string): Promise<void> {
     await this.api.post<void>(`/connections/close/${connectionId}`);
+  }
+
+  async getAllConnections(): Promise<Connection[]> {
+    const res = await this.api.get<Connection[]>('/connections/all');
+    return res.data;
   }
 }

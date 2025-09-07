@@ -16,6 +16,7 @@ export interface Connection {
 
 export interface ConnectionConfig {
   pluginId: SupportedDbIdentifier;
+  name: string;
   host: string;
   port: number;
   database: string;

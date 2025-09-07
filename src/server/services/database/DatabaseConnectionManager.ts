@@ -67,8 +67,8 @@ export class DatabaseConnectionManager {
     }
   }
 
-  getAllConnectionIds(): string[] {
-    return Array.from(this.connections.keys());
+  getAllConnections(): Connection[] {
+    return Array.from(this.connections.values());
   }
 
   public static getInstance(): DatabaseConnectionManager {
