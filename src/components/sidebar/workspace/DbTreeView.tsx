@@ -52,6 +52,7 @@ const DbTreeView = (props: DbTreeViewProps) => {
 
   useEffect(() => {
     if (connections && data) {
+      rootNode.children = [];
       addNodesToParent(
         0,
         connections.map((conn) => ({

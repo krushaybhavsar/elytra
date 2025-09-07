@@ -15,6 +15,7 @@ export const useDbConnectionManager = () => {
       onSuccess: (data) => {
         if (data.result.success && data.connection) {
           queryClient.setQueryData(keys.connection(data.connection.connectionId), data.connection);
+          queryClient.invalidateQueries({ queryKey: keys.connections });
         }
       },
     });
