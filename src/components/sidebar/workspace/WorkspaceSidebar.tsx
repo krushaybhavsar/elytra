@@ -50,7 +50,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <DbTreeView />
+      <DbTreeView searchQuery={searchQuery} />
     </div>
   );
 };

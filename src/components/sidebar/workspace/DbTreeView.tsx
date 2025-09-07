@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TreeView, { INode, ITreeViewOnLoadDataProps, NodeId } from 'react-accessible-treeview';
 import DbTreeViewNode from './DbTreeViewNode';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
-import { IFlatMetadata } from 'react-accessible-treeview/dist/TreeView/utils';
+import { flattenTree } from 'react-accessible-treeview';
 
 export enum NodeType {
   ROOT = 'root',
@@ -20,35 +20,42 @@ export enum NodeType {
   TRIGGER = 'trigger',
 }
 
-const initialRootNode: INode<IFlatMetadata> = {
-  id: 0,
-  name: 'Root',
-  children: [],
-  parent: null,
-  isBranch: true,
-  metadata: {
-    type: NodeType.ROOT,
-  },
-};
+interface DbTreeViewProps {
+  searchQuery: string;
+}
 
-interface DbTreeViewProps {}
+interface TreeNode {
+  id?: NodeId;
+  name: string;
+  isBranch?: boolean;
+  children?: TreeNode[];
+  metadata?: {
+    type: NodeType;
+    connectionId?: string;
+    pluginId?: string;
+  };
+}
+
+const rootNode: TreeNode = {
+  id: 0,
+  name: 'root',
+  isBranch: true,
+  metadata: { type: NodeType.ROOT },
+};
 
 const DbTreeView = (props: DbTreeViewProps) => {
   const dbConnectionManager = useDbConnectionManager();
-  const [data, setData] = useState<INode<IFlatMetadata>[]>([initialRootNode]);
-  const [loadingNodes, setLoadingNodes] = useState<Set<NodeId>>(new Set());
-  const [nodesAlreadyLoaded, setNodesAlreadyLoaded] = useState<INode<IFlatMetadata>[]>([]);
   const { data: connections } = dbConnectionManager.getAllConnections();
+  const [loadingNodes, setLoadingNodes] = useState<Set<NodeId>>(new Set());
+  const [focusedId, setFocusedId] = useState<NodeId>();
+  const [data, setData] = useState<INode[]>(flattenTree(rootNode));
 
   useEffect(() => {
-    console.log('Connections updated:', connections);
     if (connections && data) {
-      updateTreeData(
-        connections.map((conn, index) => ({
+      addNodesToParent(
+        0,
+        connections.map((conn) => ({
           name: conn.connectionConfig.name,
-          children: [],
-          id: data.length + index,
-          parent: 0,
           isBranch: true,
           metadata: {
             type: NodeType.CONNECTION,
@@ -60,57 +67,51 @@ const DbTreeView = (props: DbTreeViewProps) => {
     }
   }, [connections]);
 
-  const updateTreeData = (newNodes: INode<IFlatMetadata>[]) => {
-    // add new nodes to the tree data and update all parent references
-    setData((prevData) => {
-      const updatedData = [...prevData];
-      newNodes.forEach((newNode) => {
-        const parentIndex = updatedData.findIndex((node) => node.id === newNode.parent);
-        if (parentIndex !== -1) {
-          updatedData[parentIndex] = {
-            ...updatedData[parentIndex],
-            children: [...updatedData[parentIndex].children, newNode.id],
-          };
-          updatedData.push(newNode);
+  const addNodesToParent = (parentNodeId: NodeId, newNodes: TreeNode[]) => {
+    const findAndUpdateNode = (node: TreeNode): boolean => {
+      if (!node) return false;
+      if (node.id === parentNodeId) {
+        if (!node.children) {
+          node.children = [];
         }
-      });
-      return updatedData;
-    });
-  };
-
-  const onLoadData = async (props: ITreeViewOnLoadDataProps) => {
-    const nodeHasNoChildData = props.element.children.length === 0;
-    const nodeHasAlreadyBeenLoaded = nodesAlreadyLoaded.find((e) => e.id === props.element.id);
-
-    // Load data here
-
-    if (nodeHasNoChildData && !nodeHasAlreadyBeenLoaded) {
-      setNodesAlreadyLoaded([
-        ...nodesAlreadyLoaded,
-        props.element as unknown as INode<IFlatMetadata>,
-      ]);
+        node.children = [...node.children, ...newNodes];
+        return true;
+      }
+      if (node.children && node.children.length > 0) {
+        for (const child of node.children) {
+          if (findAndUpdateNode(child)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+    if (findAndUpdateNode(rootNode)) {
+      const flattenedTree = flattenTree(rootNode);
+      setData(flattenedTree);
     }
   };
 
+  const onLoadData = async (props: ITreeViewOnLoadDataProps) => {};
+
   return (
     <div className='flex flex-col h-full w-full overflow-auto'>
-      <div className='checkbox'>
-        <TreeView
-          data={data}
-          onLoadData={onLoadData}
-          nodeRenderer={({ element, isBranch, isExpanded, getNodeProps, level, handleExpand }) => (
-            <DbTreeViewNode
-              element={element}
-              isBranch={isBranch}
-              isExpanded={isExpanded}
-              getNodeProps={getNodeProps}
-              level={level}
-              handleExpand={handleExpand}
-              isLoading={loadingNodes.has(element.id)}
-            />
-          )}
-        />
-      </div>
+      <TreeView
+        data={data}
+        onLoadData={onLoadData}
+        focusedId={focusedId}
+        nodeRenderer={({ element, isBranch, isExpanded, getNodeProps, level, handleExpand }) => (
+          <DbTreeViewNode
+            element={element}
+            isBranch={isBranch}
+            isExpanded={isExpanded}
+            getNodeProps={getNodeProps}
+            level={level}
+            handleExpand={handleExpand}
+            isLoading={loadingNodes.has(element.id)}
+          />
+        )}
+      />
     </div>
   );
 };
