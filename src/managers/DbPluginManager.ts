@@ -1,23 +1,39 @@
-import { DatabaseConfig } from '@/model/DatabaseModel';
-import DataSource from '@/services/DataSource';
+import { dataSource } from '@/services/service.config';
 import { SupportedDbIdentifier } from '@/types/database';
+import { useQuery } from '@tanstack/react-query';
 
-export default class DbPluginManager {
-  readonly dataSource: DataSource;
+export const useDbPluginManager = () => {
+  const keys = {
+    supportedDbIds: ['supported-db-ids'],
+    supportedDbConfigs: ['supported-db-configs'],
+    supportedDbConfig: (id: SupportedDbIdentifier) => ['supported-db-config', id],
+  };
 
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
-  }
+  const getSupportedDbIds = () => {
+    return useQuery({
+      queryKey: keys.supportedDbIds,
+      queryFn: async () => dataSource.getSupportedDbIds(),
+    });
+  };
 
-  async getSupportedDbIds(): Promise<SupportedDbIdentifier[]> {
-    return this.dataSource.getSupportedDbIds();
-  }
+  const getSupportedDbConfigs = () => {
+    return useQuery({
+      queryKey: keys.supportedDbConfigs,
+      queryFn: async () => dataSource.getSupportedDbConfigs(),
+    });
+  };
 
-  async getSupportedDbConfigs(): Promise<DatabaseConfig[]> {
-    return this.dataSource.getSupportedDbConfigs();
-  }
+  const getSupportedDbConfig = (id: SupportedDbIdentifier) => {
+    return useQuery({
+      queryKey: keys.supportedDbConfig(id),
+      queryFn: async () => dataSource.getSupportedDbConfig(id),
+      enabled: !!id,
+    });
+  };
 
-  async getSupportedDbConfig(id: SupportedDbIdentifier): Promise<DatabaseConfig | undefined> {
-    return this.dataSource.getSupportedDbConfig(id);
-  }
-}
+  return {
+    getSupportedDbIds,
+    getSupportedDbConfigs,
+    getSupportedDbConfig,
+  };
+};

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import PostgreSQLIcon from '@/assets/postgresql.png';
-import PostgreSQLConnectionModal from '@/components/sidebar/workspace/DbConnectionModalContent/PostgreSQLConnectionModal';
+import PostgreSQLConnectionModal from '@/components/sidebar/workspace/DbConnectionModalContent/PostgreSqlConnectionModal';
 
 export enum SupportedDbIdentifier {
   POSTGRESQL = 'postgresql',

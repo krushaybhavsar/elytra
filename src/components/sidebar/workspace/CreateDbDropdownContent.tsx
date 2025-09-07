@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -10,24 +10,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Database, FolderPlus } from 'lucide-react';
 import { useDialog } from '@/components/contexts/DialogContext';
-import { DatabaseConfig } from '@/model/DatabaseModel';
 import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database';
-import { dbPluginManager } from '@/managers/manager.config';
+import { useDbPluginManager } from '@/managers/DbPluginManager';
 
 type CreateDbDropdownContentProps = {
   onDialogOpen: () => void;
 };
 
 const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
+  const dbPluginManager = useDbPluginManager();
   const { setDialogOpen, setDialogContent } = useDialog();
-  const [supportedDbConfigs, setSupportedDbConfigs] = useState<DatabaseConfig[]>([]);
-
-  useEffect(() => {
-    if (supportedDbConfigs.length > 0) return;
-    dbPluginManager.getSupportedDbConfigs().then((configs) => {
-      setSupportedDbConfigs(configs);
-    });
-  }, [supportedDbConfigs]);
+  const { data: supportedDbConfigs } = dbPluginManager.getSupportedDbConfigs();
 
   const selectDbType = (id: string) => () => {
     props.onDialogOpen();
@@ -45,7 +38,7 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              {supportedDbConfigs.map((config) => {
+              {supportedDbConfigs?.map((config) => {
                 return (
                   <DropdownMenuItem key={config.id} onClick={selectDbType(config.id)}>
                     {DatabaseIcons[config.id]({ className: '!size-4' })}

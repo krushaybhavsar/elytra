@@ -21,13 +21,13 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Link } from 'lucide-react';
-import { DatabaseConfig } from '@/model/DatabaseModel';
-import { dbConnectionManager, dbPluginManager } from '@/managers/manager.config';
 import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useDialog } from '@/components/contexts/DialogContext';
 import { LoadingButton } from '@/components/ui/loading-button';
+import { useDbConnectionManager } from '@/managers/DbConnectionManager';
+import { useDbPluginManager } from '@/managers/DbPluginManager';
 
 const formSchema = z.object({
   name: z
@@ -43,12 +43,16 @@ const formSchema = z.object({
 });
 
 const PostgreSQLConnectionModal = () => {
+  const dbPluginManager = useDbPluginManager();
+  const dbConnectionManager = useDbConnectionManager();
   const [showPassword, setShowPassword] = useState(false);
   const [connectionUrl, setConnectionUrl] = useState('');
-  const [dbConfig, setDbConfig] = useState<DatabaseConfig>();
   const [loadingTest, setLoadingTest] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const { setDialogOpen } = useDialog();
+  const { data: dbConfig } = dbPluginManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL);
+  const createConnectionMutation = dbConnectionManager.createConnection();
+  const testConnectionMutation = dbConnectionManager.testConnection();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -69,12 +73,6 @@ const PostgreSQLConnectionModal = () => {
   const watchedUser = useWatch({ control: form.control, name: 'user' });
   const watchedPassword = useWatch({ control: form.control, name: 'password' });
   const watchedAuthenticationType = useWatch({ control: form.control, name: 'authenticationType' });
-
-  useEffect(() => {
-    dbPluginManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL).then((config) => {
-      setDbConfig(config);
-    });
-  }, []);
 
   useEffect(() => {
     let url = `${SupportedDbIdentifier.POSTGRESQL}://${watchedHost || 'localhost'}:${watchedPort || 5432}`;
@@ -109,7 +107,7 @@ const PostgreSQLConnectionModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoadingSave(true);
-    const connectionResult = await dbConnectionManager.createConnection({
+    const res = await createConnectionMutation.mutateAsync({
       pluginId: SupportedDbIdentifier.POSTGRESQL,
       host: values.host,
       port: values.port,
@@ -117,14 +115,13 @@ const PostgreSQLConnectionModal = () => {
       password: values.password,
       database: values.database,
     });
-
-    if (connectionResult.result.success) {
+    if (res.result.success) {
       toast.success('Connection created successfully!');
       form.reset();
       setDialogOpen(false);
     } else {
       toast.error('Failed to create connection.', {
-        description: connectionResult.result.message,
+        description: res.result.message,
       });
     }
     setLoadingSave(false);
@@ -132,7 +129,7 @@ const PostgreSQLConnectionModal = () => {
 
   const onTestConnection = async () => {
     setLoadingTest(true);
-    const result = await dbConnectionManager.testConnection({
+    const res = await testConnectionMutation.mutateAsync({
       pluginId: SupportedDbIdentifier.POSTGRESQL,
       host: watchedHost,
       port: watchedPort,
@@ -140,13 +137,13 @@ const PostgreSQLConnectionModal = () => {
       user: watchedUser,
       password: watchedPassword,
     });
-    if (result.success) {
+    if (res.success) {
       toast.success('Connection test successful!', {
-        description: result.message,
+        description: res.message,
       });
     } else {
       toast.error('Connection test failed.', {
-        description: result.message,
+        description: res.message,
       });
     }
     setLoadingTest(false);
