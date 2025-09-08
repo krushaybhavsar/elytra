@@ -29,7 +29,7 @@ export const LoadingView = (props: LoadingViewProps) => {
         <img
           src={ElytraLogo}
           alt='Logo'
-          className={`${props.showlogo ? 'flex' : 'hidden'} absolute top-1/2 left-1/2 translate-[-50%] object-contain opacity-100`}
+          className={`${props.showlogo ? 'flex' : 'hidden'} w-12 h-12 absolute top-1/2 left-1/2 translate-[-50%] object-contain opacity-100`}
           width={props.spinnerSize ? props.spinnerSize - 76 : 64}
         />
       </div>
