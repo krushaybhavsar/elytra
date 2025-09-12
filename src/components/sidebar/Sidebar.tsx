@@ -1,4 +1,4 @@
-import { NavigationBarTabs } from '@/types/navigation';
+import { NavigationBarTabs } from '@/types/navigation.types';
 import React from 'react';
 import WorkspaceSidebar from './workspace/WorkspaceSidebar';
 import DashboardSidebar from './DashboardSidebar';

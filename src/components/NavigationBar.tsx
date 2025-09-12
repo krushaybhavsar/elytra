@@ -2,7 +2,7 @@ import React, { createElement } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { TypographyHint } from './ui/typography';
 import { Button } from './ui/button';
-import { NavigationBarMap, NavigationBarTabs } from '@/types/navigation';
+import { NavigationBarMap, NavigationBarTabs } from '@/types/navigation.types';
 
 type NavigationBarProps = {
   activeTab: NavigationBarTabs;

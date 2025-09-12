@@ -1,5 +1,5 @@
 import { renameWindow } from '@/helpers/window-helpers';
-import { AppMap, AppScreens } from '@/types/navigation';
+import { AppMap, AppScreens } from '@/types/navigation.types';
 
 export const DEEP_LINK_PROTOCOL = 'elytra://';
 

@@ -4,7 +4,7 @@ import {
   ConnectionResult,
   DatabaseConfig,
 } from '@/model/DatabaseModel';
-import { SupportedDbIdentifier } from '@/types/database';
+import { SupportedDbIdentifier } from '@/types/database.types';
 
 export default interface DataSource {
   getSupportedDbIds(): Promise<SupportedDbIdentifier[]>;

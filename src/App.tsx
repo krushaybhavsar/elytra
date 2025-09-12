@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AppScreens } from './types/navigation';
+import { AppScreens } from './types/navigation.types';
 import DashboardScreen from './screens/MainScreen';
 import { TooltipProvider } from './components/ui/tooltip';
 import { LoadingScreen } from './components/LoadingView';

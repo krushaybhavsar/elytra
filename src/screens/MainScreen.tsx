@@ -2,7 +2,7 @@ import { useDialog } from '@/components/contexts/DialogContext';
 import NavigationBar from '@/components/NavigationBar';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { Dialog } from '@/components/ui/dialog';
-import { AppScreens, NavigationBarTabs } from '@/types/navigation';
+import { AppScreens, NavigationBarTabs } from '@/types/navigation.types';
 import { updateScreenTitleBar } from '@/utils/window-utils';
 import React, { useEffect, useState } from 'react';
 

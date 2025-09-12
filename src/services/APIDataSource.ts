@@ -6,7 +6,7 @@ import {
 } from '@/model/DatabaseModel';
 import DataSource from './DataSource';
 import axios, { AxiosInstance } from 'axios';
-import { SupportedDbIdentifier } from '@/types/database';
+import { SupportedDbIdentifier } from '@/types/database.types';
 
 export default class APIDataSource implements DataSource {
   readonly api: AxiosInstance;

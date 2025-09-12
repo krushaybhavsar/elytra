@@ -1,5 +1,5 @@
 import { dataSource } from '@/services/service.config';
-import { SupportedDbIdentifier } from '@/types/database';
+import { SupportedDbIdentifier } from '@/types/database.types';
 import { useQuery } from '@tanstack/react-query';
 
 export const useDbPluginManager = () => {

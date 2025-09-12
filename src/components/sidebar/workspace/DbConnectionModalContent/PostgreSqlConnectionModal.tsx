@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Link } from 'lucide-react';
-import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database';
+import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database.types';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useDialog } from '@/components/contexts/DialogContext';

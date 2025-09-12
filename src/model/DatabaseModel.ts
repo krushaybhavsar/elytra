@@ -1,4 +1,4 @@
-import { SupportedDbIdentifier } from '@/types/database';
+import { SupportedDbIdentifier } from '@/types/database.types';
 
 export interface DatabaseConfig {
   id: SupportedDbIdentifier;

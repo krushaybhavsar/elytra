@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Database, FolderPlus } from 'lucide-react';
 import { useDialog } from '@/components/contexts/DialogContext';
-import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database';
+import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database.types';
 import { useDbPluginManager } from '@/managers/DbPluginManager';
 
 type CreateDbDropdownContentProps = {
