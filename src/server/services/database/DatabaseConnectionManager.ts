@@ -1,6 +1,8 @@
 import WinstonLogger from '@/utils/log-utils';
 import { PluginRegistry } from './PluginRegistry';
 import { Connection, ConnectionConfig, ConnectionResult } from './types';
+import { storageService } from '../service.config';
+import { STORE_KEYS } from '../storage/schema';
 
 export class DatabaseConnectionManager {
   private static instance: DatabaseConnectionManager;
@@ -17,6 +19,7 @@ export class DatabaseConnectionManager {
       const plugin = this._pluginRegistry.getPlugin(config.pluginId);
       const connection = await plugin.getConnectionManager().createConnection(config);
       this.connections.set(connection.connectionId, connection);
+      storageService.set(STORE_KEYS.CONNECTIONS, Array.from(this.connections.values()));
       return {
         connection,
         result: {
@@ -62,12 +65,18 @@ export class DatabaseConnectionManager {
       const plugin = this._pluginRegistry.getPlugin(connection.connectionConfig.pluginId);
       await plugin.getConnectionManager().closeConnection(connection);
       this.connections.delete(connectionId);
+      storageService.set(STORE_KEYS.CONNECTIONS, Array.from(this.connections.values()));
     } else {
       this._logger.warn(`Connection ${connectionId} not found`);
     }
   }
 
   getAllConnections(): Connection[] {
+    storageService.get(STORE_KEYS.CONNECTIONS).forEach((conn) => {
+      if (!this.connections.has(conn.connectionId)) {
+        this.connections.set(conn.connectionId, conn);
+      }
+    });
     return Array.from(this.connections.values());
   }
 
