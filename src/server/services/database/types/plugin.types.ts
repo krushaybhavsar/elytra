@@ -1,3 +1,5 @@
+import { MetadataProvider } from './metadata.types';
+
 export enum SupportedDbIdentifier {
   POSTGRESQL = 'postgresql',
 }
@@ -40,10 +42,4 @@ export interface DatabasePluginConnectionManager {
   createConnection(config: ConnectionConfig): Promise<Connection>;
   getServerVersion(connection: Connection): Promise<string>;
   closeConnection(connection: Connection): Promise<boolean>;
-}
-
-export interface MetadataProvider {
-  getSchemas(connection: Connection): Promise<string[]>;
-  getTables(connection: Connection, schema: string): Promise<string[]>;
-  getColumns(connection: Connection, schema: string, table: string): Promise<string[]>;
 }

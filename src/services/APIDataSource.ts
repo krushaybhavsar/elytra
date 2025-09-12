@@ -52,7 +52,7 @@ export default class APIDataSource implements DataSource {
   }
 
   async closeConnection(connectionId: string): Promise<void> {
-    await this.api.post<void>(`/connections/close/${connectionId}`);
+    await this.api.post<void>(`/connections/${connectionId}/close`);
   }
 
   async getAllConnections(): Promise<Connection[]> {

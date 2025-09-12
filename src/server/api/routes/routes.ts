@@ -199,6 +199,35 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_getAllConnections: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.get('/connections/all',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.getAllConnections)),
+
+            async function ConnectionController_getAllConnections(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_getAllConnections, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllConnections',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsConnectionController_createConnection: Record<string, TsoaRoute.ParameterSchema> = {
                 config: {"in":"body","name":"config","required":true,"ref":"ConnectionConfig"},
         };
@@ -262,7 +291,7 @@ export function RegisterRoutes(app: Router) {
         const argsConnectionController_closeConnection: Record<string, TsoaRoute.ParameterSchema> = {
                 connectionId: {"in":"path","name":"connectionId","required":true,"dataType":"string"},
         };
-        app.post('/connections/close/:connectionId',
+        app.post('/connections/:connectionId/close',
             ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
             ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.closeConnection)),
 
@@ -278,35 +307,6 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'closeConnection',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsConnectionController_getAllConnections: Record<string, TsoaRoute.ParameterSchema> = {
-        };
-        app.get('/connections/all',
-            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
-            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.getAllConnections)),
-
-            async function ConnectionController_getAllConnections(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_getAllConnections, request, response });
-
-                const controller = new ConnectionController();
-
-              await templateService.apiHandler({
-                methodName: 'getAllConnections',
                 controller,
                 response,
                 next,

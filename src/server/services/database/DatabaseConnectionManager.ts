@@ -1,8 +1,8 @@
 import WinstonLogger from '@/utils/log-utils';
 import { PluginRegistry } from './PluginRegistry';
-import { Connection, ConnectionConfig, ConnectionResult } from './types';
 import { storageService } from '../service.config';
 import { STORE_KEYS } from '../storage/schema';
+import { Connection, ConnectionConfig, ConnectionResult } from './types/plugin.types';
 
 export class DatabaseConnectionManager {
   private static instance: DatabaseConnectionManager;

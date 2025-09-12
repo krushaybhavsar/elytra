@@ -210,6 +210,28 @@
 				]
 			}
 		},
+		"/connections/all": {
+			"get": {
+				"operationId": "GetAllConnections",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Connection"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/connections/create": {
 			"post": {
 				"operationId": "CreateConnection",
@@ -279,7 +301,7 @@
 				}
 			}
 		},
-		"/connections/close/{connectionId}": {
+		"/connections/{connectionId}/close": {
 			"post": {
 				"operationId": "CloseConnection",
 				"responses": {
@@ -298,28 +320,6 @@
 						}
 					}
 				]
-			}
-		},
-		"/connections/all": {
-			"get": {
-				"operationId": "GetAllConnections",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Connection"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": []
 			}
 		}
 	},

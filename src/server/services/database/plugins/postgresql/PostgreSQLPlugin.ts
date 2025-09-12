@@ -1,9 +1,9 @@
+import { MetadataProvider } from '../../types/metadata.types';
 import {
-  DatabasePluginConfig,
   DatabasePlugin,
-  MetadataProvider,
+  DatabasePluginConfig,
   DatabasePluginConnectionManager,
-} from '../../types';
+} from '../../types/plugin.types';
 import { PostgreSQLConnectionManager } from './PostgreSQLConnectionManager';
 import { PostgreSQLMetadataProvider } from './PostgreSQLMetadataProvider';
 import { PostgresSQLConfig } from './PostgresSQLConfig';

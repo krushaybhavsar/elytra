@@ -1,8 +1,12 @@
 import { Client } from 'pg';
-import { Connection, ConnectionConfig, DatabasePluginConnectionManager } from '../../types';
 import WinstonLogger from '@/utils/log-utils';
+import {
+  Connection,
+  ConnectionConfig,
+  DatabasePluginConnectionManager,
+} from '../../types/plugin.types';
 
-interface PostgreSQLConnection extends Connection {
+export interface PostgreSQLConnection extends Connection {
   client: Client;
 }
 

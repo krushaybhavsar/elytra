@@ -1,4 +1,4 @@
-import { DatabasePluginConfig, DatabasePlugin, SupportedDbIdentifier } from './types';
+import { DatabasePlugin, DatabasePluginConfig, SupportedDbIdentifier } from './types/plugin.types';
 
 export class PluginRegistry {
   private static instance: PluginRegistry;

@@ -1,5 +1,8 @@
+import {
+  DatabasePluginConfig,
+  SupportedDbIdentifier,
+} from '../../services/database/types/plugin.types';
 import { PluginRegistry } from '../../services/database/PluginRegistry';
-import { DatabasePluginConfig, SupportedDbIdentifier } from '../../services/database/types';
 import { Controller, Get, Path, Route } from 'tsoa';
 
 @Route('plugins')
