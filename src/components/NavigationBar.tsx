@@ -5,26 +5,26 @@ import { Button } from './ui/button';
 import { NavigationBarMap, NavigationBarTabs } from '@/types/navigation.types';
 
 type NavigationBarProps = {
-  activeTab: NavigationBarTabs;
-  setActiveTab: React.Dispatch<React.SetStateAction<NavigationBarTabs>>;
+  activeTabScreen: NavigationBarTabs;
+  setActiveTabScreen: React.Dispatch<React.SetStateAction<NavigationBarTabs>>;
 };
 
 const NavigationBar = (props: NavigationBarProps) => {
   return (
     <div className='h-full w-18 bg-darker-background'>
       <div className='flex flex-col w-full h-full items-center px-2 py-4 gap-4'>
-        {Object.keys(NavigationBarMap).map((tabName) => {
-          const navTab = NavigationBarMap[tabName as NavigationBarTabs];
-          const isActive = props.activeTab === tabName;
+        {Object.keys(NavigationBarMap).map((tabScreenName) => {
+          const navTab = NavigationBarMap[tabScreenName as NavigationBarTabs];
+          const isActive = props.activeTabScreen === tabScreenName;
           return (
-            <Tooltip key={tabName}>
+            <Tooltip key={tabScreenName}>
               <TooltipTrigger>
                 <Button
                   asChild
                   variant='icon'
                   size='icon'
                   className={`disabled:opacity-100 transition-all hover:bg-darkest-background ${isActive ? 'bg-darkest-background shadow-sm' : ''}`}
-                  onClick={() => props.setActiveTab(tabName as NavigationBarTabs)}
+                  onClick={() => props.setActiveTabScreen(tabScreenName as NavigationBarTabs)}
                   disabled={isActive}
                 >
                   {createElement(navTab.icon, {

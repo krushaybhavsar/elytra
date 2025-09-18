@@ -6,12 +6,12 @@ import ChatSidebar from './ChatSidebar';
 import ResizablePanel from '../ui/resizable-panel';
 
 type SidebarProps = {
-  activeTab: NavigationBarTabs;
+  activeTabScreen: NavigationBarTabs;
 };
 
 const Sidebar = (props: SidebarProps) => {
   const getActiveSidebar = () => {
-    switch (props.activeTab) {
+    switch (props.activeTabScreen) {
       case NavigationBarTabs.WORKSPACE:
         return <WorkspaceSidebar />;
       case NavigationBarTabs.DASHBOARD:
