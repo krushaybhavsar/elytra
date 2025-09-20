@@ -11,7 +11,7 @@ type NavigationBarProps = {
 
 const NavigationBar = (props: NavigationBarProps) => {
   return (
-    <div className='h-full w-18 bg-darker-background'>
+    <div className='flex h-full w-18 bg-darker-background'>
       <div className='flex flex-col w-full h-full items-center px-2 py-4 gap-4'>
         {Object.keys(NavigationBarMap).map((tabScreenName) => {
           const navTab = NavigationBarMap[tabScreenName as NavigationBarTabs];

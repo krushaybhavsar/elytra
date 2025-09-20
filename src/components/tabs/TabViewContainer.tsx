@@ -4,6 +4,7 @@ import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { closestElement, removeElement } from '@/utils/array-utils';
 import { Plus } from 'lucide-react';
 import { Separator } from '../ui/separator';
+import EditorTabView from './EditorTabView';
 
 export interface TabMetadata {
   title: string;
@@ -38,7 +39,7 @@ const TabViewContainer = (props: TabViewContainerProps) => {
     const newTab: TabData = {
       id: randomNum.toString(),
       metadata: { title: `Tab ${randomNum}`, type: 'editor' },
-      view: <div>{`Tab ${randomNum} Content`}</div>,
+      view: <EditorTabView />,
     };
 
     setTabs([...tabs, newTab]);
@@ -80,19 +81,8 @@ const TabViewContainer = (props: TabViewContainerProps) => {
         </div>
       </div>
       <Separator orientation='horizontal' />
-      <div className='flex flex-grow items-center justify-center'>
-        <AnimatePresence mode='wait'>
-          <motion.div
-            key={activeTabId}
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.15 }}
-            className='flex-grow flex items-center justify-center'
-          >
-            {tabs.find((tab) => tab.id === activeTabId)?.view}
-          </motion.div>
-        </AnimatePresence>
+      <div className='flex h-full w-full relative' key={activeTabId}>
+        {tabs.find((tab) => tab.id === activeTabId)?.view}
       </div>
     </div>
   );
