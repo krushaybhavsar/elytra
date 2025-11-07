@@ -7,10 +7,6 @@ import {
   QueryResult,
 } from '../../types/plugin.types';
 
-// export interface PostgreSQLConnection extends Connection {
-//   client: Client;
-// }
-
 export class PostgreSQLConnectionManager implements DatabasePluginConnectionManager {
   private readonly _logger = WinstonLogger.getInstance().getLogger('PostgreSQLConnectionManager');
 
@@ -67,7 +63,7 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
     } catch (error) {
       return {
         success: false,
-        message: `Failed to execute query: ${error}`,
+        message: `${error}`,
       };
     }
   }

@@ -25,6 +25,8 @@ const Sidebar = (props: SidebarProps) => {
 
   return (
     <ResizablePanel
+      axis='x'
+      resizeHandles={['e']}
       initialWidth={250}
       minWidth={200}
       maxWidth={400}
