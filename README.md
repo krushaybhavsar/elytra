@@ -6,6 +6,6 @@
   <img alt="Elytra Logo" src="src/assets/logos/word-black-tbg.png" width="400">
 </picture>
 
-### A powerful, AI-driven database client.
+### A powerful, AI-driven database management tool.
 
 </div>

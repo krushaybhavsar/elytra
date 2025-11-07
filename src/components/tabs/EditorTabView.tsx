@@ -1,29 +1,13 @@
-import React from 'react';
-import { Editor, loader } from '@monaco-editor/react';
+import React, { useEffect, useRef } from 'react';
+import { Editor, loader, OnMount } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import { Play } from 'lucide-react';
 import { Button } from '../ui/button';
 
 // @ts-ignore
 self.MonacoEnvironment = {
   getWorker(_: any, label: any) {
-    if (label === 'json') {
-      return new jsonWorker();
-    }
-    if (label === 'css' || label === 'scss' || label === 'less') {
-      return new cssWorker();
-    }
-    if (label === 'html' || label === 'handlebars' || label === 'razor') {
-      return new htmlWorker();
-    }
-    if (label === 'typescript' || label === 'javascript') {
-      return new tsWorker();
-    }
     return new editorWorker();
   },
 };
@@ -32,9 +16,66 @@ loader.config({ monaco });
 
 loader.init().then(/* ... */);
 
-interface EditorTabViewProps {}
+interface EditorTabViewProps {
+  tabId: string;
+  data: string;
+  onChange?: (value: string) => void;
+}
+
+// Store models and their disposables per tab globally
+const modelCache = new Map<
+  string,
+  {
+    model: monaco.editor.ITextModel;
+    disposable: monaco.IDisposable;
+  }
+>();
+
+export const cleanupEditorModel = (tabId: string) => {
+  const cached = modelCache.get(tabId);
+  if (cached) {
+    cached.disposable.dispose();
+    cached.model.dispose();
+    modelCache.delete(tabId);
+  }
+};
 
 const EditorTabView = (props: EditorTabViewProps) => {
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const { tabId, data, onChange } = props;
+
+  const handleEditorMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+
+    let cached = modelCache.get(tabId);
+    if (!cached) {
+      const model = monaco.editor.createModel(data, 'sql');
+      const disposable = model.onDidChangeContent(() => {
+        onChange?.(model.getValue());
+      });
+      cached = { model, disposable };
+      modelCache.set(tabId, cached);
+    }
+
+    editor.setModel(cached.model);
+  };
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+
+    let cached = modelCache.get(tabId);
+    if (!cached) {
+      const model = monaco.editor.createModel(data, 'sql');
+      const disposable = model.onDidChangeContent(() => {
+        onChange?.(model.getValue());
+      });
+      cached = { model, disposable };
+      modelCache.set(tabId, cached);
+    }
+
+    editorRef.current.setModel(cached.model);
+  }, [tabId]);
+
   return (
     <div className='absolute h-full w-full max-w-[100%-78px] overflow-clip'>
       <div className='absolute top-0 left-0 w-full h-8 border-b border-b-border bg-background shadow-sm z-2 flex items-center justify-start px-1 gap-2'>
@@ -45,8 +86,8 @@ const EditorTabView = (props: EditorTabViewProps) => {
       <Editor
         className='mt-8'
         defaultLanguage='sql'
-        defaultValue='-- Write your SQL query here'
         theme='vs-light'
+        onMount={handleEditorMount}
         options={{
           minimap: { enabled: false },
         }}

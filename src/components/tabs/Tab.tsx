@@ -12,8 +12,6 @@ interface TabProps {
   isFirst?: boolean;
 }
 
-const MotionTypographyHint = motion(TypographyHint);
-
 const Tab = (props: TabProps) => {
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -36,7 +34,6 @@ const Tab = (props: TabProps) => {
         y: 0,
         transition: { duration: 0.15 },
       }}
-      exit={{ opacity: 0, y: 20, transition: { duration: 0.15 } }}
       onPointerDown={isDisabled ? (e) => e.preventDefault() : props.onClick}
       className={`w-full flex flex-row gap-2 h-full justify-between items-center !p-0 !px-2 border-x-[0.5px] flex-1 min-w-0 overflow-hidden relative cursor-pointer ${props.isFirst ? 'border-l-transparent border-r-border' : 'border-border'} ${props.isActive ? `bg-background` : 'bg-darker-background'}`}
     >

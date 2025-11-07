@@ -13,6 +13,7 @@ export interface Connection {
   connectionId: string;
   connectionConfig: ConnectionConfig;
   createdAt: Date;
+  updatedAt: Date;
   isActive: boolean;
 }
 

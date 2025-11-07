@@ -76,6 +76,10 @@
 						"type": "string",
 						"format": "date-time"
 					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"isActive": {
 						"type": "boolean"
 					}
@@ -84,6 +88,7 @@
 					"connectionId",
 					"connectionConfig",
 					"createdAt",
+					"updatedAt",
 					"isActive"
 				],
 				"type": "object",
@@ -320,6 +325,37 @@
 						}
 					}
 				]
+			}
+		},
+		"/connections/{connectionId}/update": {
+			"post": {
+				"operationId": "UpdateConnection",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "connectionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Connection"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

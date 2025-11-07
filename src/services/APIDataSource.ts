@@ -55,8 +55,17 @@ export default class APIDataSource implements DataSource {
     await this.api.post<void>(`/connections/${connectionId}/close`);
   }
 
+  async updateConnection(connection: Connection): Promise<void> {
+    await this.api.post<void>(`/connections/${connection.connectionId}/update`, connection);
+  }
+
   async getAllConnections(): Promise<Connection[]> {
     const res = await this.api.get<Connection[]>('/connections/all');
+    return res.data;
+  }
+
+  async getRecentConnection(): Promise<Connection | undefined> {
+    const res = await this.api.get<Connection | undefined>('/connections/recent');
     return res.data;
   }
 }

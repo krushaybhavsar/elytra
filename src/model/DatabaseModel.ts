@@ -10,6 +10,7 @@ export interface Connection {
   connectionConfig: ConnectionConfig;
   createdAt: Date;
   isActive: boolean;
+  updatedAt: Date;
 }
 
 export interface ConnectionConfig {

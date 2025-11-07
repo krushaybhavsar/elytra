@@ -50,6 +50,7 @@ const models: TsoaRoute.Models = {
             "connectionId": {"dataType":"string","required":true},
             "connectionConfig": {"ref":"ConnectionConfig","required":true},
             "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
             "isActive": {"dataType":"boolean","required":true},
         },
         "additionalProperties": true,
@@ -307,6 +308,66 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'closeConnection',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_updateConnection: Record<string, TsoaRoute.ParameterSchema> = {
+                connectionId: {"in":"path","name":"connectionId","required":true,"dataType":"string"},
+                connection: {"in":"body","name":"connection","required":true,"ref":"Connection"},
+        };
+        app.post('/connections/:connectionId/update',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.updateConnection)),
+
+            async function ConnectionController_updateConnection(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_updateConnection, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'updateConnection',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_deleteAllConnections: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.delete('/connections/all',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.deleteAllConnections)),
+
+            async function ConnectionController_deleteAllConnections(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_deleteAllConnections, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteAllConnections',
                 controller,
                 response,
                 next,

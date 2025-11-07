@@ -27,6 +27,7 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
         connectionId: `postgresql-${crypto.randomUUID()}`,
         connectionConfig: config,
         createdAt: new Date(),
+        updatedAt: new Date(),
         isActive: true,
         client,
       };
@@ -52,8 +53,11 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
     const pgConnection = connection as PostgreSQLConnection;
     this._logger.info(`Closing PostgreSQL connection for ${pgConnection.connectionId}`);
     try {
-      await pgConnection.client.end();
+      if (pgConnection.client) {
+        await pgConnection.client.end();
+      }
       connection.isActive = false;
+      connection.updatedAt = new Date();
       return true;
     } catch (error) {
       throw new Error(`Failed to close PostgreSQL connection: ${error}`);

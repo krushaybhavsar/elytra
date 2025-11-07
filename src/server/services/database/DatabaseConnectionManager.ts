@@ -71,6 +71,23 @@ export class DatabaseConnectionManager {
     }
   }
 
+  async deleteAllConnections(): Promise<void> {
+    for (const connectionId of this.connections.keys()) {
+      await this.closeConnection(connectionId);
+    }
+    this.connections.clear();
+    storageService.set(STORE_KEYS.CONNECTIONS, []);
+  }
+
+  async updateConnection(connectionId: string, connection: Connection): Promise<void> {
+    if (connectionId !== connection.connectionId) {
+      this._logger.warn('Connection ID in path and body do not match');
+      return;
+    }
+    this.connections.set(connection.connectionId, connection);
+    storageService.set(STORE_KEYS.CONNECTIONS, Array.from(this.connections.values()));
+  }
+
   getAllConnections(): Connection[] {
     storageService.get(STORE_KEYS.CONNECTIONS).forEach((conn) => {
       if (!this.connections.has(conn.connectionId)) {

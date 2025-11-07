@@ -4,7 +4,7 @@ import {
   ConnectionResult,
 } from '../../services/database/types/plugin.types';
 import { DatabaseConnectionManager } from '../../services/database/DatabaseConnectionManager';
-import { Body, Controller, Get, Path, Post, Route } from 'tsoa';
+import { Body, Controller, Delete, Get, Hidden, Path, Post, Route } from 'tsoa';
 
 @Route('connections')
 export class ConnectionController extends Controller {
@@ -30,5 +30,19 @@ export class ConnectionController extends Controller {
   @Post('{connectionId}/close')
   async closeConnection(@Path() connectionId: string): Promise<void> {
     return await this._connectionManager.closeConnection(connectionId);
+  }
+
+  @Post('{connectionId}/update')
+  async updateConnection(
+    @Path() connectionId: string,
+    @Body() connection: Connection,
+  ): Promise<void> {
+    return await this._connectionManager.updateConnection(connectionId, connection);
+  }
+
+  @Hidden()
+  @Delete('all')
+  async deleteAllConnections(): Promise<void> {
+    return await this._connectionManager.deleteAllConnections();
   }
 }

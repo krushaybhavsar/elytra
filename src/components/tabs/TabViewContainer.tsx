@@ -4,17 +4,20 @@ import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { closestElement, removeElement } from '@/utils/array-utils';
 import { Plus } from 'lucide-react';
 import { Separator } from '../ui/separator';
-import EditorTabView from './EditorTabView';
+import EditorTabView, { cleanupEditorModel } from './EditorTabView';
+import { useDbConnectionManager } from '@/managers/DbConnectionManager';
+import { toast } from 'sonner';
 
 export interface TabMetadata {
   title: string;
   type: 'editor';
+  icon?: JSX.Element;
 }
 
 export interface TabData {
   id: string;
   metadata: TabMetadata;
-  view: JSX.Element;
+  data?: string;
 }
 
 interface TabViewContainerProps {}
@@ -22,28 +25,48 @@ interface TabViewContainerProps {}
 const TabViewContainer = (props: TabViewContainerProps) => {
   const [activeTabId, setActiveTabId] = useState<string>();
   const [tabs, setTabs] = useState<TabData[]>([]);
+  const getAllConnectionsQuery = useDbConnectionManager().getAllConnections();
   const MAX_TABS = 20;
 
   const closeTab = (closedTab: TabData) => {
+    cleanupEditorModel(closedTab.id);
+
     if (activeTabId === closedTab.id) {
       const newActiveElement = closestElement(tabs, closedTab);
       if (newActiveElement) {
         setActiveTabId(newActiveElement.id);
+      } else {
+        setActiveTabId(undefined);
       }
     }
     setTabs(removeElement(tabs, closedTab));
   };
 
+  const getRecentConnection = () => {
+    const sortedConnections = getAllConnectionsQuery.data?.sort(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+    );
+    return sortedConnections && sortedConnections.length > 0 ? sortedConnections[0] : undefined;
+  };
+
   const newTab = () => {
-    const randomNum = Math.floor(Math.random() * 10000);
+    const connection = getRecentConnection();
+    if (!connection) {
+      toast.info('Connect to a database first to get started!');
+      return;
+    }
     const newTab: TabData = {
-      id: randomNum.toString(),
-      metadata: { title: `Tab ${randomNum}`, type: 'editor' },
-      view: <EditorTabView />,
+      id: `${connection.connectionId}-${crypto.randomUUID()}`,
+      metadata: { title: `(@${connection.connectionConfig.host})`, type: 'editor' },
+      data: `-- Write your SQL queries here`,
     };
 
     setTabs([...tabs, newTab]);
     setActiveTabId(newTab.id);
+  };
+
+  const updateTabData = (tabId: string, newData: string) => {
+    setTabs((prev) => prev.map((t) => (t.id === tabId ? { ...t, data: newData } : t)));
   };
 
   return (
@@ -82,7 +105,14 @@ const TabViewContainer = (props: TabViewContainerProps) => {
       </div>
       <Separator orientation='horizontal' />
       <div className='flex h-full w-full relative' key={activeTabId}>
-        {tabs.find((tab) => tab.id === activeTabId)?.view}
+        {activeTabId && tabs.find((t) => t.id === activeTabId) && (
+          <EditorTabView
+            key='single-editor' // Keep same instance
+            tabId={activeTabId}
+            data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
+            onChange={(newData) => updateTabData(activeTabId, newData)}
+          />
+        )}
       </div>
     </div>
   );
