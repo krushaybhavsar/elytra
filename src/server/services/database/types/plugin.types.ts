@@ -50,8 +50,9 @@ export interface DatabasePlugin {
 }
 
 export interface DatabasePluginConnectionManager {
-  createConnection(config: ConnectionConfig): Promise<{ client: any; connection: Connection }>;
-  getServerVersion(client: any): Promise<string>;
-  executeQuery(client: any, query: string): Promise<QueryResult>;
-  closeConnection(connection: Connection, client: any): Promise<boolean>;
+  createConnection(config: ConnectionConfig): Promise<{ pool: any; connection: Connection }>;
+  getServerVersion(pool: any): Promise<string>;
+  executeQuery(pool: any, query: string): Promise<QueryResult>;
+  closeConnection(connection: Connection, pool: any): Promise<boolean>;
+  isConnectionHealthy(pool: any): Promise<boolean>;
 }

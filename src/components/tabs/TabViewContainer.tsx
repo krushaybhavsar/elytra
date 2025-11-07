@@ -44,9 +44,9 @@ const TabViewContainer = (props: TabViewContainerProps) => {
   };
 
   const getRecentConnection = () => {
-    const sortedConnections = getAllConnectionsQuery.data?.sort(
-      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
-    );
+    const sortedConnections = getAllConnectionsQuery.data?.sort((a, b) => {
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
     return sortedConnections && sortedConnections.length > 0 ? sortedConnections[0] : undefined;
   };
 
