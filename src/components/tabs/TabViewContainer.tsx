@@ -104,13 +104,13 @@ const TabViewContainer = (props: TabViewContainerProps) => {
         </div>
       </div>
       <Separator orientation='horizontal' />
-      <div className='flex h-full w-full relative' key={activeTabId}>
+      <div className='flex h-full w-full relative'>
         {activeTabId && tabs.find((t) => t.id === activeTabId) && (
           <EditorTabView
-            key='single-editor' // Keep same instance
+            key='single-editor'
             tabId={activeTabId}
             data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
-            onChange={(newData) => updateTabData(activeTabId, newData)}
+            onTabDataChange={updateTabData}
           />
         )}
       </div>

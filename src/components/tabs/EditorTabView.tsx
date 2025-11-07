@@ -14,20 +14,21 @@ self.MonacoEnvironment = {
 
 loader.config({ monaco });
 
-loader.init().then(/* ... */);
+loader.init();
 
 interface EditorTabViewProps {
   tabId: string;
   data: string;
   onChange?: (value: string) => void;
+  onTabDataChange?: (tabId: string, value: string) => void;
 }
 
-// Store models and their disposables per tab globally
 const modelCache = new Map<
   string,
   {
     model: monaco.editor.ITextModel;
     disposable: monaco.IDisposable;
+    tabId: string;
   }
 >();
 
@@ -42,18 +43,31 @@ export const cleanupEditorModel = (tabId: string) => {
 
 const EditorTabView = (props: EditorTabViewProps) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const { tabId, data, onChange } = props;
+  const onChangeRef = useRef(props.onChange);
+  const onTabDataChangeRef = useRef(props.onTabDataChange);
+  const { tabId, data, onChange, onTabDataChange } = props;
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    onTabDataChangeRef.current = onTabDataChange;
+  }, [onChange, onTabDataChange]);
 
   const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
 
     let cached = modelCache.get(tabId);
     if (!cached) {
+      const modelTabId = tabId;
       const model = monaco.editor.createModel(data, 'sql');
       const disposable = model.onDidChangeContent(() => {
-        onChange?.(model.getValue());
+        const value = model.getValue();
+        if (onTabDataChangeRef.current) {
+          onTabDataChangeRef.current(modelTabId, value);
+        } else {
+          onChangeRef.current?.(value);
+        }
       });
-      cached = { model, disposable };
+      cached = { model, disposable, tabId: modelTabId };
       modelCache.set(tabId, cached);
     }
 
@@ -65,11 +79,17 @@ const EditorTabView = (props: EditorTabViewProps) => {
 
     let cached = modelCache.get(tabId);
     if (!cached) {
+      const modelTabId = tabId;
       const model = monaco.editor.createModel(data, 'sql');
       const disposable = model.onDidChangeContent(() => {
-        onChange?.(model.getValue());
+        const value = model.getValue();
+        if (onTabDataChangeRef.current) {
+          onTabDataChangeRef.current(modelTabId, value);
+        } else {
+          onChangeRef.current?.(value);
+        }
       });
-      cached = { model, disposable };
+      cached = { model, disposable, tabId: modelTabId };
       modelCache.set(tabId, cached);
     }
 
