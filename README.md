@@ -8,4 +8,6 @@
 
 ### A powerful, AI-driven database management tool.
 
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/952d3974-d388-4523-bf21-d20d5fc88a58" />
+
 </div>
