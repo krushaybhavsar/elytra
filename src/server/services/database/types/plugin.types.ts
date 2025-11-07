@@ -33,6 +33,16 @@ export interface ConnectionResult {
   connectionTime?: number;
 }
 
+export interface QueryResult {
+  success: boolean;
+  message: string;
+  result?: {
+    rows: any[];
+    rowCount: number | null;
+    fields: any;
+  };
+}
+
 export interface DatabasePlugin {
   getConfig(): DatabasePluginConfig;
   getConnectionManager(): DatabasePluginConnectionManager;
@@ -40,7 +50,8 @@ export interface DatabasePlugin {
 }
 
 export interface DatabasePluginConnectionManager {
-  createConnection(config: ConnectionConfig): Promise<Connection>;
-  getServerVersion(connection: Connection): Promise<string>;
-  closeConnection(connection: Connection): Promise<boolean>;
+  createConnection(config: ConnectionConfig): Promise<{ client: any; connection: Connection }>;
+  getServerVersion(client: any): Promise<string>;
+  executeQuery(client: any, query: string): Promise<QueryResult>;
+  closeConnection(connection: Connection, client: any): Promise<boolean>;
 }

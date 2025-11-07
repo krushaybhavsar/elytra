@@ -3,6 +3,7 @@ import {
   ConnectionConfig,
   ConnectionResult,
   DatabaseConfig,
+  QueryResult,
 } from '@/model/DatabaseModel';
 import DataSource from './DataSource';
 import axios, { AxiosInstance } from 'axios';
@@ -51,6 +52,11 @@ export default class APIDataSource implements DataSource {
     return res.data;
   }
 
+  async executeQuery(connectionId: string, query: string): Promise<QueryResult> {
+    const res = await this.api.post<QueryResult>(`/connections/${connectionId}/execute`, { query });
+    return res.data;
+  }
+
   async closeConnection(connectionId: string): Promise<void> {
     await this.api.post<void>(`/connections/${connectionId}/close`);
   }
@@ -61,11 +67,6 @@ export default class APIDataSource implements DataSource {
 
   async getAllConnections(): Promise<Connection[]> {
     const res = await this.api.get<Connection[]>('/connections/all');
-    return res.data;
-  }
-
-  async getRecentConnection(): Promise<Connection | undefined> {
-    const res = await this.api.get<Connection | undefined>('/connections/recent');
     return res.data;
   }
 }

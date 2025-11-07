@@ -2,6 +2,7 @@ import {
   Connection,
   ConnectionConfig,
   ConnectionResult,
+  QueryResult,
 } from '../../services/database/types/plugin.types';
 import { DatabaseConnectionManager } from '../../services/database/DatabaseConnectionManager';
 import { Body, Controller, Delete, Get, Hidden, Path, Post, Route } from 'tsoa';
@@ -25,6 +26,14 @@ export class ConnectionController extends Controller {
   @Post('test')
   async testConnection(@Body() config: ConnectionConfig): Promise<ConnectionResult> {
     return await this._connectionManager.testConnection(config);
+  }
+
+  @Post('{connectionId}/execute')
+  async executeQuery(
+    @Path() connectionId: string,
+    @Body() body: { query: string },
+  ): Promise<QueryResult> {
+    return await this._connectionManager.executeQuery(connectionId, body.query);
   }
 
   @Post('{connectionId}/close')

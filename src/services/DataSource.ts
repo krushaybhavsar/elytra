@@ -3,6 +3,7 @@ import {
   ConnectionConfig,
   ConnectionResult,
   DatabaseConfig,
+  QueryResult,
 } from '@/model/DatabaseModel';
 import { SupportedDbIdentifier } from '@/types/database.types';
 
@@ -14,8 +15,8 @@ export default interface DataSource {
     config: ConnectionConfig,
   ): Promise<{ connection?: Connection; result: ConnectionResult }>;
   testConnection(config: ConnectionConfig): Promise<ConnectionResult>;
+  executeQuery(connectionId: string, query: string): Promise<QueryResult>;
   closeConnection(connectionId: string): Promise<void>;
   updateConnection(connection: Connection): Promise<void>;
   getAllConnections(): Promise<Connection[]>;
-  getRecentConnection(): Promise<Connection | undefined>;
 }

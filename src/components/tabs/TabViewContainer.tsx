@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 export interface TabMetadata {
   title: string;
+  connectionId: string;
   type: 'editor';
   icon?: JSX.Element;
 }
@@ -57,7 +58,11 @@ const TabViewContainer = (props: TabViewContainerProps) => {
     }
     const newTab: TabData = {
       id: `${connection.connectionId}-${crypto.randomUUID()}`,
-      metadata: { title: `(@${connection.connectionConfig.host})`, type: 'editor' },
+      metadata: {
+        title: `(@${connection.connectionConfig.host})`,
+        connectionId: connection.connectionId,
+        type: 'editor',
+      },
       data: `-- Write your SQL queries here`,
     };
 
@@ -110,6 +115,7 @@ const TabViewContainer = (props: TabViewContainerProps) => {
             key='single-editor'
             tabId={activeTabId}
             data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
+            connectionId={tabs.find((t) => t.id === activeTabId)?.metadata.connectionId ?? ''}
             onTabDataChange={updateTabData}
           />
         )}

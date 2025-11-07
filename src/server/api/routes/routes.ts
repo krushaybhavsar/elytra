@@ -66,6 +66,16 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "QueryResult": {
+        "dataType": "refObject",
+        "properties": {
+            "success": {"dataType":"boolean","required":true},
+            "message": {"dataType":"string","required":true},
+            "result": {"dataType":"nestedObjectLiteral","nestedProperties":{"fields":{"dataType":"any","required":true},"rowCount":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"rows":{"dataType":"array","array":{"dataType":"any"},"required":true}}},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"ignore","bodyCoercion":true});
 
@@ -278,6 +288,37 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'testConnection',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsConnectionController_executeQuery: Record<string, TsoaRoute.ParameterSchema> = {
+                connectionId: {"in":"path","name":"connectionId","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"query":{"dataType":"string","required":true}}},
+        };
+        app.post('/connections/:connectionId/execute',
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController)),
+            ...(fetchMiddlewares<RequestHandler>(ConnectionController.prototype.executeQuery)),
+
+            async function ConnectionController_executeQuery(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsConnectionController_executeQuery, request, response });
+
+                const controller = new ConnectionController();
+
+              await templateService.apiHandler({
+                methodName: 'executeQuery',
                 controller,
                 response,
                 next,

@@ -4,16 +4,19 @@ import {
   Connection,
   ConnectionConfig,
   DatabasePluginConnectionManager,
+  QueryResult,
 } from '../../types/plugin.types';
 
-export interface PostgreSQLConnection extends Connection {
-  client: Client;
-}
+// export interface PostgreSQLConnection extends Connection {
+//   client: Client;
+// }
 
 export class PostgreSQLConnectionManager implements DatabasePluginConnectionManager {
   private readonly _logger = WinstonLogger.getInstance().getLogger('PostgreSQLConnectionManager');
 
-  async createConnection(config: ConnectionConfig): Promise<Connection> {
+  async createConnection(
+    config: ConnectionConfig,
+  ): Promise<{ connection: Connection; client: any }> {
     const client = new Client({
       host: config.host,
       port: config.port,
@@ -23,25 +26,25 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
     });
     try {
       await client.connect();
-      const connection: PostgreSQLConnection = {
-        connectionId: `postgresql-${crypto.randomUUID()}`,
-        connectionConfig: config,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        client,
+      return {
+        connection: {
+          connectionId: `postgresql-${crypto.randomUUID()}`,
+          connectionConfig: config,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isActive: true,
+        },
+        client: client,
       };
-      return connection;
     } catch (error) {
       await client.end();
       throw new Error(`Failed to connect to PostgreSQL: ${error}`);
     }
   }
 
-  async getServerVersion(connection: Connection): Promise<string> {
-    const pgConnection = connection as PostgreSQLConnection;
+  async getServerVersion(client: Client): Promise<string> {
     try {
-      const res = await pgConnection.client.query('SELECT version()');
+      const res = await client.query('SELECT version()');
       const version = res.rows[0]?.version || 'Unknown';
       return version;
     } catch (error) {
@@ -49,13 +52,30 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
     }
   }
 
-  async closeConnection(connection: Connection): Promise<boolean> {
-    const pgConnection = connection as PostgreSQLConnection;
-    this._logger.info(`Closing PostgreSQL connection for ${pgConnection.connectionId}`);
+  async executeQuery(client: Client, query: string): Promise<QueryResult> {
     try {
-      if (pgConnection.client) {
-        await pgConnection.client.end();
-      }
+      const res = await client.query(query);
+      return {
+        success: true,
+        message: 'Query executed successfully',
+        result: {
+          rows: res.rows,
+          rowCount: res.rowCount,
+          fields: res.fields,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to execute query: ${error}`,
+      };
+    }
+  }
+
+  async closeConnection(connection: Connection, client: Client): Promise<boolean> {
+    this._logger.info(`Closing PostgreSQL connection for ${connection.connectionId}`);
+    try {
+      await client.end();
       connection.isActive = false;
       connection.updatedAt = new Date();
       return true;

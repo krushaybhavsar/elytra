@@ -1,4 +1,4 @@
-import { Connection } from '../database/types';
+import { Connection } from '../database/types/plugin.types';
 
 export const schemaDefaults = {
   connections: [] as Connection[],

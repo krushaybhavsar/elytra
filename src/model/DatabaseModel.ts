@@ -28,3 +28,13 @@ export interface ConnectionResult {
   message: string;
   connectionTime?: number;
 }
+
+export interface QueryResult {
+  success: boolean;
+  message: string;
+  result?: {
+    rows: any[];
+    rowCount: number | null;
+    fields: any;
+  };
+}
