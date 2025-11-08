@@ -8,6 +8,7 @@
 
 ### An open-source, AI-powered database management tool.
 
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/952d3974-d388-4523-bf21-d20d5fc88a58" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/e38d0158-9d9b-4198-a661-c28dab35eec5" />
+
 
 </div>
