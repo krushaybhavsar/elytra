@@ -47,7 +47,7 @@ export class DatabaseConnectionManager {
       }
       return pool;
     } else {
-      throw new Error(`Connection ${connectionId} not found`);
+      throw new Error(`Connection ${connectionId} not found.`);
     }
   }
 
@@ -64,7 +64,7 @@ export class DatabaseConnectionManager {
         connection,
         result: {
           success: true,
-          message: 'Connection created successfully',
+          message: 'Connection created successfully.',
         },
       };
     } catch (error: any) {
@@ -122,10 +122,10 @@ export class DatabaseConnectionManager {
         }
       }
     } else {
-      this._logger.warn(`Connection ${connectionId} not found`);
+      this._logger.warn(`Connection ${connectionId} not found.`);
       return {
         success: false,
-        message: `Connection ${connectionId} not found`,
+        message: `Connection ${connectionId} not found.`,
       };
     }
   }
@@ -145,7 +145,7 @@ export class DatabaseConnectionManager {
         storageService.set(STORE_KEYS.CONNECTIONS, Array.from(this.connections.values()));
       }
     } else {
-      this._logger.warn(`Connection ${connectionId} not found`);
+      this._logger.warn(`Connection ${connectionId} not found.`);
     }
   }
 
@@ -159,7 +159,7 @@ export class DatabaseConnectionManager {
 
   async updateConnection(connectionId: string, connection: Connection): Promise<void> {
     if (connectionId !== connection.connectionId) {
-      this._logger.warn('Connection ID in path and body do not match');
+      this._logger.warn('Connection ID in path and body do not match.');
       return;
     }
     this.connections.set(connection.connectionId, connection);

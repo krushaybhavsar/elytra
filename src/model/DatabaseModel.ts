@@ -36,5 +36,6 @@ export interface QueryResult {
     rows: any[];
     rowCount: number | null;
     fields: any;
+    executionTimeMs: number;
   };
 }

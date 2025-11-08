@@ -67,20 +67,24 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
     let client: PoolClient | null = null;
     try {
       client = await pool.connect();
+      const startTime = process.hrtime.bigint(); // high-resolution timer
       const res = await client.query(query);
+      const endTime = process.hrtime.bigint();
+      const executionTimeMs = Number(endTime - startTime) / 1_000_000;
       return {
         success: true,
-        message: 'Query executed successfully',
+        message: 'Query executed successfully.',
         result: {
           rows: res.rows,
           rowCount: res.rowCount,
           fields: res.fields,
+          executionTimeMs,
         },
       };
     } catch (error) {
       return {
         success: false,
-        message: `${error}`,
+        message: `Error: Failed to run sql query. ${error}`,
       };
     } finally {
       if (client) {
@@ -108,7 +112,7 @@ export class PostgreSQLConnectionManager implements DatabasePluginConnectionMana
       await client.query('SELECT 1');
       return true;
     } catch (error) {
-      this._logger.warn('Connection health check failed', error);
+      this._logger.warn('Connection health check failed,', error);
       return false;
     } finally {
       if (client) {

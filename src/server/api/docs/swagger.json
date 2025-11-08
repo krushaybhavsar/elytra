@@ -124,6 +124,10 @@
 					},
 					"result": {
 						"properties": {
+							"executionTimeMs": {
+								"type": "number",
+								"format": "double"
+							},
 							"fields": {},
 							"rowCount": {
 								"type": "number",
@@ -136,6 +140,7 @@
 							}
 						},
 						"required": [
+							"executionTimeMs",
 							"fields",
 							"rowCount",
 							"rows"

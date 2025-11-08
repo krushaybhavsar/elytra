@@ -71,7 +71,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "success": {"dataType":"boolean","required":true},
             "message": {"dataType":"string","required":true},
-            "result": {"dataType":"nestedObjectLiteral","nestedProperties":{"fields":{"dataType":"any","required":true},"rowCount":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"rows":{"dataType":"array","array":{"dataType":"any"},"required":true}}},
+            "result": {"dataType":"nestedObjectLiteral","nestedProperties":{"executionTimeMs":{"dataType":"double","required":true},"fields":{"dataType":"any","required":true},"rowCount":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},"rows":{"dataType":"array","array":{"dataType":"any"},"required":true}}},
         },
         "additionalProperties": true,
     },
