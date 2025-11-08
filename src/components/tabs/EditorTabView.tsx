@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { dataSource } from '@/services/service.config';
 import { QueryResult } from '@/model/DatabaseModel';
 import QueryResultPanel from './QueryResultPanel';
+import { splitSqlStatements } from '@/utils/sql-utils';
 
 // @ts-ignore
 self.MonacoEnvironment = {
@@ -25,6 +26,13 @@ interface EditorTabViewProps {
   data: string;
   onChange?: (value: string) => void;
   onTabDataChange?: (tabId: string, value: string) => void;
+}
+
+export interface StatementData {
+  index: number;
+  loading: boolean;
+  statement: string;
+  result?: QueryResult;
 }
 
 const modelCache = new Map<
@@ -51,8 +59,8 @@ const EditorTabView = (props: EditorTabViewProps) => {
   const onTabDataChangeRef = useRef(props.onTabDataChange);
   const { tabId, data, onChange, onTabDataChange } = props;
   const [panelHeight, setPanelHeight] = useState(0);
-  const [loadingResult, setLoadingResult] = useState(false);
-  const [queryResult, setQueryResult] = useState<QueryResult>();
+  // const [queryResults, setQueryResults] = useState<QueryResult[]>([]);
+  const [statementData, setStatementData] = useState<StatementData[]>([]);
   const PANEL_EXPAND_THRESHOLD = 50;
   const PANEL_EXPAND_HEIGHT = 375;
 
@@ -104,19 +112,29 @@ const EditorTabView = (props: EditorTabViewProps) => {
 
   const handleRunSqlQuery = async () => {
     if (!editorRef.current) return;
-    setLoadingResult(true);
     const value = editorRef.current.getValue();
-    dataSource
-      .executeQuery(props.connectionId, value)
-      .then((res) => {
-        setQueryResult(res);
-        if (panelHeight < PANEL_EXPAND_THRESHOLD) {
-          setPanelHeight(PANEL_EXPAND_HEIGHT);
-        }
-      })
-      .finally(() => {
-        setLoadingResult(false);
-      });
+    const statements = splitSqlStatements(value);
+    if (statements.length === 0) return;
+
+    setStatementData(
+      statements.map((statement, index) => ({
+        index,
+        loading: true,
+        statement,
+      })),
+    );
+
+    if (statements.length > 0 && panelHeight < PANEL_EXPAND_THRESHOLD) {
+      setPanelHeight(PANEL_EXPAND_HEIGHT);
+    }
+
+    for (let i = 0; i < statements.length; i++) {
+      const statement = statements[i];
+      const res = await dataSource.executeQuery(props.connectionId, statement);
+      setStatementData((prev) =>
+        prev.map((item) => (item.index === i ? { ...item, loading: false, result: res } : item)),
+      );
+    }
   };
 
   return (
@@ -140,8 +158,7 @@ const EditorTabView = (props: EditorTabViewProps) => {
       <QueryResultPanel
         panelHeight={panelHeight}
         onPanelHeightChange={setPanelHeight}
-        loading={loadingResult}
-        queryResult={queryResult}
+        statementData={statementData}
       />
     </div>
   );
