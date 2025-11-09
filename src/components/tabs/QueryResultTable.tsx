@@ -54,17 +54,15 @@ const QueryResultTable = (props: QueryResultTableProps) => {
     return [];
   }, [fields, rows]);
 
-  const MIN_COLUMN_WIDTH = 80;
   const MAX_INITIAL_WIDTH = 400;
-  const PADDING = 16; // p-2 = 8px on each side
+  const HEADER_PADDING = 48;
+  const CELL_PADDING = 32;
 
-  // Helper function to measure text width
   const measureTextWidth = (text: string, isHeader: boolean = false): number => {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    if (!context) return text.length * 6; // Fallback estimation
+    if (!context) return text.length * 8;
 
-    // Match the font styles from the table
     context.font = isHeader
       ? 'bold 12px ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace'
       : '12px ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
@@ -73,32 +71,36 @@ const QueryResultTable = (props: QueryResultTableProps) => {
     return metrics.width;
   };
 
-  // Calculate optimal width for a column
+  const calculateMinColumnWidth = useCallback((columnName: string): number => {
+    const headerWidth = measureTextWidth(columnName, true);
+    return Math.max(80, headerWidth + HEADER_PADDING);
+  }, []);
   const calculateColumnWidth = useCallback(
     (columnName: string): number => {
-      let maxWidth = 0;
+      const minWidth = calculateMinColumnWidth(columnName);
+      let maxWidth = minWidth;
 
-      // Measure header text
-      const headerWidth = measureTextWidth(columnName, true);
-      maxWidth = Math.max(maxWidth, headerWidth);
-
-      // Measure all cell values in this column
       const field = fields?.find((f: any) => f.name === columnName);
       rows.forEach((row) => {
         const value = row[columnName];
         const formattedValue = formatCellValue(value, field);
         const cellWidth = measureTextWidth(formattedValue, false);
-        maxWidth = Math.max(maxWidth, cellWidth);
+        maxWidth = Math.max(maxWidth, cellWidth + CELL_PADDING);
       });
 
-      // Add padding and ensure minimum width
-      const totalWidth = maxWidth + PADDING;
-      return Math.max(MIN_COLUMN_WIDTH, Math.min(totalWidth, MAX_INITIAL_WIDTH));
+      return Math.max(minWidth, Math.min(maxWidth, MAX_INITIAL_WIDTH));
     },
-    [rows, fields],
+    [rows, fields, calculateMinColumnWidth],
   );
 
-  // Calculate initial column widths based on content
+  const minColumnWidths = useMemo(() => {
+    const widths: Record<string, number> = {};
+    columnNames.forEach((name) => {
+      widths[name] = calculateMinColumnWidth(name);
+    });
+    return widths;
+  }, [columnNames, calculateMinColumnWidth]);
+
   const initialColumnWidths = useMemo(() => {
     const widths: Record<string, number> = {};
     columnNames.forEach((name) => {
@@ -121,7 +123,7 @@ const QueryResultTable = (props: QueryResultTableProps) => {
     e.stopPropagation();
     setResizingColumn(columnName);
     setStartX(e.clientX);
-    setStartWidth(columnWidths[columnName] || MIN_COLUMN_WIDTH);
+    setStartWidth(columnWidths[columnName] || minColumnWidths[columnName] || 80);
   };
 
   const handleDoubleClick = (e: React.MouseEvent, columnName: string) => {
@@ -139,7 +141,8 @@ const QueryResultTable = (props: QueryResultTableProps) => {
 
     const handleMouseMove = (e: MouseEvent) => {
       const diff = e.clientX - startX;
-      const newWidth = Math.max(MIN_COLUMN_WIDTH, startWidth + diff);
+      const minWidth = minColumnWidths[resizingColumn] || 80;
+      const newWidth = Math.max(minWidth, startWidth + diff);
       setColumnWidths((prev) => ({
         ...prev,
         [resizingColumn]: newWidth,
@@ -161,22 +164,21 @@ const QueryResultTable = (props: QueryResultTableProps) => {
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     };
-  }, [resizingColumn, startX, startWidth]);
+  }, [resizingColumn, startX, startWidth, minColumnWidths]);
 
-  // Update widths when columns change (add new columns, but preserve manual resizes)
   useEffect(() => {
     setColumnWidths((prev) => {
       const updated = { ...prev };
       let hasChanges = false;
       columnNames.forEach((name) => {
         if (!updated[name]) {
-          updated[name] = initialColumnWidths[name] || MIN_COLUMN_WIDTH;
+          updated[name] = initialColumnWidths[name] || minColumnWidths[name] || 80;
           hasChanges = true;
         }
       });
       return hasChanges ? updated : prev;
     });
-  }, [columnNames, initialColumnWidths]);
+  }, [columnNames, initialColumnWidths, minColumnWidths]);
 
   if (rows.length === 0) {
     return (
@@ -189,7 +191,6 @@ const QueryResultTable = (props: QueryResultTableProps) => {
   const [tableHeight, setTableHeight] = useState<number>(0);
   const [handlePositions, setHandlePositions] = useState<Record<string, number>>({});
 
-  // Measure table height
   useEffect(() => {
     if (tableRef.current) {
       const updateHeight = () => {
@@ -204,12 +205,10 @@ const QueryResultTable = (props: QueryResultTableProps) => {
     }
   }, [rows, columnWidths]);
 
-  // Measure actual column border positions for accurate handle alignment
   useEffect(() => {
     if (!tableRef.current || !wrapperRef.current) return;
 
     const updatePositions = () => {
-      // tableRef points to the actual table element (ref is forwarded to table)
       const table = tableRef.current;
       const wrapper = wrapperRef.current;
       if (!table || !wrapper) return;
@@ -219,8 +218,6 @@ const QueryResultTable = (props: QueryResultTableProps) => {
 
       const positions: Record<string, number> = {};
       const cells = Array.from(headerRow.children) as HTMLTableCellElement[];
-
-      // Calculate positions relative to the wrapper div
       const wrapperRect = wrapper.getBoundingClientRect();
       const tableRect = table.getBoundingClientRect();
       const tableOffsetLeft = tableRect.left - wrapperRect.left;
@@ -228,8 +225,6 @@ const QueryResultTable = (props: QueryResultTableProps) => {
       columnNames.forEach((columnName, index) => {
         if (index < columnNames.length - 1 && cells[index]) {
           const cell = cells[index];
-          // Position at the right edge of the cell (where the border is)
-          // offsetLeft is relative to the table, so add table's offset to wrapper
           const cellRightEdge = tableOffsetLeft + cell.offsetLeft + cell.offsetWidth;
           positions[columnName] = cellRightEdge;
         }
@@ -238,12 +233,10 @@ const QueryResultTable = (props: QueryResultTableProps) => {
       setHandlePositions(positions);
     };
 
-    // Use requestAnimationFrame to ensure DOM is fully rendered
     const timeoutId = setTimeout(() => {
       updatePositions();
     }, 0);
 
-    // Also update on resize and when table changes
     const resizeObserver = new ResizeObserver(() => {
       updatePositions();
     });
@@ -256,35 +249,40 @@ const QueryResultTable = (props: QueryResultTableProps) => {
       clearTimeout(timeoutId);
       resizeObserver.disconnect();
     };
-  }, [columnNames, columnWidths, rows, tableHeight]);
+  }, [columnNames, columnWidths, minColumnWidths, rows, tableHeight]);
 
   return (
-    <div
-      ref={containerRef}
-      className='w-full h-full overflow-auto border border-border rounded-md relative'
-    >
+    <div ref={containerRef} className='w-full h-full max-h-[300px] overflow-auto relative'>
       <div
         ref={wrapperRef}
-        className='relative inline-block'
+        className='relative inline-block rounded-md overflow-hidden border border-border'
         style={{ minHeight: tableHeight || 'auto' }}
       >
-        <Table ref={tableRef}>
+        <Table
+          ref={tableRef}
+          style={{
+            tableLayout: 'fixed',
+            width: Object.values(columnWidths).reduce((sum, width) => sum + width, 0) + 'px',
+          }}
+        >
           <TableHeader>
             <TableRow>
-              {columnNames.map((columnName) => (
-                <TableHead
-                  key={columnName}
-                  className='!bg-muted/50 !hover:bg-muted/50'
-                  style={{
-                    width: `${columnWidths[columnName] || MIN_COLUMN_WIDTH}px`,
-                    minWidth: MIN_COLUMN_WIDTH,
-                  }}
-                >
-                  <div className='pr-4 overflow-hidden text-ellipsis whitespace-nowrap'>
-                    {columnName}
-                  </div>
-                </TableHead>
-              ))}
+              {columnNames.map((columnName) => {
+                const minWidth = minColumnWidths[columnName] || 80;
+                return (
+                  <TableHead
+                    key={columnName}
+                    className='!bg-muted/50 !hover:bg-muted/50'
+                    style={{
+                      width: `${columnWidths[columnName] || minWidth}px`,
+                      minWidth: `${minWidth}px`,
+                      maxWidth: `${columnWidths[columnName] || minWidth}px`,
+                    }}
+                  >
+                    <div className='pr-4 overflow-hidden whitespace-nowrap'>{columnName}</div>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -293,14 +291,18 @@ const QueryResultTable = (props: QueryResultTableProps) => {
                 {columnNames.map((columnName) => {
                   const field = fields?.find((f: any) => f.name === columnName);
                   const value = row[columnName];
+                  const minWidth = minColumnWidths[columnName] || 80;
                   return (
                     <TableCell
                       key={columnName}
                       style={{
-                        width: `${columnWidths[columnName] || MIN_COLUMN_WIDTH}px`,
-                        minWidth: MIN_COLUMN_WIDTH,
+                        width: `${columnWidths[columnName] || minWidth}px`,
+                        minWidth: `${minWidth}px`,
+                        maxWidth: `${columnWidths[columnName] || minWidth}px`,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
                       }}
-                      title={formatCellValue(value, field)} // Show full text on hover
+                      title={formatCellValue(value, field)}
                     >
                       {formatCellValue(value, field)}
                     </TableCell>
@@ -310,22 +312,19 @@ const QueryResultTable = (props: QueryResultTableProps) => {
             ))}
           </TableBody>
         </Table>
-        {/* Single resize handle per column, spanning full table height */}
         {columnNames.map((columnName, index) => {
           if (index >= columnNames.length - 1) return null;
-
-          // Use measured position if available, otherwise fall back to calculated
           const measuredPosition = handlePositions[columnName];
           const position =
             measuredPosition ??
             (() => {
               let pos = 0;
               for (let i = 0; i <= index; i++) {
-                pos += columnWidths[columnNames[i]] || MIN_COLUMN_WIDTH;
+                const colName = columnNames[i];
+                pos += columnWidths[colName] || minColumnWidths[colName] || 80;
               }
               return pos;
             })();
-
           return (
             <div
               key={`resize-${columnName}`}

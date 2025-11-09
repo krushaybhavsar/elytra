@@ -143,9 +143,7 @@ const QueryResultPanel = (props: QueryResultPanelProps) => {
                     data.result.result &&
                     data.result.result.rows &&
                     data.result.result.rows.length > 0 && (
-                      <div className='h-[300px] min-h-[200px]'>
-                        <QueryResultTable data={data.result.result} />
-                      </div>
+                      <QueryResultTable data={data.result.result} />
                     )}
                   {data.result &&
                     data.result.success &&

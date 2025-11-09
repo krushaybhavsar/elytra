@@ -35,20 +35,20 @@ const CustomResizeHandle = React.forwardRef<HTMLDivElement, any>((props, ref) =>
   const getPositionClasses = () => {
     switch (handleAxis) {
       case 'n':
-        return 'left-0 right-0 top-0 h-1 cursor-ns-resize';
+        return 'left-0 right-0 top-0 h-2 cursor-ns-resize';
       case 's':
-        return 'left-0 right-0 bottom-0 h-1 cursor-ns-resize';
+        return 'left-0 right-0 bottom-0 h-2 cursor-ns-resize';
       case 'e':
-        return 'right-0 top-0 bottom-0 w-1 cursor-ew-resize';
+        return 'right-0 top-0 bottom-0 w-2 cursor-ew-resize';
       case 'w':
-        return 'left-0 top-0 bottom-0 w-1 cursor-ew-resize';
+        return 'left-0 top-0 bottom-0 w-2 cursor-ew-resize';
       default:
-        return 'right-0 top-0 bottom-0 w-1 cursor-ew-resize';
+        return 'right-0 top-0 bottom-0 w-2 cursor-ew-resize';
     }
   };
   return (
     <div
-      className={`absolute ${getPositionClasses()} hover:bg-border active:bg-border transition-all duration-200 z-10`}
+      className={`absolute ${getPositionClasses()} transition-all duration-200 z-10`}
       ref={ref}
       {...restProps}
     >
@@ -76,8 +76,8 @@ const CustomResizeHandle = React.forwardRef<HTMLDivElement, any>((props, ref) =>
           onMouseMove={(e) => {
             e.stopPropagation();
           }}
-          className={`absolute border-border border-[1px] !cursor-pointer flex justify-center items-center ${
-            handleAxis === 'n' ? 'h-4 w-8 left-1/2 -translate-x-1/2 bottom-1 rounded-t-md' : 'todo'
+          className={`bg-background absolute border-border border-[1px] !cursor-pointer flex justify-center items-center ${
+            handleAxis === 'n' ? 'h-4 w-8 left-1/2 -translate-x-1/2 bottom-2 rounded-t-md' : 'todo'
           }`}
         >
           {handleAxis === 'n' &&
