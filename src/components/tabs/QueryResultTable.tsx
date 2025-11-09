@@ -1,15 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { TypographyHint } from '@/components/ui/typography';
 
 type QueryResultTableProps = {
   data: {
@@ -19,122 +17,87 @@ type QueryResultTableProps = {
   };
 };
 
+// Helper function to format cell values based on data type
+const formatCellValue = (value: any, field?: any): string => {
+  if (value === null || value === undefined) {
+    return 'NULL';
+  }
+
+  // Handle date/time types (PostgreSQL timestamp types: 1114, 1184)
+  if (field?.dataTypeID === 1114 || field?.dataTypeID === 1184) {
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleString();
+      }
+    } catch {
+      // Fall through to default formatting
+    }
+  }
+
+  // Handle numeric types (PostgreSQL integer: 23, bigint: 20, numeric: 1700, etc.)
+  if (
+    typeof value === 'number' ||
+    (field && [23, 20, 21, 700, 701, 1700].includes(field.dataTypeID))
+  ) {
+    return String(value);
+  }
+
+  // Handle boolean types (PostgreSQL boolean: 16)
+  if (typeof value === 'boolean' || field?.dataTypeID === 16) {
+    return value ? 'true' : 'false';
+  }
+
+  // Default: convert to string
+  return String(value);
+};
+
 const QueryResultTable = (props: QueryResultTableProps) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const { rows, fields } = props.data;
 
-  const columns = useMemo<ColumnDef<any>[]>(() => {
-    let fieldNames: string[] = [];
-
-    if (props.data.fields && Array.isArray(props.data.fields)) {
-      fieldNames = props.data.fields.map((field: any) => {
-        return field.name || field.fieldName || String(field);
-      });
-    } else if (props.data.rows && props.data.rows.length > 0) {
-      fieldNames = Object.keys(props.data.rows[0]);
+  // Get column names from fields or from first row keys
+  const columnNames = React.useMemo<string[]>(() => {
+    if (fields && fields.length > 0) {
+      return fields.map((field: any) => field.name);
     }
-
-    if (fieldNames.length === 0) {
-      return [];
+    if (rows.length > 0) {
+      return Object.keys(rows[0]);
     }
+    return [];
+  }, [fields, rows]);
 
-    return fieldNames.map((fieldName) => {
-      return {
-        accessorKey: fieldName,
-        header: ({ column }) => {
-          return (
-            <Button
-              variant='icon'
-              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-              className='h-8 px-2 -ml-2'
-            >
-              {fieldName}
-              <span className='ml-2'>
-                {column.getIsSorted() === 'asc' ? (
-                  <ArrowUp className='h-4 w-4' />
-                ) : column.getIsSorted() === 'desc' ? (
-                  <ArrowDown className='h-4 w-4' />
-                ) : (
-                  <ArrowUpDown className='h-4 w-4 opacity-50' />
-                )}
-              </span>
-            </Button>
-          );
-        },
-        cell: ({ row }) => {
-          const value = row.getValue(fieldName);
-          if (value === null || value === undefined) {
-            return <span className='text-muted-foreground'>[NULL]</span>;
-          }
-          if (typeof value === 'object') {
-            return <span className='font-mono text-xs'>{JSON.stringify(value)}</span>;
-          }
-          // Handle boolean values
-          if (typeof value === 'boolean') {
-            return <span>{value ? 'true' : 'false'}</span>;
-          }
-          // Handle dates
-          if (value instanceof Date) {
-            return <span>{value.toISOString()}</span>;
-          }
-          // Default: convert to string
-          return <span>{String(value)}</span>;
-        },
-        enableSorting: true,
-      };
-    });
-  }, [props.data.fields, props.data.rows]);
-
-  const table = useReactTable({
-    data: props.data.rows || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-  });
+  if (rows.length === 0) {
+    return (
+      <div className='flex items-center justify-center h-full w-full'>
+        <TypographyHint className='text-muted-foreground'>No data to display</TypographyHint>
+      </div>
+    );
+  }
 
   return (
-    <div className='w-full h-full overflow-auto'>
-      <div className='rounded-md border'>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
+    <div className='w-full h-full overflow-auto border border-border rounded-md'>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {columnNames.map((columnName) => (
+              <TableHead key={columnName} className='bg-muted/30'>
+                {columnName}
+              </TableHead>
             ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {columnNames.map((columnName) => {
+                const field = fields?.find((f: any) => f.name === columnName);
+                const value = row[columnName];
+                return <TableCell key={columnName}>{formatCellValue(value, field)}</TableCell>;
+              })}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
