@@ -5,7 +5,11 @@ import { cn } from '@/utils/tailwind';
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className='relative w-full overflow-auto'>
-      <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+      <table
+        ref={ref}
+        className={cn('w-full caption-bottom text-sm table-fixed', className)}
+        {...props}
+      />
     </div>
   ),
 );
@@ -67,7 +71,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-12 px-4 text-left align-middle font-mono font-bold text-primary !text-xs [&:has([role=checkbox])]:pr-0',
+      'p-2 text-left align-middle font-mono font-bold text-primary !text-xs border-r-[1px] border-border [&:has([role=checkbox])]:pr-0',
       className,
     )}
     {...props}
@@ -82,7 +86,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      'p-4 align-middle font-mono text-lighter-text !text-xs [&:has([role=checkbox])]:pr-0',
+      'p-2 align-middle font-mono text-lighter-text !text-xs border-r-[1px] border-border overflow-hidden text-ellipsis whitespace-nowrap [&:has([role=checkbox])]:pr-0',
       className,
     )}
     {...props}
