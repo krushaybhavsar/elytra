@@ -7,6 +7,7 @@ export function exposeWindowContext() {
     maximize: () => ipcRenderer.invoke(WINDOW_CHANNELS.MAXIMIZE),
     close: () => ipcRenderer.invoke(WINDOW_CHANNELS.CLOSE),
     rename: (newName: string) => ipcRenderer.invoke(WINDOW_CHANNELS.RENAME, newName),
+    getPlatform: () => ipcRenderer.invoke(WINDOW_CHANNELS.GET_PLATFORM),
     onDeepLink: (callback: (url: string) => void) => {
       ipcRenderer.on(WINDOW_CHANNELS.DEEP_LINK, (_event, url) => callback(url));
       return () => {

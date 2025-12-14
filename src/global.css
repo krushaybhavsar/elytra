@@ -252,6 +252,8 @@
   align-items: center;
   justify-content: end;
   gap: 8px;
+  width: 100%;
+  min-height: 28px;
 }
 
 .titlebar > #titlebar-title {

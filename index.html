@@ -1,21 +1,24 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Elytra</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self';" />
-    <link rel="stylesheet" href="/src/global.css" />
-  </head>
-  <body>
-    <nav class="titlebar" style="-webkit-app-region: drag">
-      <!-- <p id="titlebar-title"></p> -->
-      <div class="titlebar-buttons">
-        <button id="minimize"></button>
-        <button id="maximize"></button>
-        <button id="close"></button>
-      </div>
-    </nav>
-    <div id="app" />
-    <script type="module" src="/src/renderer.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Elytra</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self';" />
+  <link rel="stylesheet" href="/src/global.css" />
+</head>
+
+<body>
+  <nav class="titlebar" style="-webkit-app-region: drag">
+    <!-- <p id="titlebar-title"></p> -->
+    <div class="titlebar-buttons">
+      <button id="minimize"></button>
+      <button id="maximize"></button>
+      <button id="close"></button>
+    </div>
+  </nav>
+  <div id="app" />
+  <script type="module" src="/src/renderer.ts"></script>
+</body>
+
 </html>

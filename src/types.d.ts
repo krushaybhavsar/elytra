@@ -18,6 +18,7 @@ interface ElectronWindow {
   maximize: () => Promise<void>;
   close: () => Promise<void>;
   rename: (newName: string) => Promise<void>;
+  getPlatform: () => Promise<string>;
   onDeepLink: (callback: (url: string) => void) => () => void;
 }
 

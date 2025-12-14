@@ -127,7 +127,7 @@ if (!gotTheLock) {
 
   function createWindow() {
     const preload = path.join(__dirname, 'preload.js');
-    const newWindow = new BrowserWindow({
+    const windowOptions: Electron.BrowserWindowConstructorOptions = {
       title: 'Elytra',
       minWidth: 800,
       minHeight: 500,
@@ -140,7 +140,16 @@ if (!gotTheLock) {
         nodeIntegration: false,
         contextIsolation: true,
       },
-    });
+    };
+
+    // Add titleBarOverlay for macOS to position traffic light buttons
+    if (isMac) {
+      windowOptions.trafficLightPosition = {
+        x: 8, y: 10
+      };
+    }
+
+    const newWindow = new BrowserWindow(windowOptions);
 
     newWindow.webContents.setZoomLevel(0);
     newWindow.webContents.setVisualZoomLevelLimits(1, 1);

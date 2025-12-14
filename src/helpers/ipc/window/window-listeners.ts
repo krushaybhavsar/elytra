@@ -18,6 +18,9 @@ export function addWindowEventListeners(mainWindow: BrowserWindow) {
   ipcMain.handle(WINDOW_CHANNELS.RENAME, (event, newName: string) => {
     mainWindow.setTitle(newName);
   });
+  ipcMain.handle(WINDOW_CHANNELS.GET_PLATFORM, () => {
+    return process.platform;
+  });
 }
 
 export function sendDeepLinkUrl(mainWindow: BrowserWindow, url: string) {
