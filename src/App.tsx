@@ -34,12 +34,10 @@ export default function App() {
             {loading ? (
               <LoadingScreen />
             ) : (
-              <>
-                <Routes>
-                  <Route path={AppScreens.MAIN} element={<DashboardScreen />} />
-                  <Route path='*' element={<Navigate to={AppScreens.MAIN} />} />
-                </Routes>
-              </>
+              <Routes>
+                <Route path={AppScreens.MAIN} element={<DashboardScreen />} />
+                <Route path='*' element={<Navigate to={AppScreens.MAIN} />} />
+              </Routes>
             )}
             <Toaster richColors />
           </HashRouter>

@@ -140,7 +140,7 @@ const EditorTabView = (props: EditorTabViewProps) => {
   return (
     <div className='absolute h-full w-full max-w-[100%-78px] overflow-clip flex flex-col'>
       <div className='flex-shrink-0 h-8 border-b border-b-border bg-background shadow-sm z-2 flex items-center justify-start px-1 gap-2'>
-        <Button variant='icon' size='icon' className='!p-0 !size-6' onClick={handleRunSqlQuery}>
+        <Button variant='ghost' size='icon' className='!p-0 !size-6' onClick={handleRunSqlQuery}>
           <Play className='size-4' />
         </Button>
       </div>

@@ -35,7 +35,7 @@ export class AppMapRoute {
     const {
       showTitleBar = true,
       showTitleText = true,
-      titleBarColor = 'darker-background',
+      titleBarColor = 'sidebar',
       titleTextColor = 'lighter-text',
       additionalStyles = 'relative',
     } = titleBarSettings;

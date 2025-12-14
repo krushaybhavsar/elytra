@@ -82,9 +82,9 @@ const CustomResizeHandle = React.forwardRef<HTMLDivElement, any>((props, ref) =>
         >
           {handleAxis === 'n' &&
             (height > minHeight ? (
-              <ChevronDown className='stroke-lighter-text' strokeWidth={1} size={20} />
+              <ChevronDown className='stroke-outline' strokeWidth={1} size={20} />
             ) : (
-              <ChevronUp className='stroke-lighter-text' strokeWidth={1} size={20} />
+              <ChevronUp className='stroke-muted' strokeWidth={1} size={20} />
             ))}
         </div>
       )}

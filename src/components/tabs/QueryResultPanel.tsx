@@ -91,10 +91,10 @@ const QueryResultPanel = (props: QueryResultPanelProps) => {
                         className={
                           '!font-mono ' +
                           (data.loading
-                            ? 'bg-warning/10 text-warning'
+                            ? 'bg-warning/10 text-warning hover:bg-warning/10'
                             : data.result && data.result.success
-                              ? 'bg-success/10 text-success'
-                              : 'bg-destructive/10 text-destructive')
+                              ? 'bg-success/10 text-success hover:bg-success/10'
+                              : 'bg-destructive/10 text-destructive hover:bg-destructive/10')
                         }
                       >
                         {data.loading
@@ -132,8 +132,8 @@ const QueryResultPanel = (props: QueryResultPanelProps) => {
                 {/* Result Content */}
                 <div className='p-2'>
                   {data.result && !data.result.success && (
-                    <div className='flex flex-col w-full gap-1 mb-2'>
-                      <TypographyP className='!font-mono text-destructive'>
+                    <div className='flex flex-col w-full gap-1 py-2 px-1'>
+                      <TypographyP className='!text-[14px] !font-mono text-muted-foreground'>
                         {data.result.message}
                       </TypographyP>
                     </div>
@@ -150,7 +150,7 @@ const QueryResultPanel = (props: QueryResultPanelProps) => {
                     data.result.result &&
                     (!data.result.result.rows || data.result.result.rows.length === 0) && (
                       <div className='flex flex-col w-full gap-1 py-2'>
-                        <TypographyP className='!font-mono text-muted-foreground'>
+                        <TypographyP className='!text-[14px] !font-mono text-muted-foreground'>
                           {data.result.message}
                         </TypographyP>
                       </div>

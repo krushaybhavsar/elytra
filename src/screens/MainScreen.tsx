@@ -32,7 +32,7 @@ const MainScreen = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setDialogOpen}>
-      <div className='w-full h-full flex bg-darker-background'>
+      <div className='w-full h-full flex bg-sidebar'>
         <NavigationBar activeTabScreen={activeTabScreen} setActiveTabScreen={setActiveTabScreen} />
         <div className='flex flex-row w-full h-full rounded-tl-xl border-border border-[1px] bg-background overflow-clip'>
           <Sidebar activeTabScreen={activeTabScreen} />

@@ -1,7 +1,8 @@
 import React from 'react';
 
 export function TypographyH1(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'leading-[1.25] scroll-m-20 text-4xl font-family text-primary ';
+  const styles =
+    'leading-[1] tracking-[-1.92px] scroll-m-20 text-[84px] font-roobert font-light text-foreground ';
   return (
     <h1 {...props} className={styles + props.className}>
       {props.children}
@@ -10,7 +11,7 @@ export function TypographyH1(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyH2(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'leading-[1.25] scroll-m-20 text-[40px] font-family text-primary font-[400] ';
+  const styles = 'leading-[1.25] scroll-m-20 text-[40px] font-roobert text-foreground font-[400] ';
   return (
     <h2 {...props} className={styles + props.className}>
       {props.children}
@@ -19,7 +20,7 @@ export function TypographyH2(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyH3(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'scroll-m-20 text-2xl font-normal font-family text-primary ';
+  const styles = 'scroll-m-20 text-2xl font-normal font-roobert text-foreground ';
   return (
     <h3 {...props} className={styles + props.className}>
       {props.children}
@@ -28,7 +29,7 @@ export function TypographyH3(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyH4(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'scroll-m-20 text-xl font-normal font-family text-primary ';
+  const styles = 'scroll-m-20 text-xl font-normal font-roobert text-foreground ';
   return (
     <h4 {...props} className={styles + props.className}>
       {props.children}
@@ -37,7 +38,7 @@ export function TypographyH4(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyH5(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'scroll-m-20 text-lg font-family text-primary ';
+  const styles = 'scroll-m-20 text-lg font-roobert text-foreground ';
   return (
     <h5 {...props} className={styles + props.className}>
       {props.children}
@@ -46,7 +47,7 @@ export function TypographyH5(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyP(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'font-lausanne text-lighter-text font-[200] text-[14px] leading-[1.5] ';
+  const styles = 'font-motreal text-foreground/75 text-[16px] tracking-[-0.32px] leading-[1.25] ';
   return (
     <p {...props} className={styles + props.className}>
       {props.children}
@@ -55,7 +56,7 @@ export function TypographyP(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyHint(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'font-lausanne text-lighter-text font-[200] text-[14px] leading-[1.25] ';
+  const styles = 'font-montreal text-foreground/60 font-normal text-[14px] leading-[1.25] ';
   return (
     <p {...props} className={styles + props.className}>
       {props.children}

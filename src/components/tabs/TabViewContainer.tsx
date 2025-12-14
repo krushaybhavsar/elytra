@@ -98,12 +98,12 @@ const TabViewContainer = (props: TabViewContainerProps) => {
               ))}
             </AnimatePresence>
             <motion.button
-              className='p-1 m-2 rounded-sm h-fit w-fit flex items-center justify-center hover:bg-gray-background transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none'
+              className='p-1 m-2 rounded-sm h-fit w-fit flex items-center justify-center hover:bg-accent transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none'
               onClick={newTab}
               disabled={tabs.length === MAX_TABS}
               whileTap={{ scale: 0.9 }}
             >
-              <Plus className='min-h-4 min-w-4 w-4 h-4 text-primary' />
+              <Plus className='min-h-4 min-w-4 w-4 h-4 text-foreground' />
             </motion.button>
           </Reorder.Group>
         </div>

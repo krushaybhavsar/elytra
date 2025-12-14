@@ -260,7 +260,7 @@ const PostgreSQLConnectionModal = () => {
                         <Input {...field} type={showPassword ? 'text' : 'password'} />
                         <Button
                           type='button'
-                          variant='icon'
+                          variant='ghost'
                           size='icon'
                           className='absolute right-0 top-0.5 h-full !bg-transparent'
                           onClick={() => setShowPassword(!showPassword)}

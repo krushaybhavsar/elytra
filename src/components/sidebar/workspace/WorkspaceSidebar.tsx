@@ -18,13 +18,13 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
   return (
     <div className='flex flex-col w-full h-full'>
       <div className='flex flex-row justify-between p-2 pl-4 items-center'>
-        <TypographyP>Database</TypographyP>
+        <TypographyP className='font-roobert'>Database</TypographyP>
         <div className='flex flex-row gap-2'>
           <Tooltip>
             <TooltipTrigger>
               <Button
                 asChild
-                variant='icon'
+                variant='ghost'
                 size='icon'
                 className='flex justify-center items-center !p-1 !size-6'
               >
@@ -35,7 +35,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
               <TypographyHint>{'Focus selected node'}</TypographyHint>
             </TooltipContent>
           </Tooltip>
-          <Button variant='icon' size='icon' className='!p-0 !size-6'>
+          <Button variant='ghost' size='icon' className='!p-0 !size-6'>
             <EllipsisVertical className='size-4' />
           </Button>
         </div>
@@ -49,7 +49,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     asChild
-                    variant='icon'
+                    variant='ghost'
                     size='icon'
                     className='flex justify-center items-center !p-1 !size-6'
                   >
@@ -67,7 +67,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
             <TooltipTrigger>
               <Button
                 asChild
-                variant='icon'
+                variant='ghost'
                 size='icon'
                 className='flex justify-center items-center !p-1 !size-6'
               >

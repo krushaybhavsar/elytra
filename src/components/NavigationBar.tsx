@@ -11,7 +11,7 @@ type NavigationBarProps = {
 
 const NavigationBar = (props: NavigationBarProps) => {
   return (
-    <div className='flex h-full w-18 bg-darker-background'>
+    <div className='flex h-full w-18 bg-sidebar'>
       <div className='flex flex-col w-full h-full items-center px-2 py-4 gap-4'>
         {Object.keys(NavigationBarMap).map((tabScreenName) => {
           const navTab = NavigationBarMap[tabScreenName as NavigationBarTabs];
@@ -21,15 +21,17 @@ const NavigationBar = (props: NavigationBarProps) => {
               <TooltipTrigger>
                 <Button
                   asChild
-                  variant='icon'
+                  variant='ghost'
                   size='icon'
-                  className={`disabled:opacity-100 transition-all hover:bg-darkest-background ${isActive ? 'bg-darkest-background shadow-sm' : ''}`}
+                  className={`disabled:opacity-100 transition-all hover:bg-sidebar-accent ${isActive ? 'hover:bg-sidebar-primary/90 bg-sidebar-primary' : ''}`}
                   onClick={() => props.setActiveTabScreen(tabScreenName as NavigationBarTabs)}
                   disabled={isActive}
                 >
-                  {createElement(navTab.icon, {
-                    className: `size-5 ${isActive ? 'text-primary' : 'text-lighter-text'}`,
-                  })}
+                  <div>
+                    {createElement(navTab.icon, {
+                      className: `!size-5 ${isActive ? 'text-primary-foreground' : 'text-sidebar-foreground'}`,
+                    })}
+                  </div>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side='right' align='center' sideOffset={12}>

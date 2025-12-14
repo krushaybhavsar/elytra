@@ -35,7 +35,7 @@ const Tab = (props: TabProps) => {
         transition: { duration: 0.15 },
       }}
       onPointerDown={isDisabled ? (e) => e.preventDefault() : props.onClick}
-      className={`w-full flex flex-row gap-2 h-full justify-between items-center !p-0 !px-2 border-x-[0.5px] flex-1 min-w-0 overflow-hidden relative cursor-pointer ${props.isFirst ? 'border-l-transparent border-r-border' : 'border-border'} ${props.isActive ? `bg-background` : 'bg-darker-background'}`}
+      className={`w-full flex flex-row gap-2 h-full justify-between items-center !p-0 !px-2 border-x-[0.5px] flex-1 min-w-0 overflow-hidden relative cursor-pointer ${props.isFirst ? 'border-l-transparent border-r-border' : 'border-border'} ${props.isActive ? `bg-background opacity-100` : 'bg-sidebar !opacity-50'}`}
     >
       <motion.span
         layout='position'
@@ -43,7 +43,7 @@ const Tab = (props: TabProps) => {
       >
         <span className='flex items-center gap-2'>
           {getTabIcon(props.tab.metadata.type)}
-          <TypographyHint className='!leading-0 !text-primary'>
+          <TypographyHint className='!leading-0 !text-foreground'>
             {props.tab.metadata.title}
           </TypographyHint>
         </span>
@@ -59,7 +59,7 @@ const Tab = (props: TabProps) => {
             props.onClose();
           }}
           initial={false}
-          className={`flex text-primary items-center justify-center cursor-pointer flex-shrink-0 ${props.isActive ? 'hover:bg-gray-background' : 'hover:bg-darkest-background'} rounded-sm p-0.75 transition-all duration-200`}
+          className={`flex text-foreground items-center justify-center cursor-pointer flex-shrink-0 ${props.isActive ? 'hover:bg-accent' : 'hover:bg-sidebar'} rounded-sm p-0.75 transition-all duration-200`}
         >
           <X className='min-h-4 min-w-4 w-4 h-4' />
         </motion.button>
