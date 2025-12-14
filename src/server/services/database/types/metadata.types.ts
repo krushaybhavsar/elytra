@@ -1,4 +1,3 @@
-import { Connection } from './plugin.types';
 
 // Common database metadata types
 export interface Database {
@@ -157,11 +156,11 @@ export interface Permission {
 
 export interface MetadataProvider {
   // Basic database structure
-  getDatabases(connection: Connection): Promise<Database[]>;
-  getSchemas(connection: Connection, databaseName: string): Promise<Schema[]>;
-  getTables(connection: Connection, databaseName: string, schemaName: string): Promise<Table[]>;
+  getDatabases(pool: any): Promise<Database[]>;
+  getSchemas(pool: any, databaseName: string): Promise<Schema[]>;
+  getTables(pool: any, databaseName: string, schemaName: string): Promise<Table[]>;
   getColumns(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     tableName: string,
@@ -169,22 +168,22 @@ export interface MetadataProvider {
 
   // Table-related metadata
   getIndexes(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     tableName: string,
   ): Promise<TableIndex[]>;
   getTableDDL?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     tableName: string,
   ): Promise<string>;
 
   // Database objects
-  getViews?(connection: Connection, databaseName: string, schemaName: string): Promise<View[]>;
+  getViews?(pool: any, databaseName: string, schemaName: string): Promise<View[]>;
   getView?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     viewName: string,
@@ -192,23 +191,23 @@ export interface MetadataProvider {
 
   // Database routines
   getFunctions?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
   ): Promise<DatabaseFunction[]>;
   getFunction?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     functionName: string,
   ): Promise<DatabaseFunction>;
   getProcedures?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
   ): Promise<Procedure[]>;
   getProcedure?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     procedureName: string,
@@ -216,12 +215,12 @@ export interface MetadataProvider {
 
   // Triggers
   getTriggers?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
   ): Promise<Trigger[]>;
   getTrigger?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     triggerName: string,
@@ -229,21 +228,21 @@ export interface MetadataProvider {
 
   // Other database objects (optional based on DB support)
   getSequences?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
   ): Promise<Sequence[]>;
   getSequence?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     sequenceName: string,
   ): Promise<Sequence>;
 
   // Security-related metadata
-  getUsers?(connection: Connection): Promise<DatabaseUser[]>;
+  getUsers?(pool: any): Promise<DatabaseUser[]>;
   getPermissions?(
-    connection: Connection,
+    pool: any,
     databaseName: string,
     schemaName: string,
     objectName: string,

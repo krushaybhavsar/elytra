@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu } from 'electron';
+import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron';
 import registerListeners from './helpers/ipc/listeners-register';
 import path, { resolve } from 'path';
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
@@ -89,11 +89,11 @@ if (!gotTheLock) {
 
   function getIconPath() {
     if (isWin) {
-      return './src/assets/icons/icon.ico';
+      return path.join(__dirname, 'assets', 'icons', 'icon.ico');
     } else if (isMac) {
-      return './src/assets/icons/icon.icns';
+      return path.join(__dirname, 'assets', 'icons', 'icon.icns');
     }
-    return './src/assets/icons/icon.png';
+    return path.join(__dirname, 'assets', 'icons', 'icon.png');
   }
 
   function createTray() {
@@ -145,7 +145,8 @@ if (!gotTheLock) {
     // Add titleBarOverlay for macOS to position traffic light buttons
     if (isMac) {
       windowOptions.trafficLightPosition = {
-        x: 8, y: 10
+        x: 8,
+        y: 10,
       };
     }
 
@@ -179,6 +180,14 @@ if (!gotTheLock) {
 
     if (!localExpressServer) {
       logger.error('Failed to start local server');
+    }
+
+    if (isMac) {
+      const iconPath = getIconPath();
+      const icon = nativeImage.createFromPath(iconPath);
+      if (app.dock) {
+        app.dock.setIcon(icon);
+      }
     }
 
     mainWindow = createWindow();

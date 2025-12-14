@@ -1,5 +1,4 @@
 import WinstonLogger from '@/utils/log-utils';
-import { PostgreSQLConnection } from './PostgreSQLConnectionManager';
 import {
   Database,
   DatabaseFunction,
@@ -15,7 +14,7 @@ import {
   Trigger,
   View,
 } from '../../types/metadata.types';
-import { Connection } from '../../types/plugin.types';
+import { Pool } from 'pg';
 
 export class PostgreSQLMetadataProvider implements MetadataProvider {
   private readonly _logger = WinstonLogger.getInstance().getLogger('PostgreSQLMetadataProvider');
@@ -48,10 +47,10 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
   /**
    * Get list of databases
    */
-  async getDatabases(connection: Connection): Promise<Database[]> {
+  async getDatabases(pool: Pool): Promise<Database[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query('SELECT datname FROM pg_database;');
+      const client = await pool.connect();
+      const res = await client.query('SELECT datname FROM pg_database;');
 
       const databases: Database[] = [];
       for (const row of res.rows) {
@@ -73,10 +72,10 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
   /**
    * Get list of schemas
    */
-  async getSchemas(connection: Connection, databaseName: string): Promise<Schema[]> {
+  async getSchemas(pool: Pool, databaseName: string): Promise<Schema[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query(
+      const client = await pool.connect();
+      const res = await client.query(
         'SELECT catalog_name, schema_name FROM information_schema.schemata;',
       );
 
@@ -102,13 +101,13 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get list of tables
    */
   async getTables(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
   ): Promise<Table[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query(
+      const client = await pool.connect();
+      const res = await client.query(
         'SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = $1 ORDER BY table_name',
         [schemaName],
       );
@@ -134,14 +133,14 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get table columns
    */
   async getColumns(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     tableName: string,
   ): Promise<TableColumn[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query(
+      const client = await pool.connect();
+      const res = await client.query(
         `
         SELECT 
           column_name, 
@@ -199,17 +198,16 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get table indexes
    */
   async getIndexes(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     tableName: string,
   ): Promise<TableIndex[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-
+      const client = await pool.connect();
       // First query for constraints (keys)
       const constraintSql = this.format(this.SELECT_KEY_INDEX, schemaName, tableName);
-      const constraintRes = await pgConnection.client.query(constraintSql);
+      const constraintRes = await client.query(constraintSql);
 
       const constraintMap: Record<string, string> = {};
       const foreignMap: Record<string, TableIndex> = {};
@@ -244,7 +242,7 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
 
       // Second query for indexes
       const indexSql = this.format(this.SELECT_TABLE_INDEX, schemaName, tableName);
-      const indexRes = await pgConnection.client.query(indexSql);
+      const indexRes = await client.query(indexSql);
 
       const map: Record<string, TableIndex> = { ...foreignMap };
 
@@ -298,15 +296,15 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get table view definition
    */
   async getView(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     viewName: string,
   ): Promise<View> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
+      const client = await pool.connect();
       const sql = this.format(this.VIEW_SQL, schemaName, viewName);
-      const res = await pgConnection.client.query(sql);
+      const res = await client.query(sql);
 
       const view: View = {
         name: viewName,
@@ -330,15 +328,15 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get function definition
    */
   async getFunction(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     functionName: string,
   ): Promise<DatabaseFunction> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
+      const client = await pool.connect();
       const sql = this.format(this.ROUTINES_SQL, 'f', functionName);
-      const res = await pgConnection.client.query(sql);
+      const res = await client.query(sql);
 
       const func: DatabaseFunction = {
         databaseName,
@@ -361,15 +359,15 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get procedure definition
    */
   async getProcedure(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     procedureName: string,
   ): Promise<Procedure> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
+      const client = await pool.connect();
       const sql = this.format(this.ROUTINES_SQL, 'p', procedureName);
-      const res = await pgConnection.client.query(sql);
+      const res = await client.query(sql);
 
       const procedure: Procedure = {
         databaseName,
@@ -392,14 +390,14 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get triggers
    */
   async getTriggers(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
   ): Promise<Trigger[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
+      const client = await pool.connect();
       const sql = this.format(this.TRIGGER_SQL_LIST, schemaName);
-      const res = await pgConnection.client.query(sql);
+      const res = await client.query(sql);
 
       const triggers: Trigger[] = [];
       for (const row of res.rows) {
@@ -421,15 +419,15 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get trigger definition
    */
   async getTrigger(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
     triggerName: string,
   ): Promise<Trigger> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
+      const client = await pool.connect();
       const sql = this.format(this.TRIGGER_SQL, schemaName, triggerName);
-      const res = await pgConnection.client.query(sql);
+      const res = await client.query(sql);
 
       const trigger: Trigger = {
         databaseName,
@@ -452,13 +450,13 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
    * Get sequences
    */
   async getSequences(
-    connection: Connection,
+    pool: Pool,
     databaseName: string,
     schemaName: string,
   ): Promise<Sequence[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query(this.EXPORT_SEQUENCES_SQL, [schemaName]);
+      const client = await pool.connect();
+      const res = await client.query(this.EXPORT_SEQUENCES_SQL, [schemaName]);
 
       const sequences: Sequence[] = [];
       for (const row of res.rows) {
@@ -480,10 +478,10 @@ export class PostgreSQLMetadataProvider implements MetadataProvider {
   /**
    * Get database users
    */
-  async getUsers(connection: Connection): Promise<DatabaseUser[]> {
+  async getUsers(pool: Pool): Promise<DatabaseUser[]> {
     try {
-      const pgConnection = connection as PostgreSQLConnection;
-      const res = await pgConnection.client.query(this.EXPORT_USERS_SQL);
+      const client = await pool.connect();
+      const res = await client.query(this.EXPORT_USERS_SQL);
 
       const users: DatabaseUser[] = [];
       for (const row of res.rows) {

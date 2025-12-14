@@ -1,19 +1,21 @@
 import * as dotenv from 'dotenv';
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
+import { MakerDMG } from '@electron-forge/maker-dmg';
 import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import path from 'path';
 
 dotenv.config();
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: 'src/assets/icons/icon',
+    icon: './src/assets/icons/icon',
     protocols: [
       {
         name: 'elytra',
@@ -27,13 +29,14 @@ const config: ForgeConfig = {
       name: 'Elytra',
       authors: 'Elytra Labs',
       description: 'Elytra - The most powerful enterprise AI-driven database client',
-      setupIcon: 'src/assets/icons/icon.ico',
+      setupIcon: path.resolve(__dirname, 'src/assets/icons/icon.ico'),
     }),
+    new MakerDMG({ icon: path.resolve(__dirname, 'src/assets/icons/icon.icns') }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({
       options: {
-        icon: 'src/assets/icons/icon.png',
+        icon: path.resolve(__dirname, 'src/assets/icons/icon.png'),
         mimeType: ['x-scheme-handler/elytra'],
       },
     }),
