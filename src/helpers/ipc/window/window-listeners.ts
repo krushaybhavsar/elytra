@@ -2,6 +2,12 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { WINDOW_CHANNELS } from './window-channels';
 
 export function addWindowEventListeners(mainWindow: BrowserWindow) {
+  ipcMain.removeHandler(WINDOW_CHANNELS.MINIMIZE);
+  ipcMain.removeHandler(WINDOW_CHANNELS.MAXIMIZE);
+  ipcMain.removeHandler(WINDOW_CHANNELS.CLOSE);
+  ipcMain.removeHandler(WINDOW_CHANNELS.RENAME);
+  ipcMain.removeHandler(WINDOW_CHANNELS.GET_PLATFORM);
+
   ipcMain.handle(WINDOW_CHANNELS.MINIMIZE, () => {
     mainWindow.minimize();
   });

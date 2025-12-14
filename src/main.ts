@@ -88,41 +88,54 @@ if (!gotTheLock) {
   });
 
   function getIconPath() {
-    if (isWin) {
-      return path.join(__dirname, 'assets', 'icons', 'icon.ico');
-    } else if (isMac) {
-      return path.join(__dirname, 'assets', 'icons', 'icon.icns');
+    let basePath: string;
+    if (inDevelopment) {
+      basePath = path.resolve(__dirname, '..', '..', 'src', 'assets', 'icons');
+    } else {
+      basePath = path.join(__dirname, 'assets', 'icons');
     }
-    return path.join(__dirname, 'assets', 'icons', 'icon.png');
+
+    if (isWin) {
+      return path.join(basePath, 'icon.ico');
+    } else if (isMac) {
+      return path.join(basePath, 'icon.icns');
+    }
+    return path.join(basePath, 'icon.png');
   }
 
   function createTray() {
     if (tray) return tray;
-    tray = new Tray(getIconPath());
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        label: 'Quit Elytra',
-        click: () => {
-          isQuitting = true;
-          app.quit();
+    try {
+      const iconPath = getIconPath();
+      tray = new Tray(iconPath);
+      const contextMenu = Menu.buildFromTemplate([
+        {
+          label: 'Quit Elytra',
+          click: () => {
+            isQuitting = true;
+            app.quit();
+          },
         },
-      },
-    ]);
-    tray.setToolTip('Elytra');
-    tray.setContextMenu(contextMenu);
-    tray.on('double-click', () => {
-      if (mainWindow) {
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    });
-    tray.on('click', () => {
-      if (mainWindow) {
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    });
-    return tray;
+      ]);
+      tray.setToolTip('Elytra');
+      tray.setContextMenu(contextMenu);
+      tray.on('double-click', () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      });
+      tray.on('click', () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      });
+      return tray;
+    } catch (error) {
+      logger.error('[Tray] Failed to create system tray:', error);
+      return null;
+    }
   }
 
   function createWindow() {

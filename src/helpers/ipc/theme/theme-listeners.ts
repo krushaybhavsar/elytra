@@ -3,6 +3,12 @@ import { ipcMain } from 'electron';
 import { THEME_MODE_CHANNELS } from './theme-channels';
 
 export function addThemeEventListeners() {
+  ipcMain.removeHandler(THEME_MODE_CHANNELS.CURRENT);
+  ipcMain.removeHandler(THEME_MODE_CHANNELS.TOGGLE);
+  ipcMain.removeHandler(THEME_MODE_CHANNELS.DARK);
+  ipcMain.removeHandler(THEME_MODE_CHANNELS.LIGHT);
+  ipcMain.removeHandler(THEME_MODE_CHANNELS.SYSTEM);
+
   ipcMain.handle(THEME_MODE_CHANNELS.CURRENT, () => nativeTheme.themeSource);
   ipcMain.handle(THEME_MODE_CHANNELS.TOGGLE, () => {
     if (nativeTheme.shouldUseDarkColors) {
