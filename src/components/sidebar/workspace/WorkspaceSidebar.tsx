@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { TypographyHint, TypographyP } from '../../ui/typography';
 import { Button } from '../../ui/button';
 import { EllipsisVertical, Locate, Plus, RefreshCw } from 'lucide-react';
@@ -14,6 +15,12 @@ type WorkspaceSidebarProps = {};
 const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const queryClient = useQueryClient();
+  const isRefreshingConnections = useIsFetching({ queryKey: ['connections'] }) > 0;
+
+  const handleRefreshConnections = () => {
+    queryClient.invalidateQueries({ queryKey: ['connections'] });
+  };
 
   return (
     <div className='flex flex-col w-full h-full'>
@@ -70,8 +77,10 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
                 variant='ghost'
                 size='icon'
                 className='flex justify-center items-center !p-1 !size-6'
+                onClick={handleRefreshConnections}
+                disabled={isRefreshingConnections}
               >
-                <RefreshCw className='size-4' />
+                <RefreshCw className={`size-4 ${isRefreshingConnections ? 'animate-spin' : ''}`} />
               </Button>
             </TooltipTrigger>
             <TooltipContent align='center' side='bottom'>
