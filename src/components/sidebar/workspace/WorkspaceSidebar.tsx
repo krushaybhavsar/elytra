@@ -6,8 +6,8 @@ import { Separator } from '../../ui/separator';
 import { Input } from '../../ui/input';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import CreateDbDropdownContent from './CreateDbDropdownContent';
-import DbTreeView from './DbTreeView';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import DbConnectionList from './DbConnectionList';
 
 type WorkspaceSidebarProps = {};
 
@@ -18,7 +18,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
   return (
     <div className='flex flex-col w-full h-full'>
       <div className='flex flex-row justify-between p-2 pl-4 items-center'>
-        <TypographyP className='font-roobert'>Database</TypographyP>
+        <TypographyP className='font-roobert'>Notebooks</TypographyP>
         <div className='flex flex-row gap-2'>
           <Tooltip>
             <TooltipTrigger>
@@ -87,7 +87,8 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <DbTreeView searchQuery={searchQuery} />
+      {/* <DbTreeView searchQuery={searchQuery} /> */}
+      <DbConnectionList searchQuery={searchQuery} />
     </div>
   );
 };

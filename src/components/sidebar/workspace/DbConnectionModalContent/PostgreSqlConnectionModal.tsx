@@ -1,4 +1,9 @@
-import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -159,6 +164,9 @@ const PostgreSQLConnectionModal = () => {
           {dbConfig?.name} Connection Configuration
         </DialogTitle>
       </DialogHeader>
+      <DialogDescription className='sr-only'>
+        Configure your {dbConfig?.name} connection details to connect to your database.
+      </DialogDescription>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <FormField
@@ -262,7 +270,7 @@ const PostgreSQLConnectionModal = () => {
                           type='button'
                           variant='ghost'
                           size='icon'
-                          className='absolute right-0 top-0.5 h-full !bg-transparent'
+                          className='absolute right-0 top-0 h-full !bg-transparent'
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (

@@ -4,7 +4,7 @@ import NotebookCellEditor from './NotebookCellEditor';
 import QueryResultTable from '../QueryResultTable';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowDown, ArrowUp, FastForward, GripVertical, Play, Trash } from 'lucide-react';
+import { ArrowDown, ArrowUp, GripVertical, Play, Trash } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -48,7 +48,7 @@ const NotebookCell = (props: NotebookCellProps) => {
     id: props.cellData?.id || props.id || `cell-${props.index}`,
   });
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
   };
 
@@ -84,14 +84,14 @@ const NotebookCell = (props: NotebookCellProps) => {
             >
               <Play className='size-4' />
             </Button>
-            <Button
+            {/* <Button
               variant='ghost'
               size='icon'
               className='!rounded-sm !hover:bg-background !size-6 flex-shrink-0'
               onClick={props.onRunCellAndBelow}
             >
               <FastForward className='size-4' />
-            </Button>
+            </Button> */}
             <Button
               variant='ghost'
               size='icon'
