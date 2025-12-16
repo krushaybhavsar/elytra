@@ -20,11 +20,20 @@ export interface NotebookTabData {
 const NotebookTabView = (props: NotebookTabViewProps) => {
   useEffect(() => {
     if (!props.tabData.data) {
+      const newCellId = crypto.randomUUID();
+      const initialResult: CellResult = { loading: false };
+      const cellDataMap = new Map<string, CellData>();
+      cellDataMap.set(newCellId, {
+        id: newCellId,
+        data: '',
+        result: initialResult,
+      });
+
       props.setTabData({
         ...props.tabData,
         data: {
-          cells: [],
-          cellDataMap: new Map<string, CellData>(),
+          cells: [newCellId],
+          cellDataMap,
         },
       });
     }
