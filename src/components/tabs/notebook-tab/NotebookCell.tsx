@@ -52,66 +52,71 @@ const NotebookCell = (props: NotebookCellProps) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className='relative flex flex-row w-full p-2 gap-2'>
-      <div className='flex w-fit h-full select-none items-start pt-1.5'>
-        <TypographyHint className='!font-mono !text-[12px] !text-muted-foreground'>
-          {`[${props.index + 1}]:`}
-        </TypographyHint>
-      </div>
-      <div className='relative flex-1 flex-col w-full h-fit gap-2 border-[1px] border-border rounded-sm bg-background'>
-        {/* Action Buttons */}
-        <div className='group border-b-[1px] border-border p-1 flex items-center justify-start gap-1'>
-          {/* Drag Handle */}
-          <Button
+    <div ref={setNodeRef} style={style} className='relative group flex flex-row w-full gap-2'>
+      <div className='flex flex-col w-fit h-full select-none items-start pt-1.5'>
+        <div className='h-full w-full flex justify-center items-start'>
+          <div
             {...attributes}
             {...listeners}
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-pink-500 !group-hover:bg-black !size-6 cursor-grab active:cursor-grabbing'
+            className='inline-flex items-center justify-center cursor-grab active:cursor-grabbing transition-opacity opacity-0 group-hover:opacity-100 hover:bg-accent rounded-sm !size-6'
             aria-label='Drag to reorder'
           >
             <GripVertical className='size-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-background !size-6'
-            onClick={props.onRunCell}
-          >
-            <Play className='size-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-background !size-6'
-            onClick={props.onRunCellAndBelow}
-          >
-            <FastForward className='size-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-background !size-6'
-            onClick={props.onDelete}
-          >
-            <Trash className='size-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-background !size-6'
-            onClick={props.onMoveUp}
-          >
-            <ArrowUp className='size-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='!rounded-sm !hover:bg-background !size-6'
-            onClick={props.onMoveDown}
-          >
-            <ArrowDown className='size-4' />
-          </Button>
+          </div>
+        </div>
+      </div>
+      <div className='relative flex-1 flex-col w-full h-fit gap-2 border-[1px] border-border rounded-sm bg-background'>
+        <div className='border-b-[1px] border-border p-1 flex items-center justify-between gap-1'>
+          <div className='flex flex-row gap-1 justify-start items-center'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='!rounded-sm !hover:bg-background !size-6'
+              onClick={props.onRunCell}
+            >
+              <Play className='size-4' />
+            </Button>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='!rounded-sm !hover:bg-background !size-6'
+              onClick={props.onRunCellAndBelow}
+            >
+              <FastForward className='size-4' />
+            </Button>
+            <div className='mx-2'>
+              <TypographyHint className='!font-mono !text-[12px]'>
+                {`Cell ${props.index + 1} `}
+              </TypographyHint>
+            </div>
+          </div>
+
+          <div className='flex flex-row gap-1'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='!rounded-sm !hover:bg-background !size-6'
+              onClick={props.onMoveUp}
+            >
+              <ArrowUp className='size-4' />
+            </Button>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='!rounded-sm !hover:bg-background !size-6'
+              onClick={props.onMoveDown}
+            >
+              <ArrowDown className='size-4' />
+            </Button>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='!rounded-sm !hover:bg-background !size-6'
+              onClick={props.onDelete}
+            >
+              <Trash className='size-4' />
+            </Button>
+          </div>
         </div>
 
         {/* Editor */}

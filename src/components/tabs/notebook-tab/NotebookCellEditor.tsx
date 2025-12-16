@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { sql } from '@codemirror/lang-sql';
-import { oneDark } from '@codemirror/theme-one-dark';
 import { keymap } from '@codemirror/view';
 import { defaultKeymap } from '@codemirror/commands';
 
@@ -30,9 +29,11 @@ const NotebookCellEditor = (props: NotebookCellEditorProps) => {
           onChangeRef.current(update.state.doc.toString());
         }
       }),
-      oneDark,
+      // oneDark,
       EditorView.theme({
-        '&': { height: `${props.height || 150}px` },
+        '&': {
+          height: `${props.height || 150}px`,
+        },
         '.cm-content': { fontSize: '13px' },
       }),
     ];
