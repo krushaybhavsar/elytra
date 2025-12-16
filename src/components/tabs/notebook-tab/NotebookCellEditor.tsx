@@ -68,8 +68,8 @@ const NotebookCellEditor = (props: NotebookCellEditorProps) => {
   }, []);
 
   return (
-    <div className='relative flex w-full max-w-[calc(100%-0.01px)] rounded-sm overflow-hidden'>
-      <div ref={containerRef} className='w-full' />
+    <div className='relative flex w-full rounded-sm overflow-hidden'>
+      <div ref={containerRef} className='w-full min-w-0' />
     </div>
   );
 };

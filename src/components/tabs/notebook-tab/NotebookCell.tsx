@@ -53,7 +53,11 @@ const NotebookCell = (props: NotebookCellProps) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className='relative group flex flex-row w-full gap-2'>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className='relative group flex flex-row w-full max-w-full gap-2'
+    >
       <div className='flex flex-col w-fit h-full select-none items-center pt-3.5 gap-2'>
         <TypographyHint className='!font-mono !text-[12px] flex-shrink-0'>
           {`[${props.index + 1}]`}
@@ -69,7 +73,7 @@ const NotebookCell = (props: NotebookCellProps) => {
           </div>
         </div>
       </div>
-      <div className='relative flex-1 flex-col w-full h-fit gap-2 border-[1px] border-border rounded-sm bg-background'>
+      <div className='relative flex-1 flex-col w-full min-w-0 h-fit gap-2 border-[1px] border-border rounded-sm bg-background'>
         <div className='border-b-[1px] border-border p-2 flex flex-row items-center justify-between gap-2 bg-muted/30'>
           <div className='flex flex-row items-center gap-2'>
             <Button
@@ -161,7 +165,7 @@ const NotebookCell = (props: NotebookCellProps) => {
         {/* Results */}
         {result && (
           <div
-            className={`relative border-t border-border ${hasResult || result.loading ? '' : 'border-none'}`}
+            className={`relative border-t border-border overflow-x-auto ${hasResult || result.loading ? '' : 'border-none'}`}
           >
             {result.loading && (
               <div className='p-4'>

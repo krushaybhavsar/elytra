@@ -188,8 +188,8 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
   };
 
   return (
-    <div className='absolute h-full w-full overflow-y-auto flex flex-col'>
-      <div className='relative flex flex-col gap-4 pt-4 w-full pr-4 pl-2'>
+    <div className='absolute h-full w-full overflow-y-auto overflow-x-hidden flex flex-col'>
+      <div className='relative flex flex-col gap-4 pt-4 w-full px-2 max-w-full'>
         {props.tabData.data && props.tabData.data.cells.length > 0 && (
           <DndContext
             collisionDetection={closestCenter}

@@ -103,7 +103,7 @@ const TabViewContainer = (props: TabViewContainerProps) => {
   };
 
   return (
-    <div className='relative w-full flex flex-col h-full bg-background overflow-hidden'>
+    <div className='relative w-full max-w-full flex flex-col h-full bg-background overflow-hidden'>
       <div className='w-full h-10 pb-0 bg-background flex'>
         <div className='grid grid-cols-[1fr] w-full overflow-hidden'>
           <Reorder.Group
