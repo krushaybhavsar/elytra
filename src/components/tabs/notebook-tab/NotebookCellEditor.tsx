@@ -34,7 +34,7 @@ const NotebookCellEditor = (props: NotebookCellEditorProps) => {
         '&': {
           height: `${props.height || 150}px`,
         },
-        '.cm-content': { fontSize: '13px' },
+        '.cm-content': { fontSize: '14px' },
       }),
     ];
   }, [props.height]);
