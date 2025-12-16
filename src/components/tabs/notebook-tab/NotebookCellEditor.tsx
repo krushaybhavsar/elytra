@@ -29,11 +29,9 @@ const NotebookCellEditor = (props: NotebookCellEditorProps) => {
           onChangeRef.current(update.state.doc.toString());
         }
       }),
-      // oneDark,
       EditorView.theme({
-        '&': {
-          height: `${props.height || 150}px`,
-        },
+        '&': { height: 'auto', minHeight: '1.5em' },
+        '.cm-scroller': { overflow: 'hidden' },
         '.cm-content': { fontSize: '14px' },
       }),
     ];
