@@ -36,7 +36,7 @@ export class AppMapRoute {
       showTitleBar = true,
       showTitleText = true,
       titleBarColor = 'sidebar',
-      titleTextColor = 'lighter-text',
+      titleTextColor = 'foreground',
       additionalStyles = 'relative',
     } = titleBarSettings;
     this.slug = slug;
