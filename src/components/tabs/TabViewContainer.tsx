@@ -7,7 +7,6 @@ import { Separator } from '../ui/separator';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
 import { toast } from 'sonner';
 import NotebookTabView, { NotebookTabData } from './notebook-tab/NotebookTabView';
-import { cleanupEditorModel } from './EditorTabView';
 
 export const enum TabType {
   EDITOR = 'editor',
@@ -63,10 +62,6 @@ const TabViewContainer = (props: TabViewContainerProps) => {
   };
 
   const closeTab = (closedTabId: string) => {
-    if (tabDataMap.get(closedTabId)?.metadata.type === TabType.NOTEBOOK) {
-      cleanupEditorModel(closedTabId);
-    }
-
     if (activeTabId === closedTabId) {
       const newActiveTabId = closestElement(tabs, closedTabId);
       if (newActiveTabId) {
@@ -89,6 +84,22 @@ const TabViewContainer = (props: TabViewContainerProps) => {
       newMap.set(newTabData.id, newTabData);
       return newMap;
     });
+  };
+
+  const getActiveTabView = () => {
+    if (activeTabId && tabDataMap.has(activeTabId)) {
+      const tabData = tabDataMap.get(activeTabId)!;
+      if (tabData.metadata.type === TabType.NOTEBOOK) {
+        return (
+          <NotebookTabView
+            key={activeTabId}
+            tabData={tabData}
+            setTabData={setTabData}
+            connectionId={tabData.metadata.connectionId}
+          />
+        );
+      }
+    }
   };
 
   return (
@@ -126,23 +137,7 @@ const TabViewContainer = (props: TabViewContainerProps) => {
         </div>
       </div>
       <Separator orientation='horizontal' />
-      <div className='flex h-full w-full relative'>
-        {activeTabId && tabDataMap.has(activeTabId) && (
-          // <EditorTabView
-          //   key='single-editor'
-          //   tabId={activeTabId}
-          //   data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
-          //   connectionId={tabs.find((t) => t.id === activeTabId)?.metadata.connectionId ?? ''}
-          //   onTabDataChange={updateTabData}
-          // />
-          <NotebookTabView
-            key='single-notebook'
-            tabData={tabDataMap.get(activeTabId)!}
-            setTabData={setTabData}
-            connectionId={tabDataMap.get(activeTabId)!.metadata.connectionId}
-          />
-        )}
-      </div>
+      <div className='flex h-full w-full relative'>{getActiveTabView()}</div>
     </div>
   );
 };

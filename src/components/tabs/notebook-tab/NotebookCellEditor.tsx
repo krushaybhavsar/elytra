@@ -1,18 +1,9 @@
-import { Editor, OnMount } from '@monaco-editor/react';
-import React, { useRef, useEffect } from 'react';
-import * as monaco from 'monaco-editor';
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import { loader } from '@monaco-editor/react';
-
-// @ts-ignore
-self.MonacoEnvironment = {
-  getWorker(_: any, label: any) {
-    return new editorWorker();
-  },
-};
-
-loader.config({ monaco });
-loader.init();
+import React, { useEffect, useMemo, useRef } from 'react';
+import { EditorView, basicSetup } from 'codemirror';
+import { sql } from '@codemirror/lang-sql';
+import { oneDark } from '@codemirror/theme-one-dark';
+import { keymap } from '@codemirror/view';
+import { defaultKeymap } from '@codemirror/commands';
 
 interface NotebookCellEditorProps {
   cellData: string;
@@ -21,54 +12,63 @@ interface NotebookCellEditorProps {
 }
 
 const NotebookCellEditor = (props: NotebookCellEditorProps) => {
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(props.onCellDataChange);
-  const isInternalChangeRef = useRef(false);
 
   useEffect(() => {
     onChangeRef.current = props.onCellDataChange;
   }, [props.onCellDataChange]);
 
+  const extensions = useMemo(() => {
+    return [
+      basicSetup,
+      sql(),
+      keymap.of(defaultKeymap),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged && onChangeRef.current) {
+          onChangeRef.current(update.state.doc.toString());
+        }
+      }),
+      oneDark,
+      EditorView.theme({
+        '&': { height: `${props.height || 150}px` },
+        '.cm-content': { fontSize: '13px' },
+      }),
+    ];
+  }, [props.height]);
+
   useEffect(() => {
-    if (editorRef.current && !isInternalChangeRef.current) {
-      const currentValue = editorRef.current.getValue();
-      if (currentValue !== props.cellData) {
-        editorRef.current.setValue(props.cellData || '');
-      }
+    if (!containerRef.current || viewRef.current) return;
+    viewRef.current = new EditorView({
+      doc: props.cellData || '',
+      extensions,
+      parent: containerRef.current,
+    });
+  }, [extensions, props.cellData]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const current = view.state.doc.toString();
+    if (current !== props.cellData) {
+      view.dispatch({
+        changes: { from: 0, to: current.length, insert: props.cellData || '' },
+      });
     }
-    isInternalChangeRef.current = false;
   }, [props.cellData]);
 
-  const handleEditorMount: OnMount = (editor, monaco) => {
-    editorRef.current = editor;
-    editor.setValue(props.cellData || '');
-  };
-
-  const handleEditorChange = (value: string | undefined) => {
-    isInternalChangeRef.current = true;
-    if (onChangeRef.current) {
-      onChangeRef.current(value || '');
-    }
-  };
+  useEffect(() => {
+    const view = viewRef.current;
+    return () => {
+      if (view) view.destroy();
+      viewRef.current = null;
+    };
+  }, []);
 
   return (
     <div className='relative flex w-full max-w-[calc(100%-0.01px)] rounded-sm overflow-hidden'>
-      <Editor
-        width={'100%'}
-        height={props.height || 150}
-        defaultLanguage='sql'
-        theme='vs-light'
-        onMount={handleEditorMount}
-        onChange={handleEditorChange}
-        options={{
-          minimap: { enabled: false },
-          scrollBeyondLastLine: false,
-          fontSize: 13,
-          lineNumbers: 'on',
-          wordWrap: 'on',
-          automaticLayout: true,
-        }}
-      />
+      <div ref={containerRef} className='w-full' />
     </div>
   );
 };

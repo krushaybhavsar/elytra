@@ -4,6 +4,9 @@ import { TabData } from '../TabViewContainer';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { dataSource } from '@/services/service.config';
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 interface NotebookTabViewProps {
   key: string;
@@ -118,6 +121,20 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
     setCells(newCells);
   };
 
+  const onDragEnd = (event: DragEndEvent) => {
+    if (!props.tabData.data) return;
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const ids = props.tabData.data.cells;
+    const oldIndex = ids.indexOf(String(active.id));
+    const newIndex = ids.indexOf(String(over.id));
+    if (oldIndex === -1 || newIndex === -1) return;
+    const newCells = [...ids];
+    const [removed] = newCells.splice(oldIndex, 1);
+    newCells.splice(newIndex, 0, removed);
+    setCells(newCells);
+  };
+
   const updateCellContent = (cellId: string, content: string) => {
     if (!props.tabData.data) return;
     const existing = props.tabData.data.cellDataMap.get(cellId);
@@ -166,38 +183,41 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
     if (startIndex === -1) return;
 
     for (let i = startIndex; i < props.tabData.data.cells.length; i++) {
-      // eslint-disable-next-line no-await-in-loop
       await runCell(props.tabData.data.cells[i]);
     }
   };
 
   return (
     <div className='absolute h-full w-full overflow-y-auto flex flex-col'>
-      <div
-        className='relative flex flex-col gap-4 p-2'
-        // Force remount of all cells when ordering/ids change to keep Monaco stable
-        key={(props.tabData.data?.cells || []).join('-')}
-      >
-        {props.tabData.data && props.tabData.data.cells.length > 0 ? (
-          props.tabData.data.cells.map((cellId: string, index) => (
-            <NotebookCell
-              key={cellId}
-              index={index}
-              cellData={props.tabData.data!.cellDataMap.get(cellId)}
-              onChangeContent={(value) => updateCellContent(cellId, value)}
-              onRunCell={() => runCell(cellId)}
-              onRunCellAndBelow={() => runCellAndBelow(cellId)}
-              onDelete={() => removeCell(cellId)}
-              onMoveUp={() => moveCell(cellId, 'up')}
-              onMoveDown={() => moveCell(cellId, 'down')}
-            />
-          ))
-        ) : (
-          <div className='text-sm text-muted-foreground px-2 py-4'>
-            No cells yet. Add a cell to start writing queries.
-          </div>
+      <div className='relative flex flex-col gap-4 p-2'>
+        {props.tabData.data && props.tabData.data.cells.length > 0 && (
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={props.tabData.data.cells}
+              strategy={verticalListSortingStrategy}
+            >
+              {props.tabData.data.cells.map((cellId: string, index) => (
+                <NotebookCell
+                  key={cellId}
+                  id={cellId}
+                  index={index}
+                  cellData={props.tabData.data!.cellDataMap.get(cellId)}
+                  onChangeContent={(value) => updateCellContent(cellId, value)}
+                  onRunCell={() => runCell(cellId)}
+                  onRunCellAndBelow={() => runCellAndBelow(cellId)}
+                  onDelete={() => removeCell(cellId)}
+                  onMoveUp={() => moveCell(cellId, 'up')}
+                  onMoveDown={() => moveCell(cellId, 'down')}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         )}
-        <div className='pt-2'>
+        <div className='flex justify-center items-center w-full'>
           <Button
             type='button'
             variant='outline'
