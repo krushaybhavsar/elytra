@@ -28,8 +28,8 @@ const Sidebar = (props: SidebarProps) => {
       axis='x'
       resizeHandles={['e']}
       initialWidth={250}
-      minWidth={200}
-      maxWidth={400}
+      minWidth={250}
+      maxWidth={500}
       className='h-full border-r-[1px] border-border'
     >
       {getActiveSidebar()}

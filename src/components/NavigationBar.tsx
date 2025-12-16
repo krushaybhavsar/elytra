@@ -23,13 +23,13 @@ const NavigationBar = (props: NavigationBarProps) => {
                   asChild
                   variant='ghost'
                   size='icon'
-                  className={`disabled:opacity-100 transition-all hover:bg-sidebar-accent ${isActive ? 'hover:bg-sidebar-primary/90 bg-sidebar-primary' : ''}`}
+                  className={`disabled:opacity-100 transition-all hover:bg-sidebar-accent ${isActive ? 'hover:bg-sidebar-primary/10 bg-sidebar-primary/10' : ''}`}
                   onClick={() => props.setActiveTabScreen(tabScreenName as NavigationBarTabs)}
                   disabled={isActive}
                 >
                   <div>
                     {createElement(navTab.icon, {
-                      className: `!size-5 ${isActive ? 'text-primary-foreground' : 'text-sidebar-foreground'}`,
+                      className: `!size-5 ${isActive ? 'text-primary' : 'text-sidebar-foreground'}`,
                     })}
                   </div>
                 </Button>

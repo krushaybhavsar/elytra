@@ -252,7 +252,10 @@ const QueryResultTable = (props: QueryResultTableProps) => {
   }, [columnNames, columnWidths, minColumnWidths, rows, tableHeight]);
 
   return (
-    <div ref={containerRef} className='w-full h-full max-h-[300px] overflow-auto relative'>
+    <div
+      ref={containerRef}
+      className='w-full h-full max-h-[300px] max-w-full overflow-auto relative'
+    >
       <div
         ref={wrapperRef}
         className='relative inline-block rounded-md overflow-hidden border border-border'

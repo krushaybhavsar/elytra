@@ -112,7 +112,6 @@ const ResizablePanel = (props: ResizablePanelProps) => {
   const [internalWidth, setInternalWidth] = useState(initialWidth);
   const [internalHeight, setInternalHeight] = useState(initialHeight);
 
-  // Use controlled height if provided, otherwise use internal state
   const width = axis === 'x' && controlledHeight === undefined ? internalWidth : internalWidth;
   const height = axis === 'y' && controlledHeight !== undefined ? controlledHeight : internalHeight;
 

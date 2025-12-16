@@ -159,10 +159,54 @@ export class DatabaseConnectionManager {
 
   async updateConnection(connectionId: string, connection: Connection): Promise<void> {
     if (connectionId !== connection.connectionId) {
-      this._logger.warn('Connection ID in path and body do not match.');
-      return;
+      throw new Error('Connection ID in path and body do not match.');
     }
-    this.connections.set(connection.connectionId, connection);
+
+    const existingConnection = this.connections.get(connectionId);
+    if (!existingConnection) {
+      throw new Error(`Connection ${connectionId} not found.`);
+    }
+
+    const targetPlugin = this._pluginRegistry.getPlugin(connection.connectionConfig.pluginId);
+    const targetManager = targetPlugin.getConnectionManager();
+
+    let newPool: any;
+    let newConnection: Connection;
+    try {
+      const result = await targetManager.createConnection(connection.connectionConfig);
+      newPool = result.pool;
+      newConnection = result.connection;
+    } catch (error: any) {
+      this._logger.error(`Failed to validate updated connection ${connectionId}:`, error);
+      throw error;
+    }
+
+    const currentPool = this.pools.get(connectionId);
+    if (currentPool) {
+      try {
+        const currentPlugin = this._pluginRegistry.getPlugin(
+          existingConnection.connectionConfig.pluginId,
+        );
+        await currentPlugin.getConnectionManager().closeConnection(existingConnection, currentPool);
+      } catch (error: any) {
+        this._logger.warn(`Failed to close previous connection ${connectionId}:`, error);
+      } finally {
+        this.pools.delete(connectionId);
+      }
+    }
+
+    const normalizedConnection: Connection = {
+      ...existingConnection,
+      ...newConnection,
+      connectionId,
+      createdAt: existingConnection.createdAt,
+      updatedAt: new Date(),
+      connectionConfig: connection.connectionConfig,
+      isActive: true,
+    };
+
+    this.connections.set(connectionId, normalizedConnection);
+    this.pools.set(connectionId, newPool);
     storageService.set(STORE_KEYS.CONNECTIONS, Array.from(this.connections.values()));
   }
 

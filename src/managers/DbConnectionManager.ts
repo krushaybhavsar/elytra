@@ -32,8 +32,12 @@ export const useDbConnectionManager = () => {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: async (connectionId: string) => dataSource.closeConnection(connectionId),
-      onSuccess: (_, variables) => {
-        queryClient.removeQueries({ queryKey: keys.connection(variables) });
+      onSuccess: (_, connectionId) => {
+        queryClient.removeQueries({ queryKey: keys.connection(connectionId) });
+        queryClient.setQueryData(keys.connections, (previous?: Connection[]) =>
+          previous?.filter((connection) => connection.connectionId !== connectionId),
+        );
+        queryClient.invalidateQueries({ queryKey: keys.connections });
       },
     });
   };

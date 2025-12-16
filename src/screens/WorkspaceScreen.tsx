@@ -1,12 +1,19 @@
 import TabViewContainer from '@/components/tabs/TabViewContainer';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-const WorkspaceScreen = () => {
+interface WorkspaceScreenProps {}
+
+const WorkspaceScreen = forwardRef<
+  { newTab: (connectionId?: string) => void },
+  WorkspaceScreenProps
+>((props, ref) => {
   return (
-    <div className='w-full h-full'>
-      <TabViewContainer />
+    <div className='w-full h-full relative'>
+      <TabViewContainer ref={ref} />
     </div>
   );
-};
+});
+
+WorkspaceScreen.displayName = 'WorkspaceScreen';
 
 export default WorkspaceScreen;
