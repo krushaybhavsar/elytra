@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { TypographyHint, TypographyP } from '@/components/ui/typography';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
 import { DatabaseIcons } from '@/types/database.types';
-import { Edit, SquarePlus, Trash } from 'lucide-react';
+import { ChevronRight, Edit, SquarePlus, Trash } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface DbConnectionList {
@@ -52,7 +52,7 @@ const DbConnectionList = (props: DbConnectionList) => {
           <div key={index} className='w-full'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className='flex flex-row p-2 gap-2 w-full rounded-sm hover:bg-accent justify-start items-start overflow-hidden cursor-pointer'>
+                <div className='group relative flex flex-row p-2 gap-2 w-full rounded-sm justify-start items-start overflow-hidden cursor-pointer hover:bg-accent'>
                   {DatabaseIcons[connection.connectionConfig.pluginId]({
                     className: 'size-4 shrink-0 mt-0.5',
                   })}
@@ -65,6 +65,10 @@ const DbConnectionList = (props: DbConnectionList) => {
                         {connection.connectionConfig.user}
                       </TypographyHint>
                     )}
+                  </div>
+                  <div className='pointer-events-none absolute right-0 top-0 bottom-0 w-14 bg-gradient-to-r from-transparent via-accent/100 to-accent opacity-0 group-hover:opacity-100' />
+                  <div className='absolute right-2 top-0 bottom-0 flex justify-center items-center opacity-0 group-hover:opacity-100'>
+                    <ChevronRight className='!size-4 !stroke-[2px] !stroke-foreground shrink-0 relative' />
                   </div>
                 </div>
               </DropdownMenuTrigger>
@@ -84,7 +88,6 @@ const DbConnectionList = (props: DbConnectionList) => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
             {index < filteredConnections.length - 1 && <Separator className='w-full my-1' />}
           </div>
         ))}
