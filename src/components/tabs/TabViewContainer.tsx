@@ -4,44 +4,37 @@ import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { closestElement, removeElement } from '@/utils/array-utils';
 import { Plus } from 'lucide-react';
 import { Separator } from '../ui/separator';
-import EditorTabView, { cleanupEditorModel } from './EditorTabView';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
 import { toast } from 'sonner';
+import NotebookTabView, { NotebookTabData } from './notebook-tab/NotebookTabView';
+import { cleanupEditorModel } from './EditorTabView';
+
+export const enum TabType {
+  EDITOR = 'editor',
+  NOTEBOOK = 'notebook',
+}
 
 export interface TabMetadata {
   title: string;
   connectionId: string;
-  type: 'editor';
+  type: TabType;
   icon?: JSX.Element;
 }
 
 export interface TabData {
   id: string;
   metadata: TabMetadata;
-  data?: string;
+  data?: NotebookTabData;
 }
 
 interface TabViewContainerProps {}
 
 const TabViewContainer = (props: TabViewContainerProps) => {
   const [activeTabId, setActiveTabId] = useState<string>();
-  const [tabs, setTabs] = useState<TabData[]>([]);
+  const [tabs, setTabs] = useState<string[]>([]);
+  const [tabDataMap, setTabDataMap] = useState<Map<string, TabData>>(new Map());
   const getAllConnectionsQuery = useDbConnectionManager().getAllConnections();
   const MAX_TABS = 20;
-
-  const closeTab = (closedTab: TabData) => {
-    cleanupEditorModel(closedTab.id);
-
-    if (activeTabId === closedTab.id) {
-      const newActiveElement = closestElement(tabs, closedTab);
-      if (newActiveElement) {
-        setActiveTabId(newActiveElement.id);
-      } else {
-        setActiveTabId(undefined);
-      }
-    }
-    setTabs(removeElement(tabs, closedTab));
-  };
 
   const getRecentConnection = () => {
     const sortedConnections = getAllConnectionsQuery.data?.sort((a, b) => {
@@ -61,21 +54,45 @@ const TabViewContainer = (props: TabViewContainerProps) => {
       metadata: {
         title: `(@${connection.connectionConfig.host})`,
         connectionId: connection.connectionId,
-        type: 'editor',
+        type: TabType.NOTEBOOK,
       },
-      data: `-- Write your SQL queries here`,
     };
-
-    setTabs([...tabs, newTab]);
+    setTabData(newTab);
+    setTabs([...tabs, newTab.id]);
     setActiveTabId(newTab.id);
   };
 
-  const updateTabData = (tabId: string, newData: string) => {
-    setTabs((prev) => prev.map((t) => (t.id === tabId ? { ...t, data: newData } : t)));
+  const closeTab = (closedTabId: string) => {
+    if (tabDataMap.get(closedTabId)?.metadata.type === TabType.NOTEBOOK) {
+      cleanupEditorModel(closedTabId);
+    }
+
+    if (activeTabId === closedTabId) {
+      const newActiveTabId = closestElement(tabs, closedTabId);
+      if (newActiveTabId) {
+        setActiveTabId(newActiveTabId);
+      } else {
+        setActiveTabId(undefined);
+      }
+    }
+    setTabs(removeElement(tabs, closedTabId));
+    setTabDataMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(closedTabId);
+      return newMap;
+    });
+  };
+
+  const setTabData = (newTabData: TabData) => {
+    setTabDataMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(newTabData.id, newTabData);
+      return newMap;
+    });
   };
 
   return (
-    <div className='w-full flex flex-col h-full bg-background overflow-hidden'>
+    <div className='relative w-full flex flex-col h-full bg-background overflow-hidden'>
       <div className='w-full h-10 pb-0 bg-background flex'>
         <div className='grid grid-cols-[1fr] w-full overflow-hidden'>
           <Reorder.Group
@@ -86,14 +103,14 @@ const TabViewContainer = (props: TabViewContainerProps) => {
             className='flex items-center overflow-hidden'
           >
             <AnimatePresence initial={false}>
-              {tabs.map((tab) => (
+              {tabs.map((tabId) => (
                 <Tab
-                  key={tab.id}
-                  tab={tab}
-                  isActive={activeTabId === tab.id}
-                  onClick={() => setActiveTabId(tab.id)}
-                  onClose={() => closeTab(tab)}
-                  isFirst={tabs[0] === tab}
+                  key={tabId}
+                  tabData={tabDataMap.get(tabId)!}
+                  isActive={activeTabId === tabId}
+                  onClick={() => setActiveTabId(tabId)}
+                  onClose={() => closeTab(tabId)}
+                  isFirst={tabs[0] === tabId}
                 />
               ))}
             </AnimatePresence>
@@ -110,13 +127,19 @@ const TabViewContainer = (props: TabViewContainerProps) => {
       </div>
       <Separator orientation='horizontal' />
       <div className='flex h-full w-full relative'>
-        {activeTabId && tabs.find((t) => t.id === activeTabId) && (
-          <EditorTabView
-            key='single-editor'
-            tabId={activeTabId}
-            data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
-            connectionId={tabs.find((t) => t.id === activeTabId)?.metadata.connectionId ?? ''}
-            onTabDataChange={updateTabData}
+        {activeTabId && tabDataMap.has(activeTabId) && (
+          // <EditorTabView
+          //   key='single-editor'
+          //   tabId={activeTabId}
+          //   data={tabs.find((t) => t.id === activeTabId)?.data ?? ''}
+          //   connectionId={tabs.find((t) => t.id === activeTabId)?.metadata.connectionId ?? ''}
+          //   onTabDataChange={updateTabData}
+          // />
+          <NotebookTabView
+            key='single-notebook'
+            tabData={tabDataMap.get(activeTabId)!}
+            setTabData={setTabData}
+            connectionId={tabDataMap.get(activeTabId)!.metadata.connectionId}
           />
         )}
       </div>

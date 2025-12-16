@@ -5,7 +5,7 @@ import { CodeXml, X } from 'lucide-react';
 import { TypographyHint } from '../ui/typography';
 
 interface TabProps {
-  tab: TabData;
+  tabData: TabData;
   isActive: boolean;
   onClick: () => void;
   onClose: () => void;
@@ -26,8 +26,8 @@ const Tab = (props: TabProps) => {
 
   return (
     <Reorder.Item
-      value={props.tab}
-      id={props.tab.id}
+      value={props.tabData.id}
+      id={props.tabData.id}
       initial={{ opacity: 0, y: 30 }}
       animate={{
         opacity: props.isActive ? 1 : 0.7,
@@ -42,9 +42,9 @@ const Tab = (props: TabProps) => {
         className='flex-shrink flex-grow min-w-0 whitespace-nowrap [mask-image:linear-gradient(to_left,transparent_20px,#fff_40px)]'
       >
         <span className='flex items-center gap-2'>
-          {getTabIcon(props.tab.metadata.type)}
+          {getTabIcon(props.tabData.metadata.type)}
           <TypographyHint className='!leading-0 !text-foreground'>
-            {props.tab.metadata.title}
+            {props.tabData.metadata.title}
           </TypographyHint>
         </span>
       </motion.span>
