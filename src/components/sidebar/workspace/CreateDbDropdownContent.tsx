@@ -10,7 +10,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Database, FolderPlus } from 'lucide-react';
 import { useDialog } from '@/components/contexts/DialogContext';
-import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database.types';
+import {
+  DatabaseConnectionModals,
+  DatabaseIcons,
+  SupportedDbIdentifier,
+} from '@/types/database.types';
 import { useDbPluginManager } from '@/managers/DbPluginManager';
 
 type CreateDbDropdownContentProps = {
@@ -22,9 +26,13 @@ const CreateDbDropdownContent = (props: CreateDbDropdownContentProps) => {
   const { setDialogOpen, setDialogContent } = useDialog();
   const { data: supportedDbConfigs } = dbPluginManager.getSupportedDbConfigs();
 
-  const selectDbType = (id: string) => () => {
+  const selectDbType = (id: SupportedDbIdentifier) => () => {
+    const ModalComponent = DatabaseConnectionModals[id];
+    if (!ModalComponent) {
+      return;
+    }
     props.onDialogOpen();
-    setDialogContent(DatabaseConnectionModals[id as keyof typeof DatabaseConnectionModals]);
+    setDialogContent(<ModalComponent mode='create' />);
     setDialogOpen(true);
   };
 

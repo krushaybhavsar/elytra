@@ -47,7 +47,7 @@ export function TypographyH5(props: React.HTMLProps<HTMLHeadingElement>) {
 }
 
 export function TypographyP(props: React.HTMLProps<HTMLHeadingElement>) {
-  const styles = 'font-motreal text-foreground/75 text-[16px] tracking-[-0.32px] leading-[1.25] ';
+  const styles = 'font-motreal text-foreground/75 text-[16px] leading-[1.25] ';
   return (
     <p {...props} className={styles + props.className}>
       {props.children}

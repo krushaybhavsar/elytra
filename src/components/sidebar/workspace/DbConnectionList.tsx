@@ -8,9 +8,11 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { TypographyHint, TypographyP } from '@/components/ui/typography';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
-import { DatabaseIcons } from '@/types/database.types';
+import { DatabaseConnectionModals, DatabaseIcons } from '@/types/database.types';
 import { ChevronRight, Edit, SquarePlus, Trash } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { useDialog } from '@/components/contexts/DialogContext';
+import { Connection } from '@/model/DatabaseModel';
 
 interface DbConnectionList {
   searchQuery: string;
@@ -22,6 +24,16 @@ const DbConnectionList = (props: DbConnectionList) => {
   const { data: connections } = dbConnectionManager.getAllConnections();
   const closeConnectionMutation = dbConnectionManager.closeConnection();
   const [filteredConnections, setFilteredConnections] = useState(connections);
+  const { setDialogContent, setDialogOpen } = useDialog();
+
+  const handleEditConnection = (connection: Connection) => {
+    const ModalComponent = DatabaseConnectionModals[connection.connectionConfig.pluginId];
+    if (!ModalComponent) {
+      return;
+    }
+    setDialogContent(<ModalComponent mode='edit' connection={connection} />);
+    setDialogOpen(true);
+  };
 
   useEffect(() => {
     if (props.searchQuery && props.searchQuery.trim().length > 0 && connections) {
@@ -78,7 +90,7 @@ const DbConnectionList = (props: DbConnectionList) => {
                   <SquarePlus className='!size-4' />
                   New tab
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleEditConnection(connection)}>
                   <Edit className='!size-4' />
                   Edit connection
                 </DropdownMenuItem>

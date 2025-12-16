@@ -7,7 +7,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Form,
   FormControl,
@@ -26,7 +26,11 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Link } from 'lucide-react';
-import { DatabaseIcons, SupportedDbIdentifier } from '@/types/database.types';
+import {
+  DatabaseConnectionModalProps,
+  DatabaseIcons,
+  SupportedDbIdentifier,
+} from '@/types/database.types';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useDialog } from '@/components/contexts/DialogContext';
@@ -47,7 +51,10 @@ const formSchema = z.object({
   password: z.string().optional(),
 });
 
-const PostgreSQLConnectionModal = () => {
+const PostgreSQLConnectionModal = ({
+  mode = 'create',
+  connection,
+}: DatabaseConnectionModalProps) => {
   const dbPluginManager = useDbPluginManager();
   const dbConnectionManager = useDbConnectionManager();
   const [showPassword, setShowPassword] = useState(false);
@@ -58,10 +65,24 @@ const PostgreSQLConnectionModal = () => {
   const { data: dbConfig } = dbPluginManager.getSupportedDbConfig(SupportedDbIdentifier.POSTGRESQL);
   const createConnectionMutation = dbConnectionManager.createConnection();
   const testConnectionMutation = dbConnectionManager.testConnection();
+  const updateConnectionMutation = dbConnectionManager.updateConnection();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+  const resolvedDefaultValues = useMemo<z.infer<typeof formSchema>>(() => {
+    if (mode === 'edit' && connection) {
+      const hasAuth = Boolean(
+        connection.connectionConfig.user || connection.connectionConfig.password,
+      );
+      return {
+        name: connection.connectionConfig.name,
+        host: connection.connectionConfig.host,
+        port: connection.connectionConfig.port,
+        authenticationType: hasAuth ? 'User & Password' : 'No Authentication',
+        user: connection.connectionConfig.user || '',
+        password: connection.connectionConfig.password || '',
+        database: connection.connectionConfig.database,
+      };
+    }
+    return {
       name: '',
       host: 'localhost',
       port: 5432,
@@ -69,8 +90,15 @@ const PostgreSQLConnectionModal = () => {
       user: '',
       password: '',
       database: 'postgres',
-    },
+    };
+  }, [connection, mode]);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: resolvedDefaultValues,
   });
+
+  const isEditMode = mode === 'edit' && Boolean(connection);
 
   const watchedHost = useWatch({ control: form.control, name: 'host' });
   const watchedPort = useWatch({ control: form.control, name: 'port' });
@@ -108,29 +136,50 @@ const PostgreSQLConnectionModal = () => {
       form.unregister('user');
       form.unregister('password');
     }
-  }, [watchedAuthenticationType]);
+  }, [form, watchedAuthenticationType]);
+
+  const buildConnectionConfig = (values: z.infer<typeof formSchema>) => ({
+    pluginId: SupportedDbIdentifier.POSTGRESQL,
+    name: values.name,
+    host: values.host,
+    port: values.port,
+    database: values.database,
+    user: values.authenticationType === 'User & Password' ? values.user || undefined : undefined,
+    password:
+      values.authenticationType === 'User & Password' ? values.password || undefined : undefined,
+  });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoadingSave(true);
-    const res = await createConnectionMutation.mutateAsync({
-      pluginId: SupportedDbIdentifier.POSTGRESQL,
-      name: values.name,
-      host: values.host,
-      port: values.port,
-      user: values.user,
-      password: values.password,
-      database: values.database,
-    });
-    if (res.result.success) {
-      toast.success('Connection created successfully!');
-      form.reset();
-      setDialogOpen(false);
-    } else {
-      toast.error('Failed to create connection.', {
-        description: res.result.message,
+    const payload = buildConnectionConfig(values);
+    try {
+      if (isEditMode && connection) {
+        await updateConnectionMutation.mutateAsync({
+          ...connection,
+          connectionConfig: payload,
+          updatedAt: new Date(),
+        });
+        toast.success('Connection updated successfully!');
+        setDialogOpen(false);
+      } else {
+        const res = await createConnectionMutation.mutateAsync(payload);
+        if (res.result.success) {
+          toast.success('Connection created successfully!');
+          form.reset();
+          setDialogOpen(false);
+        } else {
+          toast.error('Failed to create connection.', {
+            description: res.result.message,
+          });
+        }
+      }
+    } catch (error: any) {
+      toast.error(isEditMode ? 'Failed to update connection.' : 'Failed to create connection.', {
+        description: error?.response?.data?.message || error?.message,
       });
+    } finally {
+      setLoadingSave(false);
     }
-    setLoadingSave(false);
   };
 
   const onTestConnection = async () => {
@@ -141,8 +190,8 @@ const PostgreSQLConnectionModal = () => {
       host: watchedHost,
       port: watchedPort,
       database: watchedDatabase,
-      user: watchedUser,
-      password: watchedPassword,
+      user: watchedAuthenticationType === 'User & Password' ? watchedUser : undefined,
+      password: watchedAuthenticationType === 'User & Password' ? watchedPassword : undefined,
     });
     if (res.success) {
       toast.success('Connection test successful!', {
@@ -156,12 +205,17 @@ const PostgreSQLConnectionModal = () => {
     setLoadingTest(false);
   };
 
+  const dialogTitle = isEditMode
+    ? `Edit ${dbConfig?.name ?? 'PostgreSQL'} Connection`
+    : `${dbConfig?.name ?? 'PostgreSQL'} Connection Configuration`;
+  const actionLabel = isEditMode ? 'Update' : 'Save';
+
   return (
     <DialogContent className='max-w-2xl gap-8'>
       <DialogHeader>
         <DialogTitle className='flex items-center gap-3'>
           {DatabaseIcons[SupportedDbIdentifier.POSTGRESQL]({ className: 'size-7' })}
-          {dbConfig?.name} Connection Configuration
+          {dialogTitle}
         </DialogTitle>
       </DialogHeader>
       <DialogDescription className='sr-only'>
@@ -322,7 +376,7 @@ const PostgreSQLConnectionModal = () => {
               loading={loadingSave}
               disabled={loadingSave || loadingTest}
             >
-              Save
+              {actionLabel}
             </LoadingButton>
           </div>
         </form>
