@@ -20,6 +20,7 @@ interface DbConnectionList {
 const DbConnectionList = (props: DbConnectionList) => {
   const dbConnectionManager = useDbConnectionManager();
   const { data: connections } = dbConnectionManager.getAllConnections();
+  const closeConnectionMutation = dbConnectionManager.closeConnection();
   const [filteredConnections, setFilteredConnections] = useState(connections);
 
   useEffect(() => {
@@ -82,7 +83,11 @@ const DbConnectionList = (props: DbConnectionList) => {
                   Edit connection
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className='!focus:bg-destructive/5 !focus:text-destructive hover:!bg-destructive/5 hover:!text-destructive'>
+                <DropdownMenuItem
+                  className='!focus:bg-destructive/5 !focus:text-destructive hover:!bg-destructive/5 hover:!text-destructive'
+                  onClick={() => closeConnectionMutation.mutate(connection.connectionId)}
+                  disabled={closeConnectionMutation.isPending}
+                >
                   <Trash />
                   Remove connection
                 </DropdownMenuItem>
