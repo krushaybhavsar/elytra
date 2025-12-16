@@ -1,11 +1,20 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { TypographyHint, TypographyP } from '@/components/ui/typography';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
 import { DatabaseIcons } from '@/types/database.types';
+import { Edit, SquarePlus, Trash } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface DbConnectionList {
   searchQuery: string;
+  onNewTab?: (connectionId: string) => void;
 }
 
 const DbConnectionList = (props: DbConnectionList) => {
@@ -41,21 +50,41 @@ const DbConnectionList = (props: DbConnectionList) => {
       {filteredConnections &&
         filteredConnections.map((connection, index) => (
           <div key={index} className='w-full'>
-            <button className='flex flex-row p-2 gap-2 w-full rounded-sm hover:bg-accent justify-start items-start overflow-hidden'>
-              {DatabaseIcons[connection.connectionConfig.pluginId]({
-                className: 'size-4 shrink-0 mt-0.5',
-              })}
-              <div className='flex flex-col w-full gap-0.5 justify-start items-start min-w-0 overflow-hidden'>
-                <TypographyP className='!text-[14px] !text-foreground whitespace-nowrap truncate w-full text-start'>
-                  {connection.connectionConfig.name}
-                </TypographyP>
-                {connection.connectionConfig.user && (
-                  <TypographyHint className='!text-[12px] whitespace-nowrap truncate w-full text-start'>
-                    {connection.connectionConfig.user}
-                  </TypographyHint>
-                )}
-              </div>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className='flex flex-row p-2 gap-2 w-full rounded-sm hover:bg-accent justify-start items-start overflow-hidden cursor-pointer'>
+                  {DatabaseIcons[connection.connectionConfig.pluginId]({
+                    className: 'size-4 shrink-0 mt-0.5',
+                  })}
+                  <div className='flex flex-col w-full gap-0.5 justify-start items-start min-w-0 overflow-hidden'>
+                    <TypographyP className='!text-[14px] !text-foreground whitespace-nowrap truncate w-full text-start'>
+                      {connection.connectionConfig.name}
+                    </TypographyP>
+                    {connection.connectionConfig.user && (
+                      <TypographyHint className='!text-[12px] whitespace-nowrap truncate w-full text-start'>
+                        {connection.connectionConfig.user}
+                      </TypographyHint>
+                    )}
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-56' align='start' side='right'>
+                <DropdownMenuItem onClick={() => props.onNewTab?.(connection.connectionId)}>
+                  <SquarePlus className='!size-4' />
+                  New tab
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Edit className='!size-4' />
+                  Edit connection
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className='!focus:bg-destructive/5 !focus:text-destructive hover:!bg-destructive/5 hover:!text-destructive'>
+                  <Trash />
+                  Remove connection
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {index < filteredConnections.length - 1 && <Separator className='w-full my-1' />}
           </div>
         ))}

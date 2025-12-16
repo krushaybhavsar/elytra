@@ -1,8 +1,7 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useState, forwardRef, useImperativeHandle } from 'react';
 import Tab from './Tab';
-import { motion, AnimatePresence, Reorder } from 'motion/react';
+import { AnimatePresence, Reorder } from 'motion/react';
 import { closestElement, removeElement } from '@/utils/array-utils';
-import { Plus } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { useDbConnectionManager } from '@/managers/DbConnectionManager';
 import { toast } from 'sonner';
@@ -28,12 +27,19 @@ export interface TabData {
 
 interface TabViewContainerProps {}
 
-const TabViewContainer = (props: TabViewContainerProps) => {
+const TabViewContainer = forwardRef<
+  { newTab: (connectionId?: string) => void },
+  TabViewContainerProps
+>((props, ref) => {
   const [activeTabId, setActiveTabId] = useState<string>();
   const [tabs, setTabs] = useState<string[]>([]);
   const [tabDataMap, setTabDataMap] = useState<Map<string, TabData>>(new Map());
   const getAllConnectionsQuery = useDbConnectionManager().getAllConnections();
   const MAX_TABS = 20;
+
+  useImperativeHandle(ref, () => ({
+    newTab,
+  }));
 
   const getRecentConnection = () => {
     const sortedConnections = getAllConnectionsQuery.data?.sort((a, b) => {
@@ -42,13 +48,18 @@ const TabViewContainer = (props: TabViewContainerProps) => {
     return sortedConnections && sortedConnections.length > 0 ? sortedConnections[0] : undefined;
   };
 
-  const newTab = () => {
-    const connection = getRecentConnection();
+  const newTab = (connectionId?: string) => {
+    let connection = null;
+    if (connectionId) {
+      connection = getAllConnectionsQuery.data?.find((c) => c.connectionId === connectionId);
+    } else {
+      connection = getRecentConnection();
+    }
     if (!connection) {
       toast.info('Connect to a database first to get started!');
       return;
     }
-    const newTab: TabData = {
+    const newTabData: TabData = {
       id: `${connection.connectionId}-${crypto.randomUUID()}`,
       metadata: {
         title: `(@${connection.connectionConfig.host})`,
@@ -56,9 +67,9 @@ const TabViewContainer = (props: TabViewContainerProps) => {
         type: TabType.NOTEBOOK,
       },
     };
-    setTabData(newTab);
-    setTabs([...tabs, newTab.id]);
-    setActiveTabId(newTab.id);
+    setTabData(newTabData);
+    setTabs([...tabs, newTabData.id]);
+    setActiveTabId(newTabData.id);
   };
 
   const closeTab = (closedTabId: string) => {
@@ -105,7 +116,7 @@ const TabViewContainer = (props: TabViewContainerProps) => {
   return (
     <div className='relative w-full max-w-full flex flex-col h-full bg-background overflow-hidden'>
       <div className='w-full h-10 pb-0 bg-background flex'>
-        <div className='grid grid-cols-[1fr] w-full overflow-hidden'>
+        <div className='grid grid-cols-[1fr] w-full overflow-hidden min-h-10'>
           <Reorder.Group
             axis='x'
             onReorder={setTabs}
@@ -125,14 +136,14 @@ const TabViewContainer = (props: TabViewContainerProps) => {
                 />
               ))}
             </AnimatePresence>
-            <motion.button
+            {/* <motion.button
               className='p-1 m-2 rounded-sm h-fit w-fit flex items-center justify-center hover:bg-accent transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none'
               onClick={newTab}
               disabled={tabs.length === MAX_TABS}
               whileTap={{ scale: 0.9 }}
             >
               <Plus className='min-h-4 min-w-4 w-4 h-4 text-foreground' />
-            </motion.button>
+            </motion.button> */}
           </Reorder.Group>
         </div>
       </div>
@@ -140,6 +151,8 @@ const TabViewContainer = (props: TabViewContainerProps) => {
       <div className='flex h-full w-full relative'>{getActiveTabView()}</div>
     </div>
   );
-};
+});
+
+TabViewContainer.displayName = 'TabViewContainer';
 
 export default TabViewContainer;

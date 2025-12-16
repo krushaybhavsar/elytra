@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu
 import CreateDbDropdownContent from './CreateDbDropdownContent';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import DbConnectionList from './DbConnectionList';
+import { useTabContext } from '@/components/contexts/TabContext';
 
 type WorkspaceSidebarProps = {};
 
@@ -17,6 +18,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
   const isRefreshingConnections = useIsFetching({ queryKey: ['connections'] }) > 0;
+  const { createNewTab } = useTabContext();
 
   const handleRefreshConnections = () => {
     queryClient.invalidateQueries({ queryKey: ['connections'] });
@@ -97,7 +99,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
         />
       </div>
       {/* <DbTreeView searchQuery={searchQuery} /> */}
-      <DbConnectionList searchQuery={searchQuery} />
+      <DbConnectionList searchQuery={searchQuery} onNewTab={createNewTab} />
     </div>
   );
 };
