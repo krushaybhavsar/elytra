@@ -177,16 +177,6 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
     }
   };
 
-  const runCellAndBelow = async (cellId: string) => {
-    if (!props.tabData.data) return;
-    const startIndex = props.tabData.data.cells.indexOf(cellId);
-    if (startIndex === -1) return;
-
-    for (let i = startIndex; i < props.tabData.data.cells.length; i++) {
-      await runCell(props.tabData.data.cells[i]);
-    }
-  };
-
   return (
     <div className='absolute h-full w-full overflow-y-auto overflow-x-hidden flex flex-col'>
       <div className='relative flex flex-col gap-4 pt-4 w-full px-2 max-w-full'>
@@ -208,7 +198,6 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
                   cellData={props.tabData.data!.cellDataMap.get(cellId)}
                   onChangeContent={(value) => updateCellContent(cellId, value)}
                   onRunCell={() => runCell(cellId)}
-                  onRunCellAndBelow={() => runCellAndBelow(cellId)}
                   onDelete={() => removeCell(cellId)}
                   onMoveUp={() => moveCell(cellId, 'up')}
                   onMoveDown={() => moveCell(cellId, 'down')}

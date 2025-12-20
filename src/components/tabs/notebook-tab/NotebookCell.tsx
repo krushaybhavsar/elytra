@@ -34,7 +34,6 @@ interface NotebookCellProps {
   cellData?: CellData;
   onChangeContent: (value: string) => void;
   onRunCell: () => void;
-  onRunCellAndBelow: () => void;
   onDelete: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
@@ -84,14 +83,6 @@ const NotebookCell = (props: NotebookCellProps) => {
             >
               <Play className='size-4' />
             </Button>
-            {/* <Button
-              variant='ghost'
-              size='icon'
-              className='!rounded-sm !hover:bg-background !size-6 flex-shrink-0'
-              onClick={props.onRunCellAndBelow}
-            >
-              <FastForward className='size-4' />
-            </Button> */}
             <Button
               variant='ghost'
               size='icon'
