@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, LoaderCircle, Sparkles } from 'lucide-react';
 import React, { useState } from 'react';
 import NotebookCellEditor from './NotebookCellEditor';
 import { Separator } from '@/components/ui/separator';
@@ -16,28 +16,38 @@ interface NotebookAiCellProps {
 const NotebookAiCell = (props: NotebookAiCellProps) => {
   const [loading, setLoading] = useState(false);
 
-  const generateAiResponse = async () => {
-    if (loading) return;
-    setLoading(true);
-    // Simulate AI processing delay
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  };
+  const generateAiResponse = async () => {};
 
   return (
     <div className='flex flex-col w-full relative'>
       <div className='relative w-full flex flex-row items-center'>
+        {loading ? (
+          <LoaderCircle
+            className='!size-4 animate-spin !duration-500 stroke-muted-foreground ml-2'
+            strokeWidth={2}
+          />
+        ) : (
+          <Sparkles className='!size-4 text-muted-foreground ml-2' />
+        )}
         <Input
           className='border-0 px-2'
           placeholder='Ask AI to generate, explain, or optimize a query...'
           value={props.prompt}
           onChange={(e) => props.onPromptChange?.(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              generateAiResponse();
+            }
+          }}
+          disabled={loading}
         />
         <Button
           variant='ghost'
           size='icon'
-          className='!rounded-sm !hover:bg-background !size-6 flex-shrink-0 mr-2'
+          className={`!rounded-sm !hover:bg-background !size-6 flex-shrink-0 mr-2 ${props.prompt.trim() !== '' && !loading ? 'bg-sidebar' : ''}`}
+          onClick={generateAiResponse}
+          disabled={loading}
         >
           <ArrowRight />
         </Button>
@@ -47,6 +57,7 @@ const NotebookAiCell = (props: NotebookAiCellProps) => {
         cellData={props.cellData}
         onCellDataChange={props.onCellDataChange}
         height={props.height}
+        disableEditing={loading}
       />
     </div>
   );

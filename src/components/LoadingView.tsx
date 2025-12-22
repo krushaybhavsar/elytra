@@ -22,7 +22,7 @@ export const LoadingView = (props: LoadingViewProps) => {
     >
       <div className='relative'>
         <LoaderCircle
-          className={'animate-spin !duration-500 stroke-primary/40 ' + props.strokeColor}
+          className={'animate-spin !duration-500 stroke-foreground/40 ' + props.strokeColor}
           size={props.spinnerSize || 64}
           strokeWidth={props.strokeWidth || 0.5}
         />
@@ -34,7 +34,7 @@ export const LoadingView = (props: LoadingViewProps) => {
         />
       </div>
       {props.message && (
-        <TypographyP className='!text-[14px] text-primary'>{props.message}</TypographyP>
+        <TypographyP className='!text-[14px] text-foreground'>{props.message}</TypographyP>
       )}
     </div>
   );
@@ -48,7 +48,7 @@ export const LoadingScreen = () => {
           containerClassName='!h-fit'
           spinnerSize={100}
           strokeWidth={0.3}
-          strokeColor='!stroke-primary'
+          strokeColor='!stroke-foreground'
           message='Starting Elytra'
           showlogo={true}
         />

@@ -50,7 +50,7 @@ const WorkspaceSidebar = (props: WorkspaceSidebarProps) => {
         </div> */}
       </div>
       <Separator orientation='horizontal' />
-      <div className='flex flex-row justify-between p-2 pr-4 items-center gap-2'>
+      <div className='flex flex-row justify-between p-2 items-center gap-2'>
         <div className='flex flex-row gap-2'>
           <Tooltip>
             <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>

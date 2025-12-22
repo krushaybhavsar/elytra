@@ -2,18 +2,21 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { sql } from '@codemirror/lang-sql';
 import { keymap } from '@codemirror/view';
+import { Compartment } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 
 interface NotebookCellEditorProps {
   cellData: string;
   onCellDataChange?: (value: string) => void;
   height?: number;
+  disableEditing?: boolean;
 }
 
 const NotebookCellEditor = (props: NotebookCellEditorProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(props.onCellDataChange);
+  const editableCompartment = useRef(new Compartment());
 
   useEffect(() => {
     onChangeRef.current = props.onCellDataChange;
@@ -34,8 +37,20 @@ const NotebookCellEditor = (props: NotebookCellEditorProps) => {
         '.cm-scroller': { overflow: 'hidden' },
         '.cm-content': { fontSize: '14px' },
       }),
+      editableCompartment.current.of(EditorView.editable.of(!props.disableEditing)),
     ];
   }, [props.height]);
+
+  // Update editable state when disableEditing changes
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    view.dispatch({
+      effects: editableCompartment.current.reconfigure(
+        EditorView.editable.of(!props.disableEditing),
+      ),
+    });
+  }, [props.disableEditing]);
 
   useEffect(() => {
     if (!containerRef.current || viewRef.current) return;
