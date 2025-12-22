@@ -29,6 +29,8 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
       cellDataMap.set(newCellId, {
         id: newCellId,
         data: '',
+        aiMode: true,
+        prompt: '',
         result: initialResult,
       });
 
@@ -80,6 +82,8 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
     updatedCellDataMap.set(newCellId, {
       id: newCellId,
       data: '',
+      aiMode: true,
+      prompt: '',
       result: initialResult,
     });
 
@@ -141,9 +145,33 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
     const next: CellData = {
       id: cellId,
       data: content,
+      aiMode: existing?.aiMode ?? true,
+      prompt: existing?.prompt ?? '',
       result: existing?.result ?? { loading: false },
     };
     setCellData(next);
+  };
+
+  const updateCellPrompt = (cellId: string, prompt: string) => {
+    if (!props.tabData.data) return;
+    const existing = props.tabData.data.cellDataMap.get(cellId);
+    if (!existing) return;
+
+    setCellData({
+      ...existing,
+      prompt,
+    });
+  };
+
+  const updateCellAiMode = (cellId: string, aiMode: boolean) => {
+    if (!props.tabData.data) return;
+    const existing = props.tabData.data.cellDataMap.get(cellId);
+    if (!existing) return;
+
+    setCellData({
+      ...existing,
+      aiMode,
+    });
   };
 
   const updateCellResult = (cellId: string, result: CellResult) => {
@@ -197,6 +225,8 @@ const NotebookTabView = (props: NotebookTabViewProps) => {
                   index={index}
                   cellData={props.tabData.data!.cellDataMap.get(cellId)}
                   onChangeContent={(value) => updateCellContent(cellId, value)}
+                  onChangePrompt={(prompt) => updateCellPrompt(cellId, prompt)}
+                  onChangeAiMode={(aiMode) => updateCellAiMode(cellId, aiMode)}
                   onRunCell={() => runCell(cellId)}
                   onDelete={() => removeCell(cellId)}
                   onMoveUp={() => moveCell(cellId, 'up')}

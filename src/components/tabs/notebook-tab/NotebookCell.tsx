@@ -4,13 +4,17 @@ import NotebookCellEditor from './NotebookCellEditor';
 import QueryResultTable from '../QueryResultTable';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowDown, ArrowUp, GripVertical, Play, Trash } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowDown, ArrowUp, GripVertical, Play, Sparkles, Trash } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import NotebookAiCell from './NotebookAiCell';
 
 export interface CellData {
   id: string;
   data: string;
+  aiMode: boolean;
+  prompt: string;
   result: CellResult;
 }
 
@@ -33,6 +37,8 @@ interface NotebookCellProps {
   index: number;
   cellData?: CellData;
   onChangeContent: (value: string) => void;
+  onChangePrompt: (prompt: string) => void;
+  onChangeAiMode: (aiMode: boolean) => void;
   onRunCell: () => void;
   onDelete: () => void;
   onMoveUp: () => void;
@@ -42,6 +48,7 @@ interface NotebookCellProps {
 const NotebookCell = (props: NotebookCellProps) => {
   const result = props.cellData?.result;
   const hasResult = !!result && !result.loading && result.result;
+  const aiMode = props.cellData?.aiMode ?? false;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: props.cellData?.id || props.id || `cell-${props.index}`,
@@ -107,6 +114,23 @@ const NotebookCell = (props: NotebookCellProps) => {
             >
               <Trash className='size-4' />
             </Button>
+
+            <div className='h-4 w-px bg-border mx-1' />
+
+            <Tabs
+              value={aiMode ? 'ai' : 'sql'}
+              onValueChange={(value) => props.onChangeAiMode(value === 'ai')}
+            >
+              <TabsList className='h-7 p-0.5'>
+                <TabsTrigger value='ai' className='h-6 px-2 text-xs gap-1'>
+                  <Sparkles className='size-3' />
+                  AI
+                </TabsTrigger>
+                <TabsTrigger value='sql' className='h-6 px-2 text-xs gap-1'>
+                  SQL
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
 
           <div className='flex flex-row items-center gap-2'>
@@ -147,11 +171,21 @@ const NotebookCell = (props: NotebookCellProps) => {
         </div>
 
         {/* Editor */}
-        <NotebookCellEditor
-          cellData={props.cellData?.data ?? ''}
-          onCellDataChange={props.onChangeContent}
-          height={150}
-        />
+        {aiMode ? (
+          <NotebookAiCell
+            cellData={props.cellData?.data ?? ''}
+            prompt={props.cellData?.prompt ?? ''}
+            onCellDataChange={props.onChangeContent}
+            onPromptChange={props.onChangePrompt}
+            height={150}
+          />
+        ) : (
+          <NotebookCellEditor
+            cellData={props.cellData?.data ?? ''}
+            onCellDataChange={props.onChangeContent}
+            height={150}
+          />
+        )}
 
         {/* Results */}
         {result && (
