@@ -6,7 +6,8 @@
   <img alt="Elytra Logo" src="src/assets/logos/word-black-tbg.png" width="400">
 </picture>
 
-### An open-source, AI-powered database management tool.
+### The AI Notebook for SQL
+Instantly generate, run, and visualize SQL queries using natural language.
 
 <img width="1509" height="946" alt="image" src="https://github.com/user-attachments/assets/751afcb0-6b7a-4c3a-bc94-67946af8de7d" />
 
